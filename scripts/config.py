@@ -6,13 +6,10 @@
 # 제외 이유:
 #   Financial Services  — 매출·영업이익 개념 상이, 레버리지가 사업 모델. 순이익·CFO 중심
 #   Real Estate         — REIT는 FFO 기준 밸류에이션, 일반 이익 지표 부적합
-#   Energy              — 원자재 가격 종속, 기업 펀더멘털보다 commodity cycle 영향 큼
-#   Basic Materials     — 마이닝(FCX·NEM 등) 포함, 동일 이유
-#   Utilities           — 규제독점, 수익률이 정부 규제로 결정, rate base 밸류에이션
+#
+# Energy·Basic Materials(원자재 사이클 → Cyclical 버킷 후보)·Utilities(경기방어적
+# → Growth/Value 자동분류)는 2026-07-02에 stock_universe.csv로 편입됨 (401종목 확장).
 EXCLUDED_SECTORS = {
     "Financial Services",
     "Real Estate",
-    "Energy",
-    "Basic Materials",
-    "Utilities",
 }

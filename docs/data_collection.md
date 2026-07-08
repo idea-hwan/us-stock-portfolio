@@ -35,11 +35,11 @@
 |---|---|
 | Financial Services | 매출·영업이익 개념 상이, 레버리지가 사업 모델. 순이익·CFO 중심 |
 | Real Estate | REIT는 FFO 기준 밸류에이션, 일반 이익 지표 부적합 |
-| Energy | 원자재 가격 종속, 기업 펀더멘털보다 commodity cycle 영향 큼 |
-| Basic Materials | 마이닝(FCX·NEM 등) 포함, 동일 이유 |
-| Utilities | 규제독점, 수익률이 정부 규제로 결정, rate base 밸류에이션 |
 
-- 분석 대상: 약 330개 / 제외: 약 173개 (전체 503개 기준)
+Energy·Basic Materials(원자재 사이클 → Cyclical 버킷 후보)·Utilities(경기방어적 → Growth/Value
+자동분류)는 2026-07-02에 `stock_universe.csv`로 편입됨.
+
+- 분석 대상: 약 401개 / 제외: 약 101개 (전체 503개 기준, 2026-07-02 이후)
 - 모든 분석 스크립트는 `from config import EXCLUDED_SECTORS`로 일관 적용
 
 
@@ -141,9 +141,8 @@ else:
 | `config.py` | 공통 상수 (EXCLUDED_SECTORS 등) — 모든 스크립트 공유 |
 | `update_universe.py` | stock_universe.csv 갱신 (연 1회 또는 S&P500 리밸런싱 후) |
 | `collect_financials.py` | EDGAR에서 분기 재무 수집 → stocks.db upsert |
-| `patch_shares_yfinance.py` | shares_diluted NULL 종목을 yfinance로 보정 (필요 시) |
+| `archive/patch_shares_yfinance.py` | shares_diluted NULL 종목을 yfinance로 보정 (2026-07 1회성 패치, 필요 시 재사용) |
 | `check_quality.py` | 수집 후 데이터 품질 검증 |
-| `build_summary_table.py` | 시가총액·수익률·PER 요약표 생성 |
 
 ### 일반적인 수집 절차 (분기마다)
 

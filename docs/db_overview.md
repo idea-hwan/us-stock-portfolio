@@ -28,8 +28,8 @@ ttm_valuation.db + prices.db
 ## 종목 범위
 
 - **전체 수집**: S&P 500 구성 종목 (~503개)
-- **분석 대상**: `exclude_analysis=False` 종목 (~329개)
-- **제외 섹터**: Financial Services, Real Estate, Energy, Basic Materials, Utilities (`config.py`)
+- **분석 대상**: `exclude_analysis=False` 종목 (~401개, 2026-07-02 Energy·Basic Materials·Utilities 편입 후)
+- **제외 섹터**: Financial Services, Real Estate (`config.py`)
 
 ## 업데이트 순서 (분기마다)
 

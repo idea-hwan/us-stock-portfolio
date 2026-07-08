@@ -23,6 +23,19 @@
   - `automation/weekly_collect_financials.sh` (일요일 1회): collect_financials 만 실행 — 결과(`stocks.db`)는 다음 날 daily_update.sh의 compute_ttm 이하 단계에서 자동 반영됨. 새 버킷 편입/제외 등 판단이 필요한 변경은 자동화 안 함, 결과 CSV는 필요할 때 사람이 검토.
   - `automation/scheduler_data_collection.py`: **화~토** 00:00 UTC(KST 09:00) → daily_update.sh, **일요일** 00:00 UTC → weekly_collect_financials.sh, **월요일** 스킵. 요일 매핑에 주의 — KST 09:00 실행 시점은 미국 동부시간 "전날 저녁" 기준이라, KST 월요일=미국 일요일 저녁(휴장, 새 종가 없음)/KST 토요일=미국 금요일 저녁(개장, 금요일 종가 반영)이 되어 월~금이 아니라 화~토가 맞음(2026-07-07 최초엔 월~금으로 잘못 설정했다가 사용자가 요일 매핑 오류 지적, 수정함). 실행: `caffeinate -i python3 automation/scheduler_data_collection.py` (터미널을 켜둔 채 유지). 로그: `automation/logs/{YYYYMMDD_daily,YYYYMMDD_weekly,scheduler}.log`
   - 실제 실행 테스트 완료 — daily_update.sh(재무 포함 버전)로 전체 파이프라인 9분 52초에 정상 완료 확인(400/401종목), 이후 재무 수집을 분리해 최종 형태로 정리.
+- **대시보드 컬럼 개편 + Cyclical 신호 임시 비활성화 + GitHub Pages 배포** (2026-07-08)
+  - `build_dashboard.py` 메인 테이블: `P/E(현재)` → `P/E(20d)`+`P/E(4y)` 2열로 교체(저평가 판단에 실제로 쓰이는 두 값을 바로 비교), 주가수익률에 `1w(%)` 컬럼 추가(1m/3m/1y 옆). 상세 패널에도 동일 반영.
+  - `get_signals()`/`get_sell_signals()`에서 cyclical 분기 제거 — 매수/매도 신호에 '사이클' 더 이상 안 뜸(`signal_cyclical`/`sell_cyclical` 함수는 남겨둠, 아래 Cyclical 재작업 끝나면 복원). growth/value 신호는 그대로.
+  - **git 저장소 최초 설정**: `git init` → `.gitignore`(.venv/__pycache__/reference/data 원본DB·analytics/logs 제외) → GitHub repo `idea-hwan/us-stock-portfolio`(Public) 생성 → `gh` CLI 설치+브라우저 로그인(`gh auth login --web`) → push → **GitHub Pages 활성화(`/docs`) 완료: https://idea-hwan.github.io/us-stock-portfolio/**
+  - `automation/daily_update.sh` 마지막에 git add/commit/push 자동 추가(변경 없으면 스킵) — 매일 새벽 자동 실행으로 Pages도 같이 갱신됨. 스케줄러 재시작 불필요(스크립트는 실행 시점에 디스크에서 새로 읽음).
+  - **커밋 원칙 합의**: 코드/스크립트 수정은 세션 마무리 시점마다 커밋(전체 작업 끝날 때까지 몰아두지 않기) — 이유는 자동 push가 `git add -A`라 미완성 상태를 애매한 메시지로 같이 쓸어갈 수 있어서. 상세: 메모리 `feedback_automation_preference`.
+- **스크립트/문서 정리 — 불필요·중복 파일 감사 및 정리** (2026-07-08)
+  - 조사 에이전트로 `scripts/`·`docs/`·`analysis/` 전체를 automation 참조여부·STATUS.md 언급·기능중복 기준으로 분류(KEEP/ARCHIVE/DELETE-CANDIDATE), 결과 확인 후 정리.
+  - **삭제**(완전히 대체돼 정보손실 없음): `scripts/top100_dashboard.py`·`build_summary_table.py`·`simulate_growth.py`(구 ★★/★/○ 신호체계), `docs/top100_dashboard.md`+`.html`(GitHub Pages로 index.html과 혼동될 위험 있던 stale 페이지), `analysis/build_html_table.py`+`stock_universe.html`(초기 프로토타입), `analysis/momentum/`(Ondo 토크나이즈 주식 분석 — 이 프로젝트와 무관한 별개 주제 전체 삭제, `analysis/` 폴더 자체도 비어서 삭제됨).
+  - **`scripts/archive/`로 이동**(신호 도출 방법론 기록, 지금은 안 돌리지만 재현·참고용 — 특히 cyclical 재작업 때 참조): `simulate_growth_factors/sell.py`, `simulate_value_factors/sell.py`, `simulate_cyclical.py`+`_sell.py`, `screen_candidates.py`, `patch_shares_yfinance.py`.
+  - **`docs/archive/`로 이동**(현재 코드와 어긋난 stale 수치 있어 "지금 코드"로 오인 방지): `dashboard_plan.md`, `bucket_factor_analysis.md`, `cyclical_classification.md`.
+  - **`scripts/config.py` 수정**: `EXCLUDED_SECTORS`가 Energy/Basic Materials/Utilities를 아직 포함해 `stock_universe.csv`(2026-07-02 이후 이 3섹터 편입) 실제 상태와 불일치하던 것 발견·수정 → Financial Services/Real Estate 2개만 남김. `check_quality.py`가 이 값을 그대로 씀.
+  - `docs/db_overview.md`·`docs/data_collection.md`의 stale 종목수(329/330→401개, 제외섹터 5개→2개) 수정.
 
 ---
 
@@ -31,11 +44,8 @@
 - **[최우선] Cyclical 버킷 재작업 — 팩터→결과가 아니라 가격→팩터 방향으로 뒤집기** (착수 예정, 오래 걸리는 작업이라 별도 세션에서)
   - **배경**: semiconductor 베이스 12m 알파가 +5~7%로 비정상적으로 높은 이유 추적 → `stock_universe.csv`가 오늘 기준 시총 상위 종목만 담고 있어, 과거엔 컸지만 지금은 인수합병·상장폐지로 사라진 종목(Maxim/Xilinx/Cypress/Linear Tech/Altera/Microsemi 등)이 전체 백테스트 기간에서 통째로 빠져있는 **유니버스 자체의 생존편향** 발견. yfinance·stooq 둘 다 이런 상폐 종목의 과거 가격을 대부분 못 줌(9개 중 2개만 성공) — 무료 소스로는 완전한 해결 불가, 유료 point-in-time 데이터(CRSP/Compustat급)가 필요해 이번엔 포기.
   - **결론**: Cyclical(및 growth/value도 동일 원리로 일부) 절대 알파 수치는 생존편향으로 부풀려져 있다고 보고 해석해야 함. 그래서 접근 자체를 바꾸기로 함 — 지금까지는 "팩터를 정하고 → 그 팩터가 뜬 시점 이후 알파가 어떻게 나오는지" 봤는데(팩터→결과), 다음엔 **"주가가 실제로 경기순환적으로 움직였는지(진짜 저점·고점을 찍었는지) 가격 자체를 먼저 보고 → 그 turning point 앞뒤로 어떤 팩터(밸류에이션·CAPEX·매출 등)가 실제로 끼어 있었는지" 역방향으로 접근**(가격→팩터). 유의미한 결과가 안 나올 수도 있음을 전제하고 시작.
+  - 참고: cyclical 매수/매도 신호는 위 2026-07-08 작업으로 대시보드에서 이미 꺼둔 상태 — 재작업 끝나면 `signal_cyclical`/`sell_cyclical` 호출부 복원.
   - 상세 배경: 메모리 `feedback_backtest_methodology`(원칙 7), `project_next_steps`.
-
-### GitHub Pages 설정 (보류 — git 저장소 자체가 아직 없음)
-- 사용자가 git 커밋/push에 아직 익숙하지 않아 우선 로컬 자동화만 진행하기로 함 (2026-07-07)
-- 나중에 진행하게 되면: git init → GitHub 저장소 생성/remote 연결 → `docs/` 폴더 기준 Pages 활성화 → daily_update.sh/weekly_collect_financials.sh 끝에 git add/commit/push 추가
 
 ---
 
