@@ -1,5 +1,5 @@
 #!/bin/bash
-# 매일 자동 갱신 (로컬 전용, git push 없음)
+# 매일 자동 갱신 (계산 + GitHub Pages 업로드)
 #   1. 가격 갱신
 #   2. TTM 재계산
 #   3. 성장률 재계산
@@ -8,6 +8,7 @@
 #   6. 종목 분류(growth/value/cyclical) 재계산
 #   7. 현재(오늘 가격 기준) 밸류에이션 재계산
 #   8. 대시보드(docs/index.html) 재생성
+#   9. 변경 있으면 git commit + push (GitHub Pages 자동 갱신)
 #
 # EDGAR 재무 원본 수집(collect_financials.py)은 여기 없음 — 고정비용 5~6분이라
 # 매주 1회 automation/weekly_collect_financials.sh 로 분리. 그 결과(stocks.db)는
@@ -37,5 +38,15 @@ LOG_FILE="$LOG_DIR/$(date +%Y%m%d)_daily.log"
     "$PY" scripts/classify_stocks.py
     "$PY" scripts/compute_valuation_current.py
     "$PY" scripts/build_dashboard.py
+
+    if [[ -n "$(git status --porcelain)" ]]; then
+        git add -A
+        git commit -m "auto: dashboard update $(date '+%Y-%m-%d %H:%M')"
+        git push origin main
+        echo "git push 완료"
+    else
+        echo "변경 사항 없음 — git push 스킵"
+    fi
+
     echo "===== daily_update 완료 $(date '+%Y-%m-%d %H:%M:%S') ====="
 } >> "$LOG_FILE" 2>&1
