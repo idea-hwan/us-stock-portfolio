@@ -1,0 +1,269 @@
+# 경기순환 유니버스 — 사이클 유형별
+# [섹션명] : cyclical_type 값
+# # 이후 주석, 빈 줄 무시
+#
+# 제외 원칙 (2026-07-02 재검토):
+#   방산 순수주 (LMT/NOC/GD/HII/LHX) → 국방예산 사이클, 경기방어적 성격 (개념적 제외, 유지)
+#   농기계 DE → 농업(곡물가격) 사이클, 경기순환과 무관 (개념적 제외, 유지)
+#   industrial(CAT 단독) → 업종 단위 분석 불가, capital_goods 합류
+#   할인점(WMT/COST/TGT/DG/DLTR 등) → GICS상 Consumer Defensive 섹터로 Cyclical과 다른 카테고리, 제외
+#
+# ⚠ 2026-06-22 리뷰에서 "알파 없음"/"구조적 업황 하락" 등 실적 기반 사유로 제외했던
+#   카지노(LVS/MGM/WYNN)·크루즈(RCL/CCL/NCLH)·의류(RL/TPR)·BBY·SWKS·
+#   capital_goods 저성과주(SWK/EMR/MMM/ROK)는 생존편향으로 판단해 2026-07-02 원복.
+#   (leisure/retail 베이스가 마이너스로 뒤집힐 만큼 영향이 컸음 — STATUS.md 참조)
+#
+# ⚠ 2026-07-02: stock_universe.csv의 Energy/Basic Materials/Utilities 섹터
+#   (exclude_analysis=True, 회계 구조 문제 없는데 섹터 통째로 빠져 있었음) 72종목을
+#   분석 파이프라인에 편입. 그중 건설 자재(MLM/VMC/CRH)만 construction에 수동 편입,
+#   나머지는 growth/value/unclassified 자동 분류에 맡김 (금융·리츠는 회계 구조상 계속 제외).
+#
+# ⚠ 2026-07-02 2차 감사: "이미 growth/value로 잡히니 cyclical에서 빼자"는 판단은 원천적으로
+#   틀린 로직으로 확인(버킷은 비배타적 — 중복 신호가 오히려 정보량이 많음). GICS 산업/섹터
+#   태그가 기존 cyclical_type과 일치하는데 누락돼 있던 종목을 전부 편입:
+#     semiconductor: NVDA/AVGO/TXN/ADI/MPWR (동일 GICS Semiconductors 산업)
+#     transport: EXPD (Integrated Freight & Logistics)
+#     auto: CVNA/ORLY/AZO/GPC (GICS Consumer Cyclical 섹터 — "방어적으로 보인다"는 서사로
+#           뺐던 게 오류. Consumer Defensive인 할인점과는 다른 카테고리)
+#     aerospace_defense: AXON (동일 GICS 산업. 단, LMT 등과 달리 연방 국방예산 직접의존이
+#           아니라 지방정부·법인 대상 판매라 방어적 성격은 약함 — 그래도 산업 태그 기준 편입)
+#     capital_goods: PCAR/VRT/OTIS/XYL/IEX/NDSN/PNR/AOS (Industrials 섹터 동일 계열)
+#     construction: J (Jacobs Solutions, Engineering & Construction)
+#     retail: LULU/AMZN/DASH/EBAY/TJX/ROST/CASY/TSCO (GICS Consumer Cyclical 섹터)
+#   신규 스핀오프라 재무·가격 이력이 너무 짧은 Q(Qnity Electronics)·FDXF(FedEx Freight)는
+#   데이터 가용성 문제로 보류(서사가 아닌 순수 데이터 부족).
+#
+# ⚠ 2026-07-02 3차: Energy(21)·Basic Materials(17, 건설자재 제외)가 통째로 cyclical_type
+#   섹션이 없어 growth/value/unclassified로만 흘러가고 있던 것 발견 — 원자재 가격 사이클
+#   (유가·화학제품 스프레드·철강/구리/금 가격)의 전형적 경기순환 업종이라 energy/materials
+#   신설. "엣지 없어도 상관없다, 표본 커야 신뢰도 강해진다"는 방침으로 해당 섹터 전체 편입
+#   (Utilities는 규제 요금 기반 방어주 성격이 구조적으로 달라 계속 growth/value 자동분류에 맡김).
+#   MLM/VMC/CRH는 construction과 materials 양쪽에 중복 태깅(비배타적 버킷 원칙).
+
+[semiconductor]
+# 메모리 / 스토리지
+MU
+WDC
+SNDK
+STX
+INTC
+# 장비
+AMAT
+LRCX
+KLAC
+TER
+# 팹리스 / 설계
+AMD
+QCOM
+MCHP
+ON
+NXPI
+SWKS
+# 시스템 / 인접
+SMCI
+DELL
+GLW
+COHR
+LITE
+# 대형 로직/아날로그 (2026-07-02 추가)
+NVDA
+AVGO
+TXN
+ADI
+MPWR
+
+[transport]
+# 항공
+DAL
+UAL
+LUV
+# 특송
+FDX
+UPS
+# 철도
+UNP
+CSX
+NSC
+# 트럭 / 화물중개
+ODFL
+JBHT
+CHRW
+# 화물중개 (2026-07-02 추가)
+EXPD
+
+[housing]
+# 주택건설
+DHI
+PHM
+LEN
+NVR
+# 홈임프루브먼트
+HD
+LOW
+
+[auto]
+# 완성차
+GM
+F
+TSLA
+# 부품
+APTV
+# 부품 리테일 / 중고차 (2026-07-02 추가 — GICS Consumer Cyclical 동일 섹터)
+CVNA
+ORLY
+AZO
+GPC
+
+[leisure]
+# 호텔
+MAR
+HLT
+# 여행 플랫폼
+BKNG
+EXPE
+ABNB
+# 카지노
+LVS
+MGM
+WYNN
+# 크루즈
+RCL
+CCL
+NCLH
+
+[aerospace_defense]
+# 상업 항공우주 (항공기 납품·MRO 사이클)
+BA
+GE
+HWM
+TDG
+TXT
+RTX
+# 2026-07-02 추가
+AXON
+
+[capital_goods]
+# 산업기계 (경기 capex 사이클 직결)
+CAT
+ETN
+ITW
+PH
+AME
+IR
+DOV
+CMI
+HON
+GEV
+GNRC
+WAB
+# 전기장비
+HUBB
+# 공구
+SNA
+# 냉난방·빌딩설비 장비 제조
+CARR
+LII
+TT
+JCI
+# 저성과주 (2026-07-02 원복)
+SWK
+EMR
+MMM
+ROK
+# 2026-07-02 추가 (Industrials 동일 계열 — 대형트럭, 전력인프라, 정밀장비 등)
+PCAR
+VRT
+OTIS
+XYL
+IEX
+NDSN
+PNR
+AOS
+
+[construction]
+# 건설·엔지니어링 (착공·수주 사이클 직결)
+PWR
+EME
+FIX
+# 골재·시멘트 (2026-07-02 추가 — Basic Materials 섹터 제외 때문에 누락돼 있었음)
+MLM
+VMC
+CRH
+# 건자재·유통
+BLDR
+MAS
+# 장비렌탈
+URI
+# 엔지니어링 컨설팅 (2026-07-02 추가)
+J
+
+[retail]
+# 스포츠·아웃도어
+NKE
+DECK
+# 홈퍼니싱
+WSM
+ULTA
+# 외식·레저 소비
+DRI
+HAS
+# 의류
+RL
+TPR
+# 가전
+BBY
+# 2026-07-02 추가 (GICS Consumer Cyclical 동일 섹터)
+LULU
+AMZN
+DASH
+EBAY
+TJX
+ROST
+CASY
+TSCO
+
+[energy]
+# 2026-07-02 신설 — 유가 사이클 (E&P/미드스트림/정제/장비서비스/통합)
+APA
+TPL
+COP
+EQT
+DVN
+FANG
+EOG
+OXY
+EXE
+HAL
+BKR
+SLB
+CVX
+XOM
+TRGP
+OKE
+WMB
+KMI
+PSX
+VLO
+MPC
+
+[materials]
+# 2026-07-02 신설 — 원자재 가격 사이클 (비료/화학/구리/금/철강)
+# 주의: classify_stocks.py의 load_cyclical()은 종목당 cyclical_type 1개만 저장(마지막 등장이 우선) —
+# MLM/VMC/CRH는 construction 섹션에 이미 있어 여기 중복 등재하지 않음(등재 시 소리 없이 덮어써짐).
+MOS
+CTVA
+CF
+DOW
+ALB
+IFF
+DD
+LYB
+LIN
+APD
+ECL
+SHW
+PPG
+FCX
+NEM
+NUE
+STLD

@@ -1,0 +1,2871 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Ondo Tokenized Stock Universe</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.3.0/tablesort.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.3.0/sorts/tablesort.number.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          background: #0f1117; color: #e0e0e0; padding: 24px; font-size: 13px; }
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 6px; color: #fff; }
+  .subtitle { color: #888; margin-bottom: 20px; font-size: 12px; }
+
+  /* 필터 바 */
+  .filter-bar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
+  .filter-bar input, .filter-bar select {
+    background: #1e2130; border: 1px solid #333; color: #ddd;
+    padding: 6px 10px; border-radius: 6px; font-size: 12px; outline: none; }
+  .filter-bar input { width: 200px; }
+  .filter-bar label { color: #888; font-size: 12px; }
+  .count { color: #888; font-size: 12px; margin-left: auto; }
+
+  /* 테이블 */
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: #1a1d2e; color: #aaa; font-weight: 500;
+    padding: 8px 10px; text-align: left; white-space: nowrap;
+    border-bottom: 1px solid #2a2d3e; cursor: pointer; user-select: none;
+    position: sticky; top: 0; z-index: 10; font-size: 11px; }
+  thead th:hover { color: #fff; background: #22263a; }
+  thead th[aria-sort="ascending"]::after  { content: " ▲"; color: #7c8cf8; }
+  thead th[aria-sort="descending"]::after { content: " ▼"; color: #7c8cf8; }
+
+  tbody tr { border-bottom: 1px solid #1a1d2e; transition: background .1s; }
+  tbody tr:hover { background: #1a1d2e; }
+  td { padding: 7px 10px; vertical-align: middle; }
+
+  .ticker { font-weight: 700; color: #7c8cf8; font-family: monospace; font-size: 13px; }
+  .num { text-align: right; font-family: monospace; white-space: nowrap; }
+  .biz { color: #888; font-size: 11px; max-width: 260px; line-height: 1.4; }
+
+  /* 수익률 색상 */
+  .ret-high-up { color: #00e676; font-weight: 700; }
+  .ret-up      { color: #69f0ae; }
+  .ret-low-up  { color: #b9f6ca; }
+  .ret-low-dn  { color: #ffcdd2; }
+  .ret-dn      { color: #ef9a9a; }
+  .ret-high-dn { color: #f44336; font-weight: 700; }
+
+  /* PER 색상 */
+  .pe-cheap { color: #69f0ae; }
+  .pe-mid   { color: #fff9c4; }
+  .pe-exp   { color: #ffcc80; }
+  .pe-neg   { color: #78909c; }
+
+  /* 섹터 배지 */
+  .badge { padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 500; white-space: nowrap; }
+  .sector-technology      { background:#1a237e; color:#82b1ff; }
+  .sector-financial       { background:#1b5e20; color:#b9f6ca; }
+  .sector-consumer_cy     { background:#4a148c; color:#ea80fc; }
+  .sector-industrials     { background:#e65100; color:#ffe0b2; }
+  .sector-communication   { background:#006064; color:#84ffff; }
+  .sector-healthcare      { background:#880e4f; color:#ff80ab; }
+  .sector-energy          { background:#3e2723; color:#ffccbc; }
+  .sector-basic_materials { background:#37474f; color:#cfd8dc; }
+  .sector-utilities       { background:#1a237e; color:#c5cae9; }
+  .sector-consumer_de     { background:#1b5e20; color:#ccff90; }
+  .sector-real_estate     { background:#4e342e; color:#d7ccc8; }
+
+  /* 스크롤 래퍼 */
+  .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid #2a2d3e; }
+</style>
+</head>
+<body>
+<h1>Ondo Tokenized Stock Universe</h1>
+<p class="subtitle">총 195개 개별 주식 · 시가총액 순 · 기준일 2026-05-27</p>
+
+<div class="filter-bar">
+  <input type="text" id="searchInput" placeholder="🔍  티커 / 회사명 / 섹터 검색…" oninput="filterTable()">
+  <label>섹터</label>
+  <select id="sectorFilter" onchange="filterTable()">
+    <option value="">전체</option>
+    <option>Basic Materials</option><option>Communication Services</option><option>Consumer Cyclical</option><option>Consumer Defensive</option><option>Energy</option><option>Financial Services</option><option>Healthcare</option><option>Industrials</option><option>Real Estate</option><option>Technology</option><option>Utilities</option>
+  </select>
+  <label>국가</label>
+  <select id="countryFilter" onchange="filterTable()">
+    <option value="">전체</option>
+    <option>Australia</option><option>Brazil</option><option>Canada</option><option>Cayman Islands</option><option>China</option><option>Denmark</option><option>Hong Kong</option><option>Ireland</option><option>Israel</option><option>Japan</option><option>Netherlands</option><option>Norway</option><option>Singapore</option><option>Sweden</option><option>Taiwan</option><option>United Kingdom</option><option>United States</option><option>Uruguay</option><option>Vietnam</option>
+  </select>
+  <span class="count" id="rowCount">195개 종목</span>
+</div>
+
+<div class="table-wrap">
+<table id="mainTable">
+<thead>
+  <tr>
+    <th>티커</th>
+    <th>회사명</th>
+    <th>섹터</th>
+    <th>산업</th>
+    <th>국가</th>
+    <th data-sort-method="number">시총</th>
+    <th data-sort-method="number">20일</th>
+    <th data-sort-method="number">60일</th>
+    <th data-sort-method="number">180일</th>
+    <th data-sort-method="number">PER(T)</th>
+    <th data-sort-method="number">PER(F)</th>
+    <th>비즈니스</th>
+  </tr>
+</thead>
+<tbody id="tableBody">
+
+    <tr>
+      <td class="ticker">NVDA</td>
+      <td>NVIDIA Corporation</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductors</td>
+      <td>United States</td>
+      <td class="num">$5.20T</td>
+      <td class="num ret-low-dn">-0.8%</td>
+      <td class="num ret-high-up">+21.3%</td>
+      <td class="num ret-high-up">+28.7%</td>
+      <td class="num pe-exp">32.9</td>
+      <td class="num pe-mid">17.0</td>
+      <td class="biz">NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments,…</td>
+    </tr>
+    <tr>
+      <td class="ticker">GOOGL</td>
+      <td>Alphabet Inc.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Internet Content & Information</td>
+      <td>United States</td>
+      <td class="num">$4.71T</td>
+      <td class="num ret-up">+11.0%</td>
+      <td class="num ret-high-up">+24.8%</td>
+      <td class="num ret-high-up">+65.8%</td>
+      <td class="num pe-mid">29.7</td>
+      <td class="num pe-mid">26.9</td>
+      <td class="biz">Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Paci…</td>
+    </tr>
+    <tr>
+      <td class="ticker">AAPL</td>
+      <td>Apple Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Consumer Electronics</td>
+      <td>United States</td>
+      <td class="num">$4.53T</td>
+      <td class="num ret-up">+15.3%</td>
+      <td class="num ret-up">+16.8%</td>
+      <td class="num ret-high-up">+29.0%</td>
+      <td class="num pe-exp">37.3</td>
+      <td class="num pe-exp">32.1</td>
+      <td class="biz">Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories world…</td>
+    </tr>
+    <tr>
+      <td class="ticker">MSFT</td>
+      <td>Microsoft Corporation</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Infrastructure</td>
+      <td>United States</td>
+      <td class="num">$3.09T</td>
+      <td class="num ret-low-dn">-1.9%</td>
+      <td class="num ret-up">+6.2%</td>
+      <td class="num ret-dn">-15.4%</td>
+      <td class="num pe-mid">24.7</td>
+      <td class="num pe-mid">21.5</td>
+      <td class="biz">Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and B…</td>
+    </tr>
+    <tr>
+      <td class="ticker">AMZN</td>
+      <td>Amazon.com, Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Internet Retail</td>
+      <td>United States</td>
+      <td class="num">$2.85T</td>
+      <td class="num ret-low-up">+1.6%</td>
+      <td class="num ret-high-up">+26.3%</td>
+      <td class="num ret-up">+14.2%</td>
+      <td class="num pe-exp">31.7</td>
+      <td class="num pe-mid">26.9</td>
+      <td class="biz">Amazon.com, Inc. engages in the retail sale of consumer products, advertising, and subscriptions service through online …</td>
+    </tr>
+    <tr>
+      <td class="ticker">TSM</td>
+      <td>Taiwan Semiconductor Manufacturing Company Limited</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductors</td>
+      <td>Taiwan</td>
+      <td class="num">$2.14T</td>
+      <td class="num ret-low-up">+1.8%</td>
+      <td class="num ret-up">+10.4%</td>
+      <td class="num ret-high-up">+70.9%</td>
+      <td class="num pe-exp">35.2</td>
+      <td class="num pe-mid">21.1</td>
+      <td class="biz">Taiwan Semiconductor Manufacturing Company Limited, together with its subsidiaries, manufactures, packages, tests, and s…</td>
+    </tr>
+    <tr>
+      <td class="ticker">AVGO</td>
+      <td>Broadcom Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductors</td>
+      <td>United States</td>
+      <td class="num">$2.00T</td>
+      <td class="num ret-low-up">+0.9%</td>
+      <td class="num ret-high-up">+32.3%</td>
+      <td class="num ret-high-up">+26.7%</td>
+      <td class="num pe-exp">81.9</td>
+      <td class="num pe-mid">23.1</td>
+      <td class="biz">Broadcom Inc. designs, develops, and supplies various semiconductor devices and infrastructure software solutions intern…</td>
+    </tr>
+    <tr>
+      <td class="ticker">TSLA</td>
+      <td>Tesla, Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Auto Manufacturers</td>
+      <td>United States</td>
+      <td class="num">$1.63T</td>
+      <td class="num ret-up">+14.5%</td>
+      <td class="num ret-up">+7.7%</td>
+      <td class="num ret-high-up">+23.6%</td>
+      <td class="num pe-exp">401.5</td>
+      <td class="num pe-exp">172.8</td>
+      <td class="biz">Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage syst…</td>
+    </tr>
+    <tr>
+      <td class="ticker">META</td>
+      <td>Meta Platforms, Inc.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Internet Content & Information</td>
+      <td>United States</td>
+      <td class="num">$1.55T</td>
+      <td class="num ret-dn">-9.8%</td>
+      <td class="num ret-dn">-5.5%</td>
+      <td class="num ret-dn">-18.4%</td>
+      <td class="num pe-mid">22.3</td>
+      <td class="num pe-mid">17.0</td>
+      <td class="biz">Meta Platforms, Inc. engages in the development of products that enable people to connect and share with friends and fam…</td>
+    </tr>
+    <tr>
+      <td class="ticker">MU</td>
+      <td>Micron Technology, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductors</td>
+      <td>United States</td>
+      <td class="num">$1.01T</td>
+      <td class="num ret-high-up">+70.8%</td>
+      <td class="num ret-high-up">+117.3%</td>
+      <td class="num ret-high-up">+582.9%</td>
+      <td class="num pe-exp">42.2</td>
+      <td class="num pe-cheap">8.6</td>
+      <td class="biz">Micron Technology, Inc. designs, develops, manufactures, and sells memory and storage products in the United States, Tai…</td>
+    </tr>
+    <tr>
+      <td class="ticker">LLY</td>
+      <td>Eli Lilly and Company</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Drug Manufacturers - General</td>
+      <td>United States</td>
+      <td class="num">$949.5B</td>
+      <td class="num ret-high-up">+22.8%</td>
+      <td class="num ret-low-up">+1.4%</td>
+      <td class="num ret-high-up">+47.1%</td>
+      <td class="num pe-exp">37.9</td>
+      <td class="num pe-mid">23.9</td>
+      <td class="biz">Eli Lilly and Company discovers, develops, manufactures, and markets human pharmaceutical products in the United States,…</td>
+    </tr>
+    <tr>
+      <td class="ticker">WMT</td>
+      <td>Walmart Inc.</td>
+      <td><span class="badge sector-consumer_def">Consumer Defensive</span></td>
+      <td>Discount Stores</td>
+      <td>United States</td>
+      <td class="num">$945.1B</td>
+      <td class="num ret-dn">-6.9%</td>
+      <td class="num ret-dn">-7.0%</td>
+      <td class="num ret-up">+18.7%</td>
+      <td class="num pe-exp">41.8</td>
+      <td class="num pe-exp">36.1</td>
+      <td class="biz">Walmart Inc. engages in the operation of retail and wholesale stores and clubs, ecommerce websites, and mobile applicati…</td>
+    </tr>
+    <tr>
+      <td class="ticker">JPM</td>
+      <td>JPMorgan Chase & Co.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Banks - Diversified</td>
+      <td>United States</td>
+      <td class="num">$821.9B</td>
+      <td class="num ret-low-dn">-1.6%</td>
+      <td class="num ret-low-up">+2.7%</td>
+      <td class="num ret-up">+5.7%</td>
+      <td class="num pe-cheap">14.7</td>
+      <td class="num pe-cheap">13.0</td>
+      <td class="biz">JPMorgan Chase & Co. operates as a bank and financial holding company in the United States, rest of North America, Europ…</td>
+    </tr>
+    <tr>
+      <td class="ticker">AMD</td>
+      <td>Advanced Micro Devices, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductors</td>
+      <td>United States</td>
+      <td class="num">$821.6B</td>
+      <td class="num ret-high-up">+50.6%</td>
+      <td class="num ret-high-up">+151.7%</td>
+      <td class="num ret-high-up">+233.4%</td>
+      <td class="num pe-exp">166.9</td>
+      <td class="num pe-exp">38.9</td>
+      <td class="biz">Advanced Micro Devices, Inc. operates as a semiconductor company internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">ASML</td>
+      <td>ASML Holding N.V.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductor Equipment & Materials</td>
+      <td>Netherlands</td>
+      <td class="num">$629.0B</td>
+      <td class="num ret-up">+13.9%</td>
+      <td class="num ret-up">+12.8%</td>
+      <td class="num ret-high-up">+109.9%</td>
+      <td class="num pe-exp">54.3</td>
+      <td class="num pe-exp">34.3</td>
+      <td class="biz">ASML Holding N.V. provides lithography solutions for the development, production, marketing, sales, upgrading, and servi…</td>
+    </tr>
+    <tr>
+      <td class="ticker">XOM</td>
+      <td>Exxon Mobil Corporation</td>
+      <td><span class="badge sector-energy">Energy</span></td>
+      <td>Oil & Gas Integrated</td>
+      <td>United States</td>
+      <td class="num">$621.0B</td>
+      <td class="num ret-low-up">+1.8%</td>
+      <td class="num ret-low-dn">-1.1%</td>
+      <td class="num ret-high-up">+40.2%</td>
+      <td class="num pe-mid">25.2</td>
+      <td class="num pe-cheap">14.3</td>
+      <td class="biz">Exxon Mobil Corporation engages in the exploration and production of crude oil and natural gas in the United States, Can…</td>
+    </tr>
+    <tr>
+      <td class="ticker">V</td>
+      <td>Visa Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Credit Services</td>
+      <td>United States</td>
+      <td class="num">$620.9B</td>
+      <td class="num ret-up">+5.7%</td>
+      <td class="num ret-low-up">+2.2%</td>
+      <td class="num ret-low-dn">-4.3%</td>
+      <td class="num pe-mid">28.5</td>
+      <td class="num pe-mid">22.0</td>
+      <td class="biz">Visa Inc. operates as a payment technology company in the United States and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">INTC</td>
+      <td>Intel Corporation</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductors</td>
+      <td>United States</td>
+      <td class="num">$620.8B</td>
+      <td class="num ret-high-up">+45.3%</td>
+      <td class="num ret-high-up">+170.8%</td>
+      <td class="num ret-high-up">+404.4%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">80.2</td>
+      <td class="biz">Intel Corporation designs, develops, manufactures, markets, sells, and services computing and related end products and s…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ORCL</td>
+      <td>Oracle Corporation</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Infrastructure</td>
+      <td>United States</td>
+      <td class="num">$555.2B</td>
+      <td class="num ret-up">+11.6%</td>
+      <td class="num ret-high-up">+33.2%</td>
+      <td class="num ret-dn">-16.4%</td>
+      <td class="num pe-exp">34.6</td>
+      <td class="num pe-mid">24.0</td>
+      <td class="biz">Oracle Corporation offers products and services that address enterprise information technology environments worldwide. I…</td>
+    </tr>
+    <tr>
+      <td class="ticker">JNJ</td>
+      <td>Johnson & Johnson</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Drug Manufacturers - General</td>
+      <td>United States</td>
+      <td class="num">$554.1B</td>
+      <td class="num ret-low-up">+2.7%</td>
+      <td class="num ret-dn">-6.8%</td>
+      <td class="num ret-high-up">+31.3%</td>
+      <td class="num pe-mid">26.7</td>
+      <td class="num pe-mid">18.1</td>
+      <td class="biz">Johnson & Johnson, together with its subsidiaries, engages in the research and development, manufacture, and sale of a r…</td>
+    </tr>
+    <tr>
+      <td class="ticker">CSCO</td>
+      <td>Cisco Systems, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Communication Equipment</td>
+      <td>United States</td>
+      <td class="num">$466.4B</td>
+      <td class="num ret-high-up">+34.1%</td>
+      <td class="num ret-high-up">+49.7%</td>
+      <td class="num ret-high-up">+79.9%</td>
+      <td class="num pe-exp">39.3</td>
+      <td class="num pe-mid">24.8</td>
+      <td class="biz">Cisco Systems, Inc. designs, develops, and sells technologies that help to power, secure, and draw insights from the int…</td>
+    </tr>
+    <tr>
+      <td class="ticker">COST</td>
+      <td>Costco Wholesale Corporation</td>
+      <td><span class="badge sector-consumer_def">Consumer Defensive</span></td>
+      <td>Discount Stores</td>
+      <td>United States</td>
+      <td class="num">$445.0B</td>
+      <td class="num ret-low-up">+0.6%</td>
+      <td class="num ret-low-dn">-0.6%</td>
+      <td class="num ret-low-up">+4.5%</td>
+      <td class="num pe-exp">52.1</td>
+      <td class="num pe-exp">44.5</td>
+      <td class="biz">Costco Wholesale Corporation, together with its subsidiaries, engages in the operation of membership warehouses in the U…</td>
+    </tr>
+    <tr>
+      <td class="ticker">MA</td>
+      <td>Mastercard Incorporated</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Credit Services</td>
+      <td>United States</td>
+      <td class="num">$435.6B</td>
+      <td class="num ret-low-dn">-2.6%</td>
+      <td class="num ret-low-dn">-4.5%</td>
+      <td class="num ret-dn">-15.2%</td>
+      <td class="num pe-mid">28.6</td>
+      <td class="num pe-mid">21.7</td>
+      <td class="biz">Mastercard Incorporated, a technology company, provides transaction processing and other payment-related products and se…</td>
+    </tr>
+    <tr>
+      <td class="ticker">CAT</td>
+      <td>Caterpillar Inc.</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Farm & Heavy Construction Machinery</td>
+      <td>United States</td>
+      <td class="num">$418.5B</td>
+      <td class="num ret-up">+9.6%</td>
+      <td class="num ret-high-up">+22.5%</td>
+      <td class="num ret-high-up">+116.3%</td>
+      <td class="num pe-exp">45.2</td>
+      <td class="num pe-exp">30.5</td>
+      <td class="biz">Caterpillar Inc. provides construction and mining equipment, off-highway diesel and natural gas engines, industrial gas …</td>
+    </tr>
+    <tr>
+      <td class="ticker">LRCX</td>
+      <td>Lam Research Corporation</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductor Equipment & Materials</td>
+      <td>United States</td>
+      <td class="num">$403.5B</td>
+      <td class="num ret-high-up">+24.4%</td>
+      <td class="num ret-high-up">+38.1%</td>
+      <td class="num ret-high-up">+214.9%</td>
+      <td class="num pe-exp">61.0</td>
+      <td class="num pe-exp">40.7</td>
+      <td class="biz">Lam Research Corporation designs, manufactures, markets, refurbishes, and services semiconductor processing equipment us…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ABBV</td>
+      <td>AbbVie Inc.</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Drug Manufacturers - General</td>
+      <td>United States</td>
+      <td class="num">$376.5B</td>
+      <td class="num ret-up">+8.0%</td>
+      <td class="num ret-dn">-7.4%</td>
+      <td class="num ret-low-up">+2.6%</td>
+      <td class="num pe-exp">104.0</td>
+      <td class="num pe-cheap">13.1</td>
+      <td class="biz">AbbVie Inc., a research-based biopharmaceutical company, engages in the research and development, manufacturing, commerc…</td>
+    </tr>
+    <tr>
+      <td class="ticker">BAC</td>
+      <td>Bank of America Corporation</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Banks - Diversified</td>
+      <td>United States</td>
+      <td class="num">$370.4B</td>
+      <td class="num ret-low-dn">-0.8%</td>
+      <td class="num ret-up">+5.3%</td>
+      <td class="num ret-up">+6.0%</td>
+      <td class="num pe-cheap">13.0</td>
+      <td class="num pe-cheap">10.3</td>
+      <td class="biz">Bank of America Corporation, through its subsidiaries, provides various financial products and services for individual c…</td>
+    </tr>
+    <tr>
+      <td class="ticker">CVX</td>
+      <td>Chevron Corporation</td>
+      <td><span class="badge sector-energy">Energy</span></td>
+      <td>Oil & Gas Integrated</td>
+      <td>United States</td>
+      <td class="num">$367.9B</td>
+      <td class="num ret-low-up">+0.9%</td>
+      <td class="num ret-low-dn">-0.2%</td>
+      <td class="num ret-high-up">+23.9%</td>
+      <td class="num pe-exp">32.2</td>
+      <td class="num pe-mid">15.0</td>
+      <td class="biz">Chevron Corporation, through its subsidiaries, engages in the integrated energy and chemicals operations in the United S…</td>
+    </tr>
+    <tr>
+      <td class="ticker">AMAT</td>
+      <td>Applied Materials, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductor Equipment & Materials</td>
+      <td>United States</td>
+      <td class="num">$361.2B</td>
+      <td class="num ret-up">+12.5%</td>
+      <td class="num ret-high-up">+22.3%</td>
+      <td class="num ret-high-up">+180.8%</td>
+      <td class="num pe-exp">42.8</td>
+      <td class="num pe-mid">28.2</td>
+      <td class="biz">Applied Materials, Inc. provides materials engineering solutions, equipment, services, and software to the semiconductor…</td>
+    </tr>
+    <tr>
+      <td class="ticker">KO</td>
+      <td>The Coca-Cola Company</td>
+      <td><span class="badge sector-consumer_def">Consumer Defensive</span></td>
+      <td>Beverages - Non-Alcoholic</td>
+      <td>United States</td>
+      <td class="num">$346.2B</td>
+      <td class="num ret-up">+6.7%</td>
+      <td class="num ret-low-dn">-0.7%</td>
+      <td class="num ret-high-up">+21.0%</td>
+      <td class="num pe-mid">25.3</td>
+      <td class="num pe-mid">23.1</td>
+      <td class="biz">The Coca-Cola Company, a beverage company, manufactures and sells various nonalcoholic beverages in the United States an…</td>
+    </tr>
+    <tr>
+      <td class="ticker">UNH</td>
+      <td>UnitedHealth Group Incorporated</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Healthcare Plans</td>
+      <td>United States</td>
+      <td class="num">$342.2B</td>
+      <td class="num ret-up">+6.2%</td>
+      <td class="num ret-high-up">+29.5%</td>
+      <td class="num ret-high-up">+22.0%</td>
+      <td class="num pe-mid">28.4</td>
+      <td class="num pe-mid">18.1</td>
+      <td class="biz">UnitedHealth Group Incorporated operates as a health care company in the United States and internationally. It operates …</td>
+    </tr>
+    <tr>
+      <td class="ticker">ARM</td>
+      <td>Arm Holdings plc</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductors</td>
+      <td>United Kingdom</td>
+      <td class="num">$341.8B</td>
+      <td class="num ret-high-up">+48.8%</td>
+      <td class="num ret-high-up">+152.0%</td>
+      <td class="num ret-high-up">+132.5%</td>
+      <td class="num pe-exp">382.4</td>
+      <td class="num pe-exp">105.1</td>
+      <td class="biz">Arm Holdings plc architects, develops, and licenses central processing unit products and related technologies for semico…</td>
+    </tr>
+    <tr>
+      <td class="ticker">PG</td>
+      <td>The Procter & Gamble Company</td>
+      <td><span class="badge sector-consumer_def">Consumer Defensive</span></td>
+      <td>Household & Personal Products</td>
+      <td>United States</td>
+      <td class="num">$332.9B</td>
+      <td class="num ret-low-dn">-3.7%</td>
+      <td class="num ret-dn">-13.8%</td>
+      <td class="num ret-dn">-8.7%</td>
+      <td class="num pe-mid">20.9</td>
+      <td class="num pe-mid">20.2</td>
+      <td class="biz">The Procter & Gamble Company provides branded consumer packaged goods worldwide. It operates through Beauty; Grooming; H…</td>
+    </tr>
+    <tr>
+      <td class="ticker">GE</td>
+      <td>GE Aerospace</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Aerospace & Defense</td>
+      <td>United States</td>
+      <td class="num">$328.6B</td>
+      <td class="num ret-up">+10.5%</td>
+      <td class="num ret-dn">-8.0%</td>
+      <td class="num ret-up">+13.1%</td>
+      <td class="num pe-exp">39.1</td>
+      <td class="num pe-exp">36.2</td>
+      <td class="biz">General Electric Company, doing business as GE Aerospace, designs and produces commercial and defense aircraft engines, …</td>
+    </tr>
+    <tr>
+      <td class="ticker">PLTR</td>
+      <td>Palantir Technologies Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Infrastructure</td>
+      <td>United States</td>
+      <td class="num">$327.5B</td>
+      <td class="num ret-low-dn">-4.5%</td>
+      <td class="num ret-low-dn">-0.4%</td>
+      <td class="num ret-dn">-10.8%</td>
+      <td class="num pe-exp">153.5</td>
+      <td class="num pe-exp">65.9</td>
+      <td class="biz">Palantir Technologies Inc. builds and deploys software platforms for the intelligence community to assist in counterterr…</td>
+    </tr>
+    <tr>
+      <td class="ticker">BABA</td>
+      <td>Alibaba Group Holding Limited</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Internet Retail</td>
+      <td>Hong Kong</td>
+      <td class="num">$310.6B</td>
+      <td class="num ret-low-dn">-2.3%</td>
+      <td class="num ret-dn">-10.2%</td>
+      <td class="num ret-low-dn">-4.5%</td>
+      <td class="num pe-mid">20.0</td>
+      <td class="num pe-cheap">14.1</td>
+      <td class="biz">Alibaba Group Holding Limited, through its subsidiaries, provides technology infrastructure and marketing reach to help …</td>
+    </tr>
+    <tr>
+      <td class="ticker">HD</td>
+      <td>The Home Depot, Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Home Improvement Retail</td>
+      <td>United States</td>
+      <td class="num">$309.3B</td>
+      <td class="num ret-dn">-6.5%</td>
+      <td class="num ret-dn">-17.9%</td>
+      <td class="num ret-high-dn">-24.9%</td>
+      <td class="num pe-mid">22.1</td>
+      <td class="num pe-mid">19.3</td>
+      <td class="biz">The Home Depot, Inc. operates as a home improvement retailer in the United States and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">MRK</td>
+      <td>Merck & Co., Inc.</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Drug Manufacturers - General</td>
+      <td>United States</td>
+      <td class="num">$295.7B</td>
+      <td class="num ret-up">+8.6%</td>
+      <td class="num ret-low-dn">-2.6%</td>
+      <td class="num ret-high-up">+45.0%</td>
+      <td class="num pe-exp">33.6</td>
+      <td class="num pe-cheap">12.6</td>
+      <td class="biz">Merck & Co., Inc. operates as a healthcare company worldwide.</td>
+    </tr>
+    <tr>
+      <td class="ticker">TXN</td>
+      <td>Texas Instruments Incorporated</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductors</td>
+      <td>United States</td>
+      <td class="num">$295.7B</td>
+      <td class="num ret-high-up">+21.2%</td>
+      <td class="num ret-high-up">+54.0%</td>
+      <td class="num ret-high-up">+76.5%</td>
+      <td class="num pe-exp">55.5</td>
+      <td class="num pe-exp">34.4</td>
+      <td class="biz">Texas Instruments Incorporated designs, manufactures, and sells semiconductors to electronics designers and manufacturer…</td>
+    </tr>
+    <tr>
+      <td class="ticker">GS</td>
+      <td>The Goldman Sachs Group, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>United States</td>
+      <td class="num">$293.4B</td>
+      <td class="num ret-up">+6.0%</td>
+      <td class="num ret-up">+16.3%</td>
+      <td class="num ret-high-up">+36.1%</td>
+      <td class="num pe-mid">18.1</td>
+      <td class="num pe-mid">15.2</td>
+      <td class="biz">The Goldman Sachs Group, Inc., a financial institution, provides a range of financial services for corporations, financi…</td>
+    </tr>
+    <tr>
+      <td class="ticker">GEV</td>
+      <td>GE Vernova Inc.</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Specialty Industrial Machinery</td>
+      <td>United States</td>
+      <td class="num">$287.7B</td>
+      <td class="num ret-low-dn">-4.4%</td>
+      <td class="num ret-high-up">+22.6%</td>
+      <td class="num ret-high-up">+84.2%</td>
+      <td class="num pe-exp">31.2</td>
+      <td class="num pe-exp">43.7</td>
+      <td class="biz">GE Vernova Inc., an energy company, engages in the provision of various products and services that generate, transfer, o…</td>
+    </tr>
+    <tr>
+      <td class="ticker">KLAC</td>
+      <td>KLA Corporation</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductor Equipment & Materials</td>
+      <td>United States</td>
+      <td class="num">$262.7B</td>
+      <td class="num ret-up">+6.0%</td>
+      <td class="num ret-high-up">+32.1%</td>
+      <td class="num ret-high-up">+123.2%</td>
+      <td class="num pe-exp">56.8</td>
+      <td class="num pe-exp">40.3</td>
+      <td class="biz">KLA Corporation, together with its subsidiaries, designs, manufactures, and markets process control, process-enabling, a…</td>
+    </tr>
+    <tr>
+      <td class="ticker">QCOM</td>
+      <td>QUALCOMM Incorporated</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductors</td>
+      <td>United States</td>
+      <td class="num">$262.3B</td>
+      <td class="num ret-high-up">+65.6%</td>
+      <td class="num ret-high-up">+75.9%</td>
+      <td class="num ret-high-up">+57.5%</td>
+      <td class="num pe-mid">26.7</td>
+      <td class="num pe-mid">23.4</td>
+      <td class="biz">QUALCOMM Incorporated engages in the development and commercialization of foundational technologies for the wireless ind…</td>
+    </tr>
+    <tr>
+      <td class="ticker">TM</td>
+      <td>Toyota Motor Corporation</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Auto Manufacturers</td>
+      <td>Japan</td>
+      <td class="num">$247.8B</td>
+      <td class="num ret-low-dn">-1.1%</td>
+      <td class="num ret-high-dn">-21.6%</td>
+      <td class="num ret-low-dn">-4.8%</td>
+      <td class="num pe-cheap">10.2</td>
+      <td class="num pe-cheap">12.0</td>
+      <td class="biz">Toyota Motor Corporation designs, manufactures, assembles, and sells passenger vehicles, minivans and commercial vehicle…</td>
+    </tr>
+    <tr>
+      <td class="ticker">RTX</td>
+      <td>RTX Corporation</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Aerospace & Defense</td>
+      <td>United States</td>
+      <td class="num">$241.0B</td>
+      <td class="num ret-low-up">+3.6%</td>
+      <td class="num ret-dn">-11.3%</td>
+      <td class="num ret-up">+14.9%</td>
+      <td class="num pe-exp">33.6</td>
+      <td class="num pe-mid">23.7</td>
+      <td class="biz">RTX Corporation, an aerospace and defense company, provides systems and services for commercial, military, and governmen…</td>
+    </tr>
+    <tr>
+      <td class="ticker">LIN</td>
+      <td>Linde plc</td>
+      <td><span class="badge sector-basic_materi">Basic Materials</span></td>
+      <td>Specialty Chemicals</td>
+      <td>United Kingdom</td>
+      <td class="num">$238.1B</td>
+      <td class="num ret-low-up">+0.8%</td>
+      <td class="num ret-low-up">+1.7%</td>
+      <td class="num ret-up">+10.4%</td>
+      <td class="num pe-exp">34.1</td>
+      <td class="num pe-mid">26.1</td>
+      <td class="biz">Linde plc operates as an industrial gas company worldwide. It offers atmospheric gases, including oxygen, nitrogen, argo…</td>
+    </tr>
+    <tr>
+      <td class="ticker">WFC</td>
+      <td>Wells Fargo & Company</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Banks - Diversified</td>
+      <td>United States</td>
+      <td class="num">$237.2B</td>
+      <td class="num ret-low-dn">-3.2%</td>
+      <td class="num ret-low-dn">-4.3%</td>
+      <td class="num ret-low-dn">-0.3%</td>
+      <td class="num pe-cheap">12.0</td>
+      <td class="num pe-cheap">9.8</td>
+      <td class="biz">Wells Fargo & Company, a financial services company, provides diversified banking, investment, mortgage, and consumer an…</td>
+    </tr>
+    <tr>
+      <td class="ticker">IBM</td>
+      <td>International Business Machines Corporation</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Information Technology Services</td>
+      <td>United States</td>
+      <td class="num">$235.6B</td>
+      <td class="num ret-up">+10.7%</td>
+      <td class="num ret-up">+5.1%</td>
+      <td class="num ret-low-up">+2.8%</td>
+      <td class="num pe-mid">22.2</td>
+      <td class="num pe-mid">18.6</td>
+      <td class="biz">International Business Machines Corporation, together with its subsidiaries, provides integrated solutions and services …</td>
+    </tr>
+    <tr>
+      <td class="ticker">SNDK</td>
+      <td>Sandisk Corporation</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Computer Hardware</td>
+      <td>United States</td>
+      <td class="num">$235.4B</td>
+      <td class="num ret-high-up">+48.5%</td>
+      <td class="num ret-high-up">+150.2%</td>
+      <td class="num ret-high-up">+2218.8%</td>
+      <td class="num pe-exp">54.3</td>
+      <td class="num pe-cheap">9.1</td>
+      <td class="biz">Sandisk Corporation develops, manufactures, and sells data storage devices and solutions using NAND flash technology in …</td>
+    </tr>
+    <tr>
+      <td class="ticker">C</td>
+      <td>Citigroup Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Banks - Diversified</td>
+      <td>United States</td>
+      <td class="num">$216.4B</td>
+      <td class="num ret-low-dn">-1.3%</td>
+      <td class="num ret-up">+15.7%</td>
+      <td class="num ret-high-up">+35.1%</td>
+      <td class="num pe-mid">15.7</td>
+      <td class="num pe-cheap">10.1</td>
+      <td class="biz">Citigroup Inc., a diversified financial service holding company, provides various financial products and services to con…</td>
+    </tr>
+    <tr>
+      <td class="ticker">AXP</td>
+      <td>American Express Company</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Credit Services</td>
+      <td>United States</td>
+      <td class="num">$212.0B</td>
+      <td class="num ret-low-dn">-2.5%</td>
+      <td class="num ret-low-up">+0.9%</td>
+      <td class="num ret-low-dn">-4.0%</td>
+      <td class="num pe-mid">19.4</td>
+      <td class="num pe-mid">15.4</td>
+      <td class="biz">American Express Company, together with its subsidiaries, operates as an integrated payments company in the United State…</td>
+    </tr>
+    <tr>
+      <td class="ticker">PANW</td>
+      <td>Palo Alto Networks, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Infrastructure</td>
+      <td>United States</td>
+      <td class="num">$208.2B</td>
+      <td class="num ret-high-up">+40.4%</td>
+      <td class="num ret-high-up">+72.4%</td>
+      <td class="num ret-high-up">+32.0%</td>
+      <td class="num pe-exp">142.6</td>
+      <td class="num pe-exp">64.5</td>
+      <td class="biz">Palo Alto Networks, Inc. provides cybersecurity solutions in the Americas, Europe, the Middle East, Africa, the Asia Pac…</td>
+    </tr>
+    <tr>
+      <td class="ticker">TMUS</td>
+      <td>T-Mobile US, Inc.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Telecom Services</td>
+      <td>United States</td>
+      <td class="num">$206.8B</td>
+      <td class="num ret-low-up">+4.6%</td>
+      <td class="num ret-dn">-12.0%</td>
+      <td class="num ret-high-dn">-23.6%</td>
+      <td class="num pe-mid">20.3</td>
+      <td class="num pe-cheap">13.7</td>
+      <td class="biz">T-Mobile US, Inc., together with its subsidiaries, provides wireless communications services in the United States, Puert…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ADI</td>
+      <td>Analog Devices, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductors</td>
+      <td>United States</td>
+      <td class="num">$204.5B</td>
+      <td class="num ret-up">+7.0%</td>
+      <td class="num ret-up">+18.4%</td>
+      <td class="num ret-high-up">+71.1%</td>
+      <td class="num pe-exp">62.5</td>
+      <td class="num pe-mid">28.4</td>
+      <td class="biz">Analog Devices, Inc. engages in the design, manufacture, testing, and marketing of integrated circuits (ICs), software, …</td>
+    </tr>
+    <tr>
+      <td class="ticker">VZ</td>
+      <td>Verizon Communications Inc.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Telecom Services</td>
+      <td>United States</td>
+      <td class="num">$202.5B</td>
+      <td class="num ret-low-up">+3.0%</td>
+      <td class="num ret-low-dn">-1.8%</td>
+      <td class="num ret-up">+14.8%</td>
+      <td class="num pe-cheap">11.8</td>
+      <td class="num pe-cheap">9.2</td>
+      <td class="biz">Verizon Communications Inc., through its subsidiaries, engages in the provision of communications, technology, informati…</td>
+    </tr>
+    <tr>
+      <td class="ticker">PEP</td>
+      <td>PepsiCo, Inc.</td>
+      <td><span class="badge sector-consumer_def">Consumer Defensive</span></td>
+      <td>Beverages - Non-Alcoholic</td>
+      <td>United States</td>
+      <td class="num">$199.1B</td>
+      <td class="num ret-dn">-5.5%</td>
+      <td class="num ret-dn">-13.4%</td>
+      <td class="num ret-low-up">+1.4%</td>
+      <td class="num pe-mid">22.9</td>
+      <td class="num pe-mid">15.9</td>
+      <td class="biz">PepsiCo, Inc. engages in the manufacture, marketing, distribution, and sale of various beverages and convenient foods wo…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ANET</td>
+      <td>Arista Networks, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Computer Hardware</td>
+      <td>United States</td>
+      <td class="num">$199.0B</td>
+      <td class="num ret-dn">-8.4%</td>
+      <td class="num ret-up">+18.4%</td>
+      <td class="num ret-up">+10.6%</td>
+      <td class="num pe-exp">54.3</td>
+      <td class="num pe-exp">35.5</td>
+      <td class="biz">Arista Networks, Inc. engages in the development, marketing, and sale of data-driven, client to cloud networking solutio…</td>
+    </tr>
+    <tr>
+      <td class="ticker">MCD</td>
+      <td>McDonald's Corporation</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Restaurants</td>
+      <td>United States</td>
+      <td class="num">$198.4B</td>
+      <td class="num ret-low-dn">-3.8%</td>
+      <td class="num ret-dn">-17.7%</td>
+      <td class="num ret-dn">-10.1%</td>
+      <td class="num pe-mid">23.0</td>
+      <td class="num pe-mid">19.6</td>
+      <td class="biz">McDonald's Corporation owns, operates, and franchises restaurants under the McDonald's brand in the United States and in…</td>
+    </tr>
+    <tr>
+      <td class="ticker">NVO</td>
+      <td>Novo Nordisk A/S</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Drug Manufacturers - General</td>
+      <td>Denmark</td>
+      <td class="num">$195.8B</td>
+      <td class="num ret-up">+7.3%</td>
+      <td class="num ret-high-up">+22.3%</td>
+      <td class="num ret-dn">-17.1%</td>
+      <td class="num pe-cheap">10.4</td>
+      <td class="num pe-cheap">13.1</td>
+      <td class="biz">Novo Nordisk A/S, together with its subsidiaries, engages in the research and development, manufacture, and distribution…</td>
+    </tr>
+    <tr>
+      <td class="ticker">STX</td>
+      <td>Seagate Technology Holdings plc</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Computer Hardware</td>
+      <td>Singapore</td>
+      <td class="num">$189.6B</td>
+      <td class="num ret-high-up">+41.9%</td>
+      <td class="num ret-high-up">+107.7%</td>
+      <td class="num ret-high-up">+352.9%</td>
+      <td class="num pe-exp">80.0</td>
+      <td class="num pe-exp">32.3</td>
+      <td class="biz">Seagate Technology Holdings plc engages in the provision of data storage technology and infrastructure solutions in Sing…</td>
+    </tr>
+    <tr>
+      <td class="ticker">NEE</td>
+      <td>NextEra Energy, Inc.</td>
+      <td><span class="badge sector-utilities">Utilities</span></td>
+      <td>Utilities - Regulated Electric</td>
+      <td>United States</td>
+      <td class="num">$182.8B</td>
+      <td class="num ret-dn">-7.6%</td>
+      <td class="num ret-dn">-6.5%</td>
+      <td class="num ret-high-up">+25.3%</td>
+      <td class="num pe-mid">22.2</td>
+      <td class="num pe-mid">19.9</td>
+      <td class="biz">NextEra Energy, Inc., through its subsidiaries, generates, stores, transmits, distributes, and sells electric power to r…</td>
+    </tr>
+    <tr>
+      <td class="ticker">MRVL</td>
+      <td>Marvell Technology, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductors</td>
+      <td>United States</td>
+      <td class="num">$182.3B</td>
+      <td class="num ret-high-up">+31.6%</td>
+      <td class="num ret-high-up">+155.1%</td>
+      <td class="num ret-high-up">+229.5%</td>
+      <td class="num pe-exp">68.1</td>
+      <td class="num pe-exp">37.6</td>
+      <td class="biz">Marvell Technology, Inc., together with its subsidiaries, provides data infrastructure semiconductor solutions and spann…</td>
+    </tr>
+    <tr>
+      <td class="ticker">AMGN</td>
+      <td>Amgen Inc.</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Drug Manufacturers - General</td>
+      <td>United States</td>
+      <td class="num">$181.3B</td>
+      <td class="num ret-low-dn">-0.5%</td>
+      <td class="num ret-dn">-12.8%</td>
+      <td class="num ret-high-up">+21.0%</td>
+      <td class="num pe-mid">23.4</td>
+      <td class="num pe-cheap">14.3</td>
+      <td class="biz">Amgen Inc. discovers, develops, manufactures, and delivers human therapeutics worldwide.</td>
+    </tr>
+    <tr>
+      <td class="ticker">WDC</td>
+      <td>Western Digital Corporation</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Computer Hardware</td>
+      <td>United States</td>
+      <td class="num">$180.8B</td>
+      <td class="num ret-high-up">+30.9%</td>
+      <td class="num ret-high-up">+87.7%</td>
+      <td class="num ret-high-up">+470.8%</td>
+      <td class="num pe-exp">31.5</td>
+      <td class="num pe-exp">30.1</td>
+      <td class="biz">Western Digital Corporation develops, manufactures, and sells data storage devices and solutions based on hard disk driv…</td>
+    </tr>
+    <tr>
+      <td class="ticker">DIS</td>
+      <td>The Walt Disney Company</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Entertainment</td>
+      <td>United States</td>
+      <td class="num">$179.3B</td>
+      <td class="num ret-low-up">+0.9%</td>
+      <td class="num ret-low-dn">-2.6%</td>
+      <td class="num ret-dn">-11.8%</td>
+      <td class="num pe-mid">16.5</td>
+      <td class="num pe-cheap">13.8</td>
+      <td class="biz">The Walt Disney Company operates as an entertainment company in Americas, Europe, and the Asia Pacific. It operates in t…</td>
+    </tr>
+    <tr>
+      <td class="ticker">T</td>
+      <td>AT&T Inc.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Telecom Services</td>
+      <td>United States</td>
+      <td class="num">$173.8B</td>
+      <td class="num ret-low-dn">-2.0%</td>
+      <td class="num ret-dn">-9.7%</td>
+      <td class="num ret-dn">-12.6%</td>
+      <td class="num pe-cheap">8.2</td>
+      <td class="num pe-cheap">9.8</td>
+      <td class="biz">AT&T Inc. provides telecommunications and technology services worldwide.</td>
+    </tr>
+    <tr>
+      <td class="ticker">APP</td>
+      <td>AppLovin Corporation</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Advertising Agencies</td>
+      <td>United States</td>
+      <td class="num">$172.8B</td>
+      <td class="num ret-up">+11.7%</td>
+      <td class="num ret-up">+18.3%</td>
+      <td class="num ret-low-up">+4.9%</td>
+      <td class="num pe-exp">44.6</td>
+      <td class="num pe-mid">23.5</td>
+      <td class="biz">AppLovin Corporation provides end-to-end artificial intelligence-powered advertising solutions for businesses in the Uni…</td>
+    </tr>
+    <tr>
+      <td class="ticker">BA</td>
+      <td>The Boeing Company</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Aerospace & Defense</td>
+      <td>United States</td>
+      <td class="num">$172.6B</td>
+      <td class="num ret-dn">-5.4%</td>
+      <td class="num ret-low-dn">-3.8%</td>
+      <td class="num ret-low-dn">-4.7%</td>
+      <td class="num pe-exp">86.2</td>
+      <td class="num pe-exp">52.4</td>
+      <td class="biz">The Boeing Company, together with its subsidiaries, designs, develops, manufactures, sells, services, and supports comme…</td>
+    </tr>
+    <tr>
+      <td class="ticker">CRWD</td>
+      <td>CrowdStrike Holdings, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Infrastructure</td>
+      <td>United States</td>
+      <td class="num">$170.9B</td>
+      <td class="num ret-high-up">+47.7%</td>
+      <td class="num ret-high-up">+80.5%</td>
+      <td class="num ret-high-up">+60.8%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">109.0</td>
+      <td class="biz">CrowdStrike Holdings, Inc. provides cybersecurity solutions in the United States and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">BLK</td>
+      <td>BlackRock, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Asset Management</td>
+      <td>United States</td>
+      <td class="num">$167.2B</td>
+      <td class="num ret-low-up">+1.9%</td>
+      <td class="num ret-low-up">+1.9%</td>
+      <td class="num ret-low-dn">-0.9%</td>
+      <td class="num pe-mid">27.1</td>
+      <td class="num pe-mid">17.8</td>
+      <td class="biz">BlackRock, Inc. is a publicly owned investment manager.</td>
+    </tr>
+    <tr>
+      <td class="ticker">TMO</td>
+      <td>Thermo Fisher Scientific Inc.</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Diagnostics & Research</td>
+      <td>United States</td>
+      <td class="num">$166.6B</td>
+      <td class="num ret-low-dn">-4.2%</td>
+      <td class="num ret-dn">-13.9%</td>
+      <td class="num ret-dn">-8.8%</td>
+      <td class="num pe-mid">24.6</td>
+      <td class="num pe-mid">16.4</td>
+      <td class="biz">Thermo Fisher Scientific Inc. provides life sciences solutions, analytical instruments, specialty diagnostics, and labor…</td>
+    </tr>
+    <tr>
+      <td class="ticker">UNP</td>
+      <td>Union Pacific Corporation</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Railroads</td>
+      <td>United States</td>
+      <td class="num">$161.0B</td>
+      <td class="num ret-low-up">+0.8%</td>
+      <td class="num ret-low-up">+2.3%</td>
+      <td class="num ret-high-up">+24.4%</td>
+      <td class="num pe-mid">22.3</td>
+      <td class="num pe-mid">19.8</td>
+      <td class="biz">Union Pacific Corporation, through its subsidiary, Union Pacific Railroad Company, operates in the railroad business in …</td>
+    </tr>
+    <tr>
+      <td class="ticker">SCCO</td>
+      <td>Southern Copper Corporation</td>
+      <td><span class="badge sector-basic_materi">Basic Materials</span></td>
+      <td>Copper</td>
+      <td>United States</td>
+      <td class="num">$158.4B</td>
+      <td class="num ret-up">+8.2%</td>
+      <td class="num ret-dn">-11.7%</td>
+      <td class="num ret-high-up">+92.4%</td>
+      <td class="num pe-exp">32.1</td>
+      <td class="num pe-mid">28.4</td>
+      <td class="biz">Southern Copper Corporation engages in mining, exploring, smelting, and refining copper and other minerals in Mexico, th…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ETN</td>
+      <td>Eaton Corporation plc</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Specialty Industrial Machinery</td>
+      <td>Ireland</td>
+      <td class="num">$156.5B</td>
+      <td class="num ret-low-dn">-3.0%</td>
+      <td class="num ret-up">+7.9%</td>
+      <td class="num ret-up">+16.5%</td>
+      <td class="num pe-exp">39.4</td>
+      <td class="num pe-mid">25.6</td>
+      <td class="biz">Eaton Corporation plc operates as a power management company in the United States, Canada, Latin America, Europe, and th…</td>
+    </tr>
+    <tr>
+      <td class="ticker">SCHW</td>
+      <td>The Charles Schwab Corporation</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>United States</td>
+      <td class="num">$155.5B</td>
+      <td class="num ret-low-dn">-1.1%</td>
+      <td class="num ret-dn">-5.8%</td>
+      <td class="num ret-low-dn">-1.9%</td>
+      <td class="num pe-mid">17.8</td>
+      <td class="num pe-cheap">12.4</td>
+      <td class="biz">The Charles Schwab Corporation, together with its subsidiaries, operates as a savings and loan holding company that prov…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ISRG</td>
+      <td>Intuitive Surgical, Inc.</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Medical Instruments & Supplies</td>
+      <td>United States</td>
+      <td class="num">$154.6B</td>
+      <td class="num ret-dn">-7.3%</td>
+      <td class="num ret-dn">-13.3%</td>
+      <td class="num ret-dn">-6.5%</td>
+      <td class="num pe-exp">53.2</td>
+      <td class="num pe-exp">37.0</td>
+      <td class="biz">Intuitive Surgical, Inc. develops, manufactures, and markets products that enable physicians and healthcare providers to…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ABT</td>
+      <td>Abbott Laboratories</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Medical Devices</td>
+      <td>United States</td>
+      <td class="num">$151.0B</td>
+      <td class="num ret-dn">-6.6%</td>
+      <td class="num ret-high-dn">-25.0%</td>
+      <td class="num ret-high-dn">-33.8%</td>
+      <td class="num pe-mid">24.3</td>
+      <td class="num pe-cheap">14.3</td>
+      <td class="biz">Abbott Laboratories, together with its subsidiaries, discovers, develops, manufactures, and sells health care products w…</td>
+    </tr>
+    <tr>
+      <td class="ticker">PFE</td>
+      <td>Pfizer Inc.</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Drug Manufacturers - General</td>
+      <td>United States</td>
+      <td class="num">$147.3B</td>
+      <td class="num ret-low-dn">-1.9%</td>
+      <td class="num ret-low-dn">-5.0%</td>
+      <td class="num ret-up">+9.3%</td>
+      <td class="num pe-mid">19.7</td>
+      <td class="num pe-cheap">9.1</td>
+      <td class="biz">Pfizer Inc. discovers, develops, manufactures, markets, distributes, and sells biopharmaceutical products in the United …</td>
+    </tr>
+    <tr>
+      <td class="ticker">CRM</td>
+      <td>Salesforce, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Application</td>
+      <td>United States</td>
+      <td class="num">$146.5B</td>
+      <td class="num ret-low-dn">-0.6%</td>
+      <td class="num ret-dn">-7.8%</td>
+      <td class="num ret-high-dn">-28.2%</td>
+      <td class="num pe-mid">22.9</td>
+      <td class="num pe-cheap">12.0</td>
+      <td class="biz">Salesforce, Inc. provides customer relationship management technology services that connect companies and customers toge…</td>
+    </tr>
+    <tr>
+      <td class="ticker">DE</td>
+      <td>Deere & Company</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Farm & Heavy Construction Machinery</td>
+      <td>United States</td>
+      <td class="num">$142.9B</td>
+      <td class="num ret-dn">-6.8%</td>
+      <td class="num ret-dn">-15.7%</td>
+      <td class="num ret-up">+12.9%</td>
+      <td class="num pe-mid">29.9</td>
+      <td class="num pe-mid">23.1</td>
+      <td class="biz">Deere & Company engages in the manufacture and distribution of various equipment worldwide. The company operates through…</td>
+    </tr>
+    <tr>
+      <td class="ticker">UBER</td>
+      <td>Uber Technologies, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Application</td>
+      <td>United States</td>
+      <td class="num">$142.7B</td>
+      <td class="num ret-dn">-8.1%</td>
+      <td class="num ret-dn">-7.0%</td>
+      <td class="num ret-high-dn">-22.9%</td>
+      <td class="num pe-mid">17.4</td>
+      <td class="num pe-mid">16.2</td>
+      <td class="biz">Uber Technologies, Inc. develops and operates proprietary technology applications in the United States, Canada, Latin Am…</td>
+    </tr>
+    <tr>
+      <td class="ticker">COP</td>
+      <td>ConocoPhillips</td>
+      <td><span class="badge sector-energy">Energy</span></td>
+      <td>Oil & Gas E&P</td>
+      <td>United States</td>
+      <td class="num">$142.0B</td>
+      <td class="num ret-low-dn">-3.5%</td>
+      <td class="num ret-low-up">+3.5%</td>
+      <td class="num ret-high-up">+28.5%</td>
+      <td class="num pe-mid">19.8</td>
+      <td class="num pe-cheap">12.7</td>
+      <td class="biz">ConocoPhillips explores for, produces, transports, and markets crude oil, bitumen, natural gas, liquefied natural gas (L…</td>
+    </tr>
+    <tr>
+      <td class="ticker">PDD</td>
+      <td>PDD Holdings Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Internet Retail</td>
+      <td>Ireland</td>
+      <td class="num">$137.6B</td>
+      <td class="num ret-low-dn">-1.9%</td>
+      <td class="num ret-dn">-6.8%</td>
+      <td class="num ret-high-dn">-22.5%</td>
+      <td class="num pe-cheap">10.0</td>
+      <td class="num pe-cheap">6.8</td>
+      <td class="biz">PDD Holdings Inc., a multinational commerce group that owns and operates a portfolio of businesses. The company operates…</td>
+    </tr>
+    <tr>
+      <td class="ticker">SHOP</td>
+      <td>Shopify Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Application</td>
+      <td>Canada</td>
+      <td class="num">$136.1B</td>
+      <td class="num ret-dn">-15.6%</td>
+      <td class="num ret-dn">-13.1%</td>
+      <td class="num ret-high-dn">-28.6%</td>
+      <td class="num pe-exp">102.8</td>
+      <td class="num pe-exp">45.0</td>
+      <td class="biz">Shopify Inc., a commerce technology company, provides tools to start, scale, market, and run a business of various sizes…</td>
+    </tr>
+    <tr>
+      <td class="ticker">PBR</td>
+      <td>Petróleo Brasileiro S.A. - Petrobras</td>
+      <td><span class="badge sector-energy">Energy</span></td>
+      <td>Oil & Gas Integrated</td>
+      <td>Brazil</td>
+      <td class="num">$125.0B</td>
+      <td class="num ret-dn">-7.4%</td>
+      <td class="num ret-up">+17.3%</td>
+      <td class="num ret-high-up">+59.8%</td>
+      <td class="num pe-cheap">6.0</td>
+      <td class="num pe-cheap">4.7</td>
+      <td class="biz">Petróleo Brasileiro S.A. - Petrobras explores, produces, and sells oil and gas in Brazil, China, the United States, the …</td>
+    </tr>
+    <tr>
+      <td class="ticker">VRT</td>
+      <td>Vertiv Holdings Co</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Electrical Equipment & Parts</td>
+      <td>United States</td>
+      <td class="num">$124.4B</td>
+      <td class="num ret-low-up">+0.5%</td>
+      <td class="num ret-high-up">+27.1%</td>
+      <td class="num ret-high-up">+161.4%</td>
+      <td class="num pe-exp">81.4</td>
+      <td class="num pe-exp">36.7</td>
+      <td class="biz">Vertiv Holdings Co designs, manufactures, and services critical digital infrastructure technologies and life cycle servi…</td>
+    </tr>
+    <tr>
+      <td class="ticker">LMT</td>
+      <td>Lockheed Martin Corporation</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Aerospace & Defense</td>
+      <td>United States</td>
+      <td class="num">$122.9B</td>
+      <td class="num ret-low-up">+3.8%</td>
+      <td class="num ret-dn">-18.6%</td>
+      <td class="num ret-up">+16.4%</td>
+      <td class="num pe-mid">25.8</td>
+      <td class="num pe-mid">16.6</td>
+      <td class="biz">Lockheed Martin Corporation, an aerospace and defense company, engages in the research, design, development, manufacture…</td>
+    </tr>
+    <tr>
+      <td class="ticker">SPGI</td>
+      <td>S&P Global Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Financial Data & Stock Exchanges</td>
+      <td>United States</td>
+      <td class="num">$122.1B</td>
+      <td class="num ret-dn">-5.7%</td>
+      <td class="num ret-dn">-6.7%</td>
+      <td class="num ret-high-dn">-23.0%</td>
+      <td class="num pe-mid">26.1</td>
+      <td class="num pe-mid">18.6</td>
+      <td class="biz">S&P Global Inc., together with its subsidiaries, provides benchmarks, data, analytics, and workflow solutions in the glo…</td>
+    </tr>
+    <tr>
+      <td class="ticker">NEM</td>
+      <td>Newmont Corporation</td>
+      <td><span class="badge sector-basic_materi">Basic Materials</span></td>
+      <td>Gold</td>
+      <td>United States</td>
+      <td class="num">$119.1B</td>
+      <td class="num ret-low-dn">-3.9%</td>
+      <td class="num ret-dn">-14.0%</td>
+      <td class="num ret-high-up">+47.2%</td>
+      <td class="num pe-cheap">14.5</td>
+      <td class="num pe-cheap">9.8</td>
+      <td class="biz">Newmont Corporation operates as a gold producer. It also explores for copper, silver, lead, zinc, and other metals.</td>
+    </tr>
+    <tr>
+      <td class="ticker">LOW</td>
+      <td>Lowe's Companies, Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Home Improvement Retail</td>
+      <td>United States</td>
+      <td class="num">$119.0B</td>
+      <td class="num ret-dn">-12.6%</td>
+      <td class="num ret-dn">-19.4%</td>
+      <td class="num ret-high-dn">-20.3%</td>
+      <td class="num pe-mid">17.9</td>
+      <td class="num pe-mid">15.7</td>
+      <td class="biz">Lowe's Companies, Inc., together with its subsidiaries, operates as a home improvement retailer in the United States and…</td>
+    </tr>
+    <tr>
+      <td class="ticker">COF</td>
+      <td>Capital One Financial Corporation</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Credit Services</td>
+      <td>United States</td>
+      <td class="num">$116.0B</td>
+      <td class="num ret-low-dn">-3.5%</td>
+      <td class="num ret-low-dn">-4.3%</td>
+      <td class="num ret-dn">-14.8%</td>
+      <td class="num pe-exp">57.5</td>
+      <td class="num pe-cheap">7.7</td>
+      <td class="biz">Capital One Financial Corporation operates as the financial services holding company for the Capital One, National Assoc…</td>
+    </tr>
+    <tr>
+      <td class="ticker">SBUX</td>
+      <td>Starbucks Corporation</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Restaurants</td>
+      <td>United States</td>
+      <td class="num">$115.6B</td>
+      <td class="num ret-low-up">+4.2%</td>
+      <td class="num ret-low-up">+4.1%</td>
+      <td class="num ret-high-up">+21.1%</td>
+      <td class="num pe-exp">77.4</td>
+      <td class="num pe-exp">33.5</td>
+      <td class="biz">Starbucks Corporation, together with its subsidiaries, operates as a roaster, marketer, and retailer of coffee internati…</td>
+    </tr>
+    <tr>
+      <td class="ticker">VRTX</td>
+      <td>Vertex Pharmaceuticals Incorporated</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Biotechnology</td>
+      <td>United States</td>
+      <td class="num">$110.6B</td>
+      <td class="num ret-low-up">+2.3%</td>
+      <td class="num ret-dn">-12.3%</td>
+      <td class="num ret-up">+10.1%</td>
+      <td class="num pe-mid">25.8</td>
+      <td class="num pe-mid">20.3</td>
+      <td class="biz">Vertex Pharmaceuticals Incorporated operates as a biotechnology company in the United States, Europe, and internationall…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ACN</td>
+      <td>Accenture plc</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Information Technology Services</td>
+      <td>Ireland</td>
+      <td class="num">$108.9B</td>
+      <td class="num ret-low-dn">+0.0%</td>
+      <td class="num ret-dn">-14.5%</td>
+      <td class="num ret-high-dn">-30.0%</td>
+      <td class="num pe-cheap">14.5</td>
+      <td class="num pe-cheap">11.9</td>
+      <td class="biz">Accenture plc provides strategy and consulting, industry X, song, and technology and operation services in the Americas,…</td>
+    </tr>
+    <tr>
+      <td class="ticker">CEG</td>
+      <td>Constellation Energy Corporation</td>
+      <td><span class="badge sector-utilities">Utilities</span></td>
+      <td>Utilities - Independent Power Producers</td>
+      <td>United States</td>
+      <td class="num">$108.9B</td>
+      <td class="num ret-low-dn">-4.2%</td>
+      <td class="num ret-dn">-8.3%</td>
+      <td class="num ret-low-up">+0.4%</td>
+      <td class="num pe-mid">26.2</td>
+      <td class="num pe-mid">22.2</td>
+      <td class="biz">Constellation Energy Corporation produces and sells energy products and services in the United States. The company opera…</td>
+    </tr>
+    <tr>
+      <td class="ticker">SPOT</td>
+      <td>Spotify Technology S.A.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Internet Content & Information</td>
+      <td>Sweden</td>
+      <td class="num">$108.9B</td>
+      <td class="num ret-up">+6.8%</td>
+      <td class="num ret-low-up">+2.9%</td>
+      <td class="num ret-high-dn">-25.1%</td>
+      <td class="num pe-exp">35.3</td>
+      <td class="num pe-mid">28.7</td>
+      <td class="biz">Spotify Technology S.A., together with its subsidiaries, provides audio streaming subscription services worldwide. It op…</td>
+    </tr>
+    <tr>
+      <td class="ticker">EQIX</td>
+      <td>Equinix, Inc.</td>
+      <td><span class="badge sector-real_estate">Real Estate</span></td>
+      <td>REIT - Specialty</td>
+      <td>United States</td>
+      <td class="num">$106.3B</td>
+      <td class="num ret-low-dn">-0.6%</td>
+      <td class="num ret-up">+11.2%</td>
+      <td class="num ret-high-up">+41.6%</td>
+      <td class="num pe-exp">74.6</td>
+      <td class="num pe-exp">56.1</td>
+      <td class="biz">Equinix, Inc. shortens the path to boundless connectivity anywhere in the world.</td>
+    </tr>
+    <tr>
+      <td class="ticker">SO</td>
+      <td>The Southern Company</td>
+      <td><span class="badge sector-utilities">Utilities</span></td>
+      <td>Utilities - Regulated Electric</td>
+      <td>United States</td>
+      <td class="num">$106.1B</td>
+      <td class="num ret-low-up">+1.2%</td>
+      <td class="num ret-low-dn">-2.6%</td>
+      <td class="num ret-up">+5.0%</td>
+      <td class="num pe-mid">24.1</td>
+      <td class="num pe-mid">19.1</td>
+      <td class="biz">The Southern Company, through its subsidiaries, engages in the sale of electricity. The company offers electric service …</td>
+    </tr>
+    <tr>
+      <td class="ticker">NOW</td>
+      <td>ServiceNow, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Application</td>
+      <td>United States</td>
+      <td class="num">$103.0B</td>
+      <td class="num ret-up">+10.5%</td>
+      <td class="num ret-dn">-7.5%</td>
+      <td class="num ret-high-dn">-45.3%</td>
+      <td class="num pe-exp">59.5</td>
+      <td class="num pe-mid">19.9</td>
+      <td class="biz">ServiceNow, Inc. provides cloud-based solution for digital workflows in the North America, Europe, the Middle East and A…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ADBE</td>
+      <td>Adobe Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Application</td>
+      <td>United States</td>
+      <td class="num">$97.2B</td>
+      <td class="num ret-low-up">+0.5%</td>
+      <td class="num ret-dn">-8.3%</td>
+      <td class="num ret-high-dn">-31.1%</td>
+      <td class="num pe-cheap">14.0</td>
+      <td class="num pe-cheap">9.1</td>
+      <td class="biz">Adobe Inc. operates as a technology company worldwide.</td>
+    </tr>
+    <tr>
+      <td class="ticker">FCX</td>
+      <td>Freeport-McMoRan Inc.</td>
+      <td><span class="badge sector-basic_materi">Basic Materials</span></td>
+      <td>Copper</td>
+      <td>United States</td>
+      <td class="num">$92.5B</td>
+      <td class="num ret-up">+6.3%</td>
+      <td class="num ret-dn">-5.3%</td>
+      <td class="num ret-high-up">+40.0%</td>
+      <td class="num pe-exp">34.1</td>
+      <td class="num pe-mid">17.3</td>
+      <td class="biz">Freeport-McMoRan Inc. engages in the mining of mineral properties in North America, South America, and Indonesia.</td>
+    </tr>
+    <tr>
+      <td class="ticker">WM</td>
+      <td>Waste Management, Inc.</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Waste Management</td>
+      <td>United States</td>
+      <td class="num">$86.5B</td>
+      <td class="num ret-low-dn">-4.7%</td>
+      <td class="num ret-dn">-10.2%</td>
+      <td class="num ret-low-dn">-0.9%</td>
+      <td class="num pe-exp">31.1</td>
+      <td class="num pe-mid">23.3</td>
+      <td class="biz">Waste Management, Inc., through its subsidiaries, provides environmental solutions to residential, commercial, industria…</td>
+    </tr>
+    <tr>
+      <td class="ticker">MELI</td>
+      <td>MercadoLibre, Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Internet Retail</td>
+      <td>Uruguay</td>
+      <td class="num">$83.6B</td>
+      <td class="num ret-dn">-10.4%</td>
+      <td class="num ret-dn">-6.2%</td>
+      <td class="num ret-high-dn">-31.8%</td>
+      <td class="num pe-exp">43.5</td>
+      <td class="num pe-mid">27.9</td>
+      <td class="biz">MercadoLibre, Inc. operates online commerce platforms in Brazil, Mexico, Argentina, and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">INTU</td>
+      <td>Intuit Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Application</td>
+      <td>United States</td>
+      <td class="num">$83.3B</td>
+      <td class="num ret-high-dn">-21.9%</td>
+      <td class="num ret-high-dn">-25.4%</td>
+      <td class="num ret-high-dn">-54.5%</td>
+      <td class="num pe-mid">18.6</td>
+      <td class="num pe-cheap">11.2</td>
+      <td class="biz">Intuit Inc. provides financial management, payments and capital, compliance, and marketing products and services in the …</td>
+    </tr>
+    <tr>
+      <td class="ticker">RKLB</td>
+      <td>Rocket Lab Corporation</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Aerospace & Defense</td>
+      <td>United States</td>
+      <td class="num">$82.9B</td>
+      <td class="num ret-high-up">+74.0%</td>
+      <td class="num ret-high-up">+107.2%</td>
+      <td class="num ret-high-up">+212.4%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-12994.6</td>
+      <td class="biz">Rocket Lab Corporation, a space company, provides launch services and space systems solutions in the United States, Cana…</td>
+    </tr>
+    <tr>
+      <td class="ticker">NOC</td>
+      <td>Northrop Grumman Corporation</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Aerospace & Defense</td>
+      <td>United States</td>
+      <td class="num">$79.1B</td>
+      <td class="num ret-low-dn">-3.2%</td>
+      <td class="num ret-high-dn">-23.1%</td>
+      <td class="num ret-low-dn">-3.4%</td>
+      <td class="num pe-mid">17.5</td>
+      <td class="num pe-mid">18.5</td>
+      <td class="biz">Northrop Grumman Corporation operates as an aerospace and defense technology company in the United States, Asia/Pacific,…</td>
+    </tr>
+    <tr>
+      <td class="ticker">NTES</td>
+      <td>NetEase, Inc.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Electronic Gaming & Multimedia</td>
+      <td>China</td>
+      <td class="num">$79.0B</td>
+      <td class="num ret-up">+10.8%</td>
+      <td class="num ret-up">+8.3%</td>
+      <td class="num ret-dn">-6.8%</td>
+      <td class="num pe-mid">15.9</td>
+      <td class="num pe-cheap">11.7</td>
+      <td class="biz">NetEase, Inc. engages in online games, music streaming, online intelligent learning services, and internet content servi…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ABNB</td>
+      <td>Airbnb, Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Travel Services</td>
+      <td>United States</td>
+      <td class="num">$78.7B</td>
+      <td class="num ret-dn">-5.9%</td>
+      <td class="num ret-low-dn">-1.8%</td>
+      <td class="num ret-up">+7.2%</td>
+      <td class="num pe-exp">32.7</td>
+      <td class="num pe-mid">21.9</td>
+      <td class="biz">Airbnb, Inc., together with its subsidiaries, operates a platform for stays, experiences, and services worldwide. The co…</td>
+    </tr>
+    <tr>
+      <td class="ticker">CVNA</td>
+      <td>Carvana Co.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Auto & Truck Dealerships</td>
+      <td>United States</td>
+      <td class="num">$76.9B</td>
+      <td class="num ret-dn">-13.8%</td>
+      <td class="num ret-up">+5.0%</td>
+      <td class="num ret-low-dn">-4.9%</td>
+      <td class="num pe-exp">40.5</td>
+      <td class="num pe-exp">33.2</td>
+      <td class="biz">Carvana Co., together with its subsidiaries, operates an e-commerce platform for buying and selling used cars. It provid…</td>
+    </tr>
+    <tr>
+      <td class="ticker">APO</td>
+      <td>Apollo Global Management, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Asset Management</td>
+      <td>United States</td>
+      <td class="num">$74.9B</td>
+      <td class="num ret-up">+5.8%</td>
+      <td class="num ret-high-up">+24.7%</td>
+      <td class="num ret-low-dn">-0.0%</td>
+      <td class="num pe-exp">82.2</td>
+      <td class="num pe-cheap">12.2</td>
+      <td class="biz">Apollo Global Management, Inc. is a private equity firm specializing in investments in credit, private equity, infrastru…</td>
+    </tr>
+    <tr>
+      <td class="ticker">COHR</td>
+      <td>Coherent Corp.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Scientific & Technical Instruments</td>
+      <td>United States</td>
+      <td class="num">$74.6B</td>
+      <td class="num ret-up">+18.6%</td>
+      <td class="num ret-high-up">+47.3%</td>
+      <td class="num ret-high-up">+289.8%</td>
+      <td class="num pe-exp">181.6</td>
+      <td class="num pe-exp">47.1</td>
+      <td class="biz">Coherent Corp. develops, manufactures, and markets engineered materials, optoelectronic components and devices, and lase…</td>
+    </tr>
+    <tr>
+      <td class="ticker">DASH</td>
+      <td>DoorDash, Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Internet Retail</td>
+      <td>United States</td>
+      <td class="num">$67.1B</td>
+      <td class="num ret-dn">-11.5%</td>
+      <td class="num ret-dn">-12.7%</td>
+      <td class="num ret-high-dn">-37.6%</td>
+      <td class="num pe-exp">73.0</td>
+      <td class="num pe-mid">19.8</td>
+      <td class="biz">DoorDash, Inc., together with its subsidiaries, operates a commerce platform that connects merchants, consumers, and das…</td>
+    </tr>
+    <tr>
+      <td class="ticker">HOOD</td>
+      <td>Robinhood Markets, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>United States</td>
+      <td class="num">$66.7B</td>
+      <td class="num ret-dn">-11.8%</td>
+      <td class="num ret-low-dn">-2.3%</td>
+      <td class="num ret-high-dn">-26.8%</td>
+      <td class="num pe-exp">36.0</td>
+      <td class="num pe-mid">27.1</td>
+      <td class="biz">Robinhood Markets, Inc. operates financial services platform in the United States.</td>
+    </tr>
+    <tr>
+      <td class="ticker">NKE</td>
+      <td>NIKE, Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Footwear & Accessories</td>
+      <td>United States</td>
+      <td class="num">$66.6B</td>
+      <td class="num ret-low-dn">-0.4%</td>
+      <td class="num ret-high-dn">-27.2%</td>
+      <td class="num ret-high-dn">-38.4%</td>
+      <td class="num pe-mid">29.6</td>
+      <td class="num pe-mid">24.6</td>
+      <td class="biz">NIKE, Inc., together with its subsidiaries, designs, develops, markets, and sells athletic and casual footwear, apparel,…</td>
+    </tr>
+    <tr>
+      <td class="ticker">REGN</td>
+      <td>Regeneron Pharmaceuticals, Inc.</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Biotechnology</td>
+      <td>United States</td>
+      <td class="num">$66.5B</td>
+      <td class="num ret-dn">-14.6%</td>
+      <td class="num ret-dn">-18.7%</td>
+      <td class="num ret-up">+11.1%</td>
+      <td class="num pe-mid">15.5</td>
+      <td class="num pe-cheap">11.8</td>
+      <td class="biz">Regeneron Pharmaceuticals, Inc. discovers, invents, develops, manufactures, and commercializes medicines to treat variou…</td>
+    </tr>
+    <tr>
+      <td class="ticker">SNOW</td>
+      <td>Snowflake Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Application</td>
+      <td>United States</td>
+      <td class="num">$61.6B</td>
+      <td class="num ret-high-up">+23.1%</td>
+      <td class="num ret-up">+5.5%</td>
+      <td class="num ret-high-dn">-21.3%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">73.3</td>
+      <td class="biz">Snowflake Inc. provides a cloud-based data platform for various organizations in the United States and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">F</td>
+      <td>Ford Motor Company</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Auto Manufacturers</td>
+      <td>United States</td>
+      <td class="num">$61.0B</td>
+      <td class="num ret-high-up">+24.2%</td>
+      <td class="num ret-up">+10.1%</td>
+      <td class="num ret-high-up">+35.1%</td>
+      <td class="num "></td>
+      <td class="num pe-cheap">8.4</td>
+      <td class="biz">Ford Motor Company develops, delivers, and services Ford trucks, sport utility vehicles, commercial vans and cars, and L…</td>
+    </tr>
+    <tr>
+      <td class="ticker">CRWV</td>
+      <td>CoreWeave, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Infrastructure</td>
+      <td>United States</td>
+      <td class="num">$57.8B</td>
+      <td class="num ret-dn">-5.5%</td>
+      <td class="num ret-high-up">+33.1%</td>
+      <td class="num ret-up">+18.9%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-168.9</td>
+      <td class="biz">CoreWeave, Inc. operates as a cloud infrastructure technology company in the United States.</td>
+    </tr>
+    <tr>
+      <td class="ticker">OXY</td>
+      <td>Occidental Petroleum Corporation</td>
+      <td><span class="badge sector-energy">Energy</span></td>
+      <td>Oil & Gas E&P</td>
+      <td>United States</td>
+      <td class="num">$57.2B</td>
+      <td class="num ret-low-up">+0.3%</td>
+      <td class="num ret-up">+8.8%</td>
+      <td class="num ret-high-up">+27.2%</td>
+      <td class="num pe-exp">77.6</td>
+      <td class="num pe-mid">15.9</td>
+      <td class="biz">Occidental Petroleum Corporation, together with its subsidiaries, engages in the acquisition, exploration, and developme…</td>
+    </tr>
+    <tr>
+      <td class="ticker">MSTR</td>
+      <td>Strategy Inc</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Application</td>
+      <td>United States</td>
+      <td class="num">$56.2B</td>
+      <td class="num ret-dn">-5.5%</td>
+      <td class="num ret-high-up">+23.5%</td>
+      <td class="num ret-high-dn">-52.4%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">35.8</td>
+      <td class="biz">Strategy Inc, together with its subsidiaries, operates as a bitcoin treasury company in the United States, Europe, the M…</td>
+    </tr>
+    <tr>
+      <td class="ticker">VST</td>
+      <td>Vistra Corp.</td>
+      <td><span class="badge sector-utilities">Utilities</span></td>
+      <td>Utilities - Independent Power Producers</td>
+      <td>United States</td>
+      <td class="num">$55.5B</td>
+      <td class="num ret-low-dn">-1.2%</td>
+      <td class="num ret-dn">-5.2%</td>
+      <td class="num ret-dn">-12.1%</td>
+      <td class="num pe-mid">27.6</td>
+      <td class="num pe-mid">15.0</td>
+      <td class="biz">Vistra Corp., together with its subsidiaries, operates as an integrated retail electricity and power generation company …</td>
+    </tr>
+    <tr>
+      <td class="ticker">NBIS</td>
+      <td>Nebius Group N.V.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Internet Content & Information</td>
+      <td>Netherlands</td>
+      <td class="num">$52.8B</td>
+      <td class="num ret-high-up">+43.5%</td>
+      <td class="num ret-high-up">+128.2%</td>
+      <td class="num ret-high-up">+217.8%</td>
+      <td class="num pe-exp">80.6</td>
+      <td class="num pe-exp">576.0</td>
+      <td class="biz">Nebius Group N.V., a technology company, engages in building full-stack infrastructure to service the global AI industry…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ON</td>
+      <td>ON Semiconductor Corporation</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Semiconductors</td>
+      <td>United States</td>
+      <td class="num">$49.4B</td>
+      <td class="num ret-high-up">+29.5%</td>
+      <td class="num ret-high-up">+91.0%</td>
+      <td class="num ret-high-up">+158.6%</td>
+      <td class="num pe-exp">93.4</td>
+      <td class="num pe-mid">29.9</td>
+      <td class="biz">ON Semiconductor Corporation provides intelligent sensing and power solutions in Hong Kong, Singapore, the United Kingdo…</td>
+    </tr>
+    <tr>
+      <td class="ticker">COIN</td>
+      <td>Coinbase Global, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Financial Data & Stock Exchanges</td>
+      <td>United States</td>
+      <td class="num">$47.4B</td>
+      <td class="num ret-dn">-8.5%</td>
+      <td class="num ret-low-up">+2.4%</td>
+      <td class="num ret-high-dn">-39.8%</td>
+      <td class="num pe-exp">66.2</td>
+      <td class="num pe-exp">36.3</td>
+      <td class="biz">Coinbase Global, Inc. operates platform for crypto assets in the United States and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">ASTS</td>
+      <td>AST SpaceMobile, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Communication Equipment</td>
+      <td>United States</td>
+      <td class="num">$46.5B</td>
+      <td class="num ret-high-up">+55.0%</td>
+      <td class="num ret-high-up">+51.2%</td>
+      <td class="num ret-high-up">+182.2%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-402.9</td>
+      <td class="biz">AST SpaceMobile, Inc., together with its subsidiaries, designs and develops the constellation of BlueBird satellites in …</td>
+    </tr>
+    <tr>
+      <td class="ticker">BIDU</td>
+      <td>Baidu, Inc.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Internet Content & Information</td>
+      <td>China</td>
+      <td class="num">$43.2B</td>
+      <td class="num ret-low-dn">-0.9%</td>
+      <td class="num ret-low-up">+1.9%</td>
+      <td class="num ret-high-up">+24.4%</td>
+      <td class="num "></td>
+      <td class="num pe-cheap">13.9</td>
+      <td class="biz">Baidu, Inc. provides internet content, value-added telecommunication-based, internet map, and online audio and video ser…</td>
+    </tr>
+    <tr>
+      <td class="ticker">CMG</td>
+      <td>Chipotle Mexican Grill, Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Restaurants</td>
+      <td>United States</td>
+      <td class="num">$41.4B</td>
+      <td class="num ret-low-dn">-4.0%</td>
+      <td class="num ret-dn">-13.2%</td>
+      <td class="num ret-high-dn">-21.3%</td>
+      <td class="num pe-mid">29.6</td>
+      <td class="num pe-mid">23.8</td>
+      <td class="biz">Chipotle Mexican Grill, Inc., together with its subsidiaries, owns and operates Chipotle Mexican Grill restaurants. It s…</td>
+    </tr>
+    <tr>
+      <td class="ticker">XYZ</td>
+      <td>Block, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Infrastructure</td>
+      <td>United States</td>
+      <td class="num">$41.2B</td>
+      <td class="num ret-low-dn">-3.0%</td>
+      <td class="num ret-up">+8.6%</td>
+      <td class="num ret-dn">-7.7%</td>
+      <td class="num pe-exp">54.0</td>
+      <td class="num pe-cheap">13.9</td>
+      <td class="biz">Block, Inc., together with its subsidiaries, builds ecosystems focused on commerce and financial products and services i…</td>
+    </tr>
+    <tr>
+      <td class="ticker">JD</td>
+      <td>JD.com, Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Internet Retail</td>
+      <td>China</td>
+      <td class="num">$40.5B</td>
+      <td class="num ret-low-up">+0.8%</td>
+      <td class="num ret-up">+17.1%</td>
+      <td class="num ret-low-dn">-1.2%</td>
+      <td class="num pe-mid">22.1</td>
+      <td class="num pe-cheap">6.9</td>
+      <td class="biz">JD.com, Inc. operates as a supply chain-based technology and service provider in the People's Republic of China and Euro…</td>
+    </tr>
+    <tr>
+      <td class="ticker">PYPL</td>
+      <td>PayPal Holdings, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Credit Services</td>
+      <td>United States</td>
+      <td class="num">$39.0B</td>
+      <td class="num ret-dn">-11.3%</td>
+      <td class="num ret-low-dn">-4.2%</td>
+      <td class="num ret-high-dn">-35.0%</td>
+      <td class="num pe-cheap">8.3</td>
+      <td class="num pe-cheap">7.6</td>
+      <td class="biz">PayPal Holdings, Inc. operates a technology platform that enables digital payments for merchants and consumers worldwide…</td>
+    </tr>
+    <tr>
+      <td class="ticker">PCG</td>
+      <td>PG&E Corporation</td>
+      <td><span class="badge sector-utilities">Utilities</span></td>
+      <td>Utilities - Regulated Electric</td>
+      <td>United States</td>
+      <td class="num">$36.2B</td>
+      <td class="num ret-low-up">+0.2%</td>
+      <td class="num ret-dn">-13.3%</td>
+      <td class="num ret-up">+9.7%</td>
+      <td class="num pe-cheap">12.7</td>
+      <td class="num pe-cheap">9.1</td>
+      <td class="biz">PG&E Corporation, through its subsidiary, Pacific Gas and Electric Company, engages in the sale and delivery of electric…</td>
+    </tr>
+    <tr>
+      <td class="ticker">MTZ</td>
+      <td>MasTec, Inc.</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Engineering & Construction</td>
+      <td>United States</td>
+      <td class="num">$30.9B</td>
+      <td class="num ret-low-up">+1.3%</td>
+      <td class="num ret-high-up">+31.1%</td>
+      <td class="num ret-high-up">+119.5%</td>
+      <td class="num pe-exp">68.6</td>
+      <td class="num pe-exp">33.3</td>
+      <td class="biz">MasTec, Inc., an infrastructure engineering and construction company, provides engineering, building, installation, main…</td>
+    </tr>
+    <tr>
+      <td class="ticker">TCOM</td>
+      <td>Trip.com Group Limited</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Travel Services</td>
+      <td>Singapore</td>
+      <td class="num">$29.8B</td>
+      <td class="num ret-dn">-11.0%</td>
+      <td class="num ret-dn">-10.0%</td>
+      <td class="num ret-high-dn">-35.0%</td>
+      <td class="num pe-cheap">6.7</td>
+      <td class="num pe-cheap">10.1</td>
+      <td class="biz">Trip.com Group Limited, through its subsidiaries, operates as a travel service provider for accommodation reservation, t…</td>
+    </tr>
+    <tr>
+      <td class="ticker">RDDT</td>
+      <td>Reddit, Inc.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Internet Content & Information</td>
+      <td>United States</td>
+      <td class="num">$27.8B</td>
+      <td class="num ret-dn">-9.7%</td>
+      <td class="num ret-low-dn">-0.8%</td>
+      <td class="num ret-high-dn">-39.7%</td>
+      <td class="num pe-exp">41.3</td>
+      <td class="num pe-mid">16.4</td>
+      <td class="biz">Reddit, Inc. operates a digital community in the United States and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">CRCL</td>
+      <td>Circle Internet Group</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>United States</td>
+      <td class="num">$27.8B</td>
+      <td class="num ret-up">+9.2%</td>
+      <td class="num ret-high-up">+24.8%</td>
+      <td class="num ret-dn">-9.1%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">46.6</td>
+      <td class="biz">Circle Internet Group, Inc. operates as a platform, network, and market infrastructure for stablecoin and blockchain app…</td>
+    </tr>
+    <tr>
+      <td class="ticker">CPNG</td>
+      <td>Coupang, Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Internet Retail</td>
+      <td>United States</td>
+      <td class="num">$27.8B</td>
+      <td class="num ret-high-dn">-24.5%</td>
+      <td class="num ret-dn">-18.9%</td>
+      <td class="num ret-high-dn">-46.5%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">35.5</td>
+      <td class="biz">Coupang, Inc., together with its subsidiaries, owns and operates retail business through its mobile applications and int…</td>
+    </tr>
+    <tr>
+      <td class="ticker">IONQ</td>
+      <td>IonQ, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Computer Hardware</td>
+      <td>United States</td>
+      <td class="num">$23.7B</td>
+      <td class="num ret-high-up">+45.1%</td>
+      <td class="num ret-high-up">+65.8%</td>
+      <td class="num ret-high-up">+52.2%</td>
+      <td class="num pe-exp">163.1</td>
+      <td class="num pe-neg">-61.0</td>
+      <td class="biz">IonQ, Inc. develops quantum computing systems in the United States, Switzerland, and Internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">SMCI</td>
+      <td>Super Micro Computer, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Computer Hardware</td>
+      <td>United States</td>
+      <td class="num">$22.3B</td>
+      <td class="num ret-high-up">+33.2%</td>
+      <td class="num ret-up">+14.5%</td>
+      <td class="num ret-dn">-8.2%</td>
+      <td class="num pe-mid">19.5</td>
+      <td class="num pe-cheap">11.5</td>
+      <td class="biz">Super Micro Computer, Inc., together with its subsidiaries, develops and sells server and storage solutions based on mod…</td>
+    </tr>
+    <tr>
+      <td class="ticker">IREN</td>
+      <td>IREN Limited</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>Australia</td>
+      <td class="num">$21.4B</td>
+      <td class="num ret-high-up">+23.6%</td>
+      <td class="num ret-high-up">+46.0%</td>
+      <td class="num ret-high-up">+128.6%</td>
+      <td class="num pe-exp">77.6</td>
+      <td class="num pe-neg">-44.4</td>
+      <td class="biz">IREN Limited operates in the vertically integrated data center business in Australia and Canada. The company owns and op…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ALB</td>
+      <td>Albemarle Corporation</td>
+      <td><span class="badge sector-basic_materi">Basic Materials</span></td>
+      <td>Specialty Chemicals</td>
+      <td>United States</td>
+      <td class="num">$20.6B</td>
+      <td class="num ret-dn">-12.4%</td>
+      <td class="num ret-low-dn">-2.0%</td>
+      <td class="num ret-high-up">+116.6%</td>
+      <td class="num "></td>
+      <td class="num pe-cheap">14.7</td>
+      <td class="biz">Albemarle Corporation provides energy storage solutions worldwide. It operates through three segments: Energy Storage, S…</td>
+    </tr>
+    <tr>
+      <td class="ticker">SOFI</td>
+      <td>SoFi Technologies, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Credit Services</td>
+      <td>United States</td>
+      <td class="num">$20.5B</td>
+      <td class="num ret-dn">-14.8%</td>
+      <td class="num ret-dn">-10.0%</td>
+      <td class="num ret-high-dn">-37.6%</td>
+      <td class="num pe-exp">35.5</td>
+      <td class="num pe-mid">20.6</td>
+      <td class="biz">SoFi Technologies, Inc. provides various financial services in the United States, Latin America, Canada, and Hong Kong.</td>
+    </tr>
+    <tr>
+      <td class="ticker">RIVN</td>
+      <td>Rivian Automotive, Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Auto Manufacturers</td>
+      <td>United States</td>
+      <td class="num">$19.3B</td>
+      <td class="num ret-dn">-13.9%</td>
+      <td class="num ret-dn">-6.1%</td>
+      <td class="num ret-low-up">+1.3%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-7.6</td>
+      <td class="biz">Rivian Automotive, Inc., together with its subsidiaries, develops, manufactures, and sells category-defining electric ve…</td>
+    </tr>
+    <tr>
+      <td class="ticker">MRNA</td>
+      <td>Moderna, Inc.</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Biotechnology</td>
+      <td>United States</td>
+      <td class="num">$18.7B</td>
+      <td class="num ret-low-dn">-3.4%</td>
+      <td class="num ret-dn">-12.2%</td>
+      <td class="num ret-high-up">+87.1%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-11.2</td>
+      <td class="biz">Moderna, Inc., a biotechnology company, provides messenger RNA medicines in the United States, Europe, and international…</td>
+    </tr>
+    <tr>
+      <td class="ticker">TLN</td>
+      <td>Talen Energy Corporation</td>
+      <td><span class="badge sector-utilities">Utilities</span></td>
+      <td>Utilities - Independent Power Producers</td>
+      <td>United States</td>
+      <td class="num">$17.8B</td>
+      <td class="num ret-up">+5.2%</td>
+      <td class="num ret-low-up">+4.9%</td>
+      <td class="num ret-low-dn">-0.1%</td>
+      <td class="num "></td>
+      <td class="num pe-cheap">11.4</td>
+      <td class="biz">Talen Energy Corporation, an independent power producer and infrastructure company, produces and sells electricity, capa…</td>
+    </tr>
+    <tr>
+      <td class="ticker">LI</td>
+      <td>Li Auto Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Auto Manufacturers</td>
+      <td>China</td>
+      <td class="num">$16.2B</td>
+      <td class="num ret-dn">-11.5%</td>
+      <td class="num ret-dn">-9.7%</td>
+      <td class="num ret-high-dn">-32.9%</td>
+      <td class="num pe-exp">99.2</td>
+      <td class="num pe-mid">18.4</td>
+      <td class="biz">Li Auto Inc. operates in the energy vehicle market in the People's Republic of China.</td>
+    </tr>
+    <tr>
+      <td class="ticker">FUTU</td>
+      <td>Futu Holdings Limited</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>Hong Kong</td>
+      <td class="num">$15.1B</td>
+      <td class="num ret-high-dn">-32.7%</td>
+      <td class="num ret-high-dn">-26.5%</td>
+      <td class="num ret-high-dn">-41.6%</td>
+      <td class="num pe-cheap">10.5</td>
+      <td class="num pe-cheap">7.8</td>
+      <td class="biz">Futu Holdings Limited engages in the provision of digitalized securities brokerage and wealth management product distrib…</td>
+    </tr>
+    <tr>
+      <td class="ticker">GRAB</td>
+      <td>Grab Holdings Limited</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Application</td>
+      <td>Singapore</td>
+      <td class="num">$14.7B</td>
+      <td class="num ret-dn">-7.7%</td>
+      <td class="num ret-dn">-14.9%</td>
+      <td class="num ret-high-dn">-30.4%</td>
+      <td class="num pe-exp">89.8</td>
+      <td class="num pe-mid">26.1</td>
+      <td class="biz">Grab Holdings Limited operates the Grab superapp in Cambodia, Indonesia, Malaysia, Myanmar, the Philippines, Singapore, …</td>
+    </tr>
+    <tr>
+      <td class="ticker">NIO</td>
+      <td>NIO Inc.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Auto Manufacturers</td>
+      <td>China</td>
+      <td class="num">$13.2B</td>
+      <td class="num ret-dn">-15.6%</td>
+      <td class="num ret-up">+8.0%</td>
+      <td class="num ret-dn">-11.6%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">38.8</td>
+      <td class="biz">NIO Inc. designs, develops, manufactures, and sells smart electric vehicles in China, Europe, and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">APLD</td>
+      <td>Applied Digital Corporation</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Information Technology Services</td>
+      <td>United States</td>
+      <td class="num">$12.9B</td>
+      <td class="num ret-high-up">+34.1%</td>
+      <td class="num ret-high-up">+65.5%</td>
+      <td class="num ret-high-up">+225.0%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-64.5</td>
+      <td class="biz">Applied Digital Corporation designs, develops, and operates digital infrastructure solutions to high-performance computi…</td>
+    </tr>
+    <tr>
+      <td class="ticker">WULF</td>
+      <td>TeraWulf Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>United States</td>
+      <td class="num">$12.5B</td>
+      <td class="num ret-up">+17.5%</td>
+      <td class="num ret-high-up">+55.2%</td>
+      <td class="num ret-high-up">+175.8%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">83.0</td>
+      <td class="biz">TeraWulf Inc., together with its subsidiaries, owns, develops, operates digital infrastructure in the United States. It …</td>
+    </tr>
+    <tr>
+      <td class="ticker">OKLO</td>
+      <td>Oklo Inc.</td>
+      <td><span class="badge sector-utilities">Utilities</span></td>
+      <td>Utilities - Independent Power Producers</td>
+      <td>United States</td>
+      <td class="num">$12.0B</td>
+      <td class="num ret-dn">-9.5%</td>
+      <td class="num ret-up">+9.1%</td>
+      <td class="num ret-low-dn">-1.6%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-81.9</td>
+      <td class="biz">Oklo Inc. develops fission power plants to provide energy at scale to customers in the United States.</td>
+    </tr>
+    <tr>
+      <td class="ticker">MP</td>
+      <td>MP Materials Corp.</td>
+      <td><span class="badge sector-basic_materi">Basic Materials</span></td>
+      <td>Other Industrial Metals & Mining</td>
+      <td>United States</td>
+      <td class="num">$11.9B</td>
+      <td class="num ret-low-up">+3.2%</td>
+      <td class="num ret-up">+13.8%</td>
+      <td class="num ret-up">+6.2%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">57.9</td>
+      <td class="biz">MP Materials Corp., together with its subsidiaries, produces rare earth materials in the Western Hemisphere. It operates…</td>
+    </tr>
+    <tr>
+      <td class="ticker">FIG</td>
+      <td>Figma, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Application</td>
+      <td>United States</td>
+      <td class="num">$11.6B</td>
+      <td class="num ret-high-up">+26.9%</td>
+      <td class="num ret-high-dn">-25.3%</td>
+      <td class="num ret-high-dn">-60.0%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">65.1</td>
+      <td class="biz">Figma, Inc. develops and sells a collaborative, browser-based platform for designing, prototyping, building digital expe…</td>
+    </tr>
+    <tr>
+      <td class="ticker">GLXY</td>
+      <td>Galaxy Digital</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>United States</td>
+      <td class="num">$11.5B</td>
+      <td class="num ret-up">+18.2%</td>
+      <td class="num ret-high-up">+43.9%</td>
+      <td class="num ret-high-up">+26.1%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">313.5</td>
+      <td class="biz">Galaxy Digital Inc. engages in the digital asset and data centre infrastructure businesses in North America and internat…</td>
+    </tr>
+    <tr>
+      <td class="ticker">BMNR</td>
+      <td>Bitmine Immersion Technologies, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>United States</td>
+      <td class="num">$10.9B</td>
+      <td class="num ret-dn">-10.9%</td>
+      <td class="num ret-low-up">+1.2%</td>
+      <td class="num ret-high-dn">-54.3%</td>
+      <td class="num "></td>
+      <td class="num pe-mid">20.4</td>
+      <td class="biz">Bitmine Immersion Technologies, Inc. operates as a blockchain technology company primarily in the United States.</td>
+    </tr>
+    <tr>
+      <td class="ticker">PINS</td>
+      <td>Pinterest, Inc.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Internet Content & Information</td>
+      <td>United States</td>
+      <td class="num">$10.8B</td>
+      <td class="num ret-low-dn">-4.9%</td>
+      <td class="num ret-up">+12.8%</td>
+      <td class="num ret-high-dn">-49.0%</td>
+      <td class="num pe-exp">40.3</td>
+      <td class="num pe-cheap">8.6</td>
+      <td class="biz">Pinterest, Inc. operates as a visual search and discovery platform in the United States, Canada, Europe, and internation…</td>
+    </tr>
+    <tr>
+      <td class="ticker">QBTS</td>
+      <td>D-Wave Quantum Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Computer Hardware</td>
+      <td>United States</td>
+      <td class="num">$10.3B</td>
+      <td class="num ret-high-up">+48.0%</td>
+      <td class="num ret-high-up">+48.1%</td>
+      <td class="num ret-high-up">+81.0%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-73.5</td>
+      <td class="biz">D-Wave Quantum Inc. engages in the development and delivery of quantum computing systems, software, and services worldwi…</td>
+    </tr>
+    <tr>
+      <td class="ticker">RIOT</td>
+      <td>Riot Platforms, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>United States</td>
+      <td class="num">$9.9B</td>
+      <td class="num ret-high-up">+42.7%</td>
+      <td class="num ret-high-up">+60.1%</td>
+      <td class="num ret-high-up">+96.2%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-42.4</td>
+      <td class="biz">Riot Platforms, Inc., together with its subsidiaries, operates as a Bitcoin mining company in the United States. It oper…</td>
+    </tr>
+    <tr>
+      <td class="ticker">GME</td>
+      <td>GameStop Corp.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Specialty Retail</td>
+      <td>United States</td>
+      <td class="num">$9.8B</td>
+      <td class="num ret-dn">-13.8%</td>
+      <td class="num ret-dn">-8.8%</td>
+      <td class="num ret-low-dn">-3.1%</td>
+      <td class="num pe-mid">28.5</td>
+      <td class="num pe-mid">18.1</td>
+      <td class="biz">GameStop Corp., a specialty retailer, provides games, collectibles, and entertainment products through its stores and e-…</td>
+    </tr>
+    <tr>
+      <td class="ticker">AAL</td>
+      <td>American Airlines Group Inc.</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Airlines</td>
+      <td>United States</td>
+      <td class="num">$9.8B</td>
+      <td class="num ret-high-up">+27.1%</td>
+      <td class="num ret-up">+13.6%</td>
+      <td class="num ret-up">+13.5%</td>
+      <td class="num pe-exp">47.9</td>
+      <td class="num pe-cheap">6.7</td>
+      <td class="biz">American Airlines Group Inc., through its subsidiaries, operates as a network air carrier in the United States, Latin Am…</td>
+    </tr>
+    <tr>
+      <td class="ticker">SNAP</td>
+      <td>Snap Inc.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Internet Content & Information</td>
+      <td>United States</td>
+      <td class="num">$9.5B</td>
+      <td class="num ret-dn">-5.1%</td>
+      <td class="num ret-up">+10.4%</td>
+      <td class="num ret-high-dn">-21.3%</td>
+      <td class="num "></td>
+      <td class="num pe-cheap">7.8</td>
+      <td class="biz">Snap Inc. operates as a technology company in North America, Europe, and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">CIFR</td>
+      <td>Cipher Digital Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Information Technology Services</td>
+      <td>United States</td>
+      <td class="num">$9.4B</td>
+      <td class="num ret-high-up">+26.8%</td>
+      <td class="num ret-high-up">+47.6%</td>
+      <td class="num ret-high-up">+206.1%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">34.4</td>
+      <td class="biz">Cipher Digital Inc., together with its subsidiaries, develops and operates industrial-scale data centers for bitcoin min…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ENPH</td>
+      <td>Enphase Energy, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Solar</td>
+      <td>United States</td>
+      <td class="num">$8.8B</td>
+      <td class="num ret-high-up">+89.8%</td>
+      <td class="num ret-high-up">+58.3%</td>
+      <td class="num ret-high-up">+68.7%</td>
+      <td class="num pe-exp">66.2</td>
+      <td class="num pe-mid">27.4</td>
+      <td class="biz">Enphase Energy, Inc., together with its subsidiaries, designs, develops, manufactures, and sells home energy solutions f…</td>
+    </tr>
+    <tr>
+      <td class="ticker">VFS</td>
+      <td>VinFast Auto Ltd.</td>
+      <td><span class="badge sector-consumer_cyc">Consumer Cyclical</span></td>
+      <td>Auto Manufacturers</td>
+      <td>Vietnam</td>
+      <td class="num">$8.4B</td>
+      <td class="num ret-dn">-14.7%</td>
+      <td class="num ret-up">+10.1%</td>
+      <td class="num ret-up">+7.5%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-3.6</td>
+      <td class="biz">VinFast Auto Ltd. engages in the design and manufacture of electric vehicles (EV), e-scooters, and e-buses in Vietnam, C…</td>
+    </tr>
+    <tr>
+      <td class="ticker">RGTI</td>
+      <td>Rigetti Computing, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Computer Hardware</td>
+      <td>United States</td>
+      <td class="num">$8.3B</td>
+      <td class="num ret-high-up">+48.2%</td>
+      <td class="num ret-high-up">+43.9%</td>
+      <td class="num ret-high-up">+66.0%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-123.3</td>
+      <td class="biz">Rigetti Computing, Inc., through its subsidiaries, builds and operates quantum computers and the superconducting quantum…</td>
+    </tr>
+    <tr>
+      <td class="ticker">FIGR</td>
+      <td>Figure Technology Solutions, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>United States</td>
+      <td class="num">$7.8B</td>
+      <td class="num ret-up">+7.0%</td>
+      <td class="num ret-high-up">+39.3%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">43.0</td>
+      <td class="num pe-mid">25.6</td>
+      <td class="biz">Figure Technology Solutions, Inc., a financial technology company, provides blockchain-based products and solutions in t…</td>
+    </tr>
+    <tr>
+      <td class="ticker">BILI</td>
+      <td>Bilibili Inc.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Internet Content & Information</td>
+      <td>China</td>
+      <td class="num">$7.4B</td>
+      <td class="num ret-dn">-18.1%</td>
+      <td class="num ret-high-dn">-36.3%</td>
+      <td class="num ret-high-dn">-20.7%</td>
+      <td class="num pe-exp">36.3</td>
+      <td class="num pe-cheap">13.2</td>
+      <td class="biz">Bilibili Inc. provides online entertainment services for the young generations in the People's Republic of China.</td>
+    </tr>
+    <tr>
+      <td class="ticker">UEC</td>
+      <td>Uranium Energy Corp.</td>
+      <td><span class="badge sector-energy">Energy</span></td>
+      <td>Uranium</td>
+      <td>United States</td>
+      <td class="num">$6.6B</td>
+      <td class="num ret-dn">-12.3%</td>
+      <td class="num ret-dn">-11.9%</td>
+      <td class="num ret-high-up">+20.9%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-810.4</td>
+      <td class="biz">Uranium Energy Corp., together with its subsidiaries, engages in exploration, pre-extraction, extraction, and processing…</td>
+    </tr>
+    <tr>
+      <td class="ticker">OSCR</td>
+      <td>Oscar Health, Inc.</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Healthcare Plans</td>
+      <td>United States</td>
+      <td class="num">$6.6B</td>
+      <td class="num ret-high-up">+27.4%</td>
+      <td class="num ret-high-up">+60.5%</td>
+      <td class="num ret-up">+12.7%</td>
+      <td class="num "></td>
+      <td class="num pe-mid">15.7</td>
+      <td class="biz">Oscar Health, Inc. operates as a healthcare technology company in the United States.</td>
+    </tr>
+    <tr>
+      <td class="ticker">BTG</td>
+      <td>B2Gold Corp.</td>
+      <td><span class="badge sector-basic_materi">Basic Materials</span></td>
+      <td>Gold</td>
+      <td>Canada</td>
+      <td class="num">$6.3B</td>
+      <td class="num ret-low-up">+3.5%</td>
+      <td class="num ret-high-dn">-23.4%</td>
+      <td class="num ret-up">+13.1%</td>
+      <td class="num pe-cheap">12.4</td>
+      <td class="num pe-cheap">4.1</td>
+      <td class="biz">B2Gold Corp. operates as a gold producer company in Canada.</td>
+    </tr>
+    <tr>
+      <td class="ticker">BZ</td>
+      <td>Kanzhun Limited</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Internet Content & Information</td>
+      <td>China</td>
+      <td class="num">$6.0B</td>
+      <td class="num ret-low-dn">-2.4%</td>
+      <td class="num ret-dn">-17.2%</td>
+      <td class="num ret-high-dn">-44.1%</td>
+      <td class="num pe-cheap">12.6</td>
+      <td class="num pe-cheap">9.1</td>
+      <td class="biz">Kanzhun Limited, together with its subsidiaries, operates an online recruitment platform in the People's Republic of Chi…</td>
+    </tr>
+    <tr>
+      <td class="ticker">LUNR</td>
+      <td>Intuitive Machines, Inc.</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Aerospace & Defense</td>
+      <td>United States</td>
+      <td class="num">$5.6B</td>
+      <td class="num ret-high-up">+33.0%</td>
+      <td class="num ret-high-up">+111.5%</td>
+      <td class="num ret-high-up">+310.6%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-261.5</td>
+      <td class="biz">Intuitive Machines, Inc. operates as a space infrastructure and services company in the United States.</td>
+    </tr>
+    <tr>
+      <td class="ticker">HIMS</td>
+      <td>Hims & Hers Health, Inc.</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Drug Manufacturers - Specialty & Generic</td>
+      <td>United States</td>
+      <td class="num">$5.5B</td>
+      <td class="num ret-dn">-18.9%</td>
+      <td class="num ret-high-up">+64.3%</td>
+      <td class="num ret-high-dn">-50.7%</td>
+      <td class="num "></td>
+      <td class="num pe-mid">18.5</td>
+      <td class="biz">Hims & Hers Health, Inc. operates as a consumer-first health and wellness platform that connects consumers to licensed h…</td>
+    </tr>
+    <tr>
+      <td class="ticker">MARA</td>
+      <td>MARA Holdings, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>United States</td>
+      <td class="num">$5.4B</td>
+      <td class="num ret-high-up">+27.7%</td>
+      <td class="num ret-high-up">+59.7%</td>
+      <td class="num ret-dn">-6.0%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-16.5</td>
+      <td class="biz">MARA Holdings, Inc. operates as an energy and digital infrastructure company in North America, the Middle East, Europe, …</td>
+    </tr>
+    <tr>
+      <td class="ticker">PLUG</td>
+      <td>Plug Power Inc.</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Electrical Equipment & Parts</td>
+      <td>United States</td>
+      <td class="num">$5.4B</td>
+      <td class="num ret-high-up">+24.7%</td>
+      <td class="num ret-high-up">+114.5%</td>
+      <td class="num ret-high-up">+163.0%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-23.4</td>
+      <td class="biz">Plug Power Inc. designs, develops, and sells hydrogen products and solutions in Europe, Australia, North America, and in…</td>
+    </tr>
+    <tr>
+      <td class="ticker">BLSH</td>
+      <td>Bullish</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Infrastructure</td>
+      <td>Cayman Islands</td>
+      <td class="num">$5.3B</td>
+      <td class="num ret-dn">-10.9%</td>
+      <td class="num ret-up">+10.5%</td>
+      <td class="num ret-high-dn">-33.8%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">40.2</td>
+      <td class="biz">Bullish, a global digital asset platform that provides market infrastructure and information services in United States. …</td>
+    </tr>
+    <tr>
+      <td class="ticker">ACHR</td>
+      <td>Archer Aviation Inc.</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Aerospace & Defense</td>
+      <td>United States</td>
+      <td class="num">$5.0B</td>
+      <td class="num ret-up">+10.3%</td>
+      <td class="num ret-dn">-8.6%</td>
+      <td class="num ret-high-dn">-23.4%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-6.9</td>
+      <td class="biz">Archer Aviation Inc., together with its subsidiaries, designs and develops aircraft and related technologies and service…</td>
+    </tr>
+    <tr>
+      <td class="ticker">ONDS</td>
+      <td>Ondas Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Communication Equipment</td>
+      <td>United States</td>
+      <td class="num">$4.9B</td>
+      <td class="num ret-dn">-10.8%</td>
+      <td class="num ret-low-dn">-3.1%</td>
+      <td class="num ret-high-up">+73.5%</td>
+      <td class="num pe-exp">108.6</td>
+      <td class="num pe-neg">-139.6</td>
+      <td class="biz">Ondas Inc. provides private wireless, drone, and automated data solutions in the United States and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">RDW</td>
+      <td>Redwire Corporation</td>
+      <td><span class="badge sector-industrials">Industrials</span></td>
+      <td>Aerospace & Defense</td>
+      <td>United States</td>
+      <td class="num">$4.4B</td>
+      <td class="num ret-high-up">+136.2%</td>
+      <td class="num ret-high-up">+143.0%</td>
+      <td class="num ret-high-up">+164.9%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-53.8</td>
+      <td class="biz">Redwire Corporation provides critical space solutions and space infrastructure for government and commercial customers i…</td>
+    </tr>
+    <tr>
+      <td class="ticker">OPEN</td>
+      <td>Opendoor Technologies Inc.</td>
+      <td><span class="badge sector-real_estate">Real Estate</span></td>
+      <td>Real Estate Services</td>
+      <td>United States</td>
+      <td class="num">$4.3B</td>
+      <td class="num ret-dn">-16.9%</td>
+      <td class="num ret-dn">-17.3%</td>
+      <td class="num ret-high-dn">-32.6%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-378.4</td>
+      <td class="biz">Opendoor Technologies Inc. operates a digital platform for residential real estate transactions in the United States.</td>
+    </tr>
+    <tr>
+      <td class="ticker">SEDG</td>
+      <td>SolarEdge Technologies, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Solar</td>
+      <td>Israel</td>
+      <td class="num">$4.3B</td>
+      <td class="num ret-high-up">+49.3%</td>
+      <td class="num ret-high-up">+99.9%</td>
+      <td class="num ret-high-up">+105.5%</td>
+      <td class="num "></td>
+      <td class="num pe-exp">45.2</td>
+      <td class="biz">SolarEdge Technologies, Inc., together with its subsidiaries, operates as an energy technology company in the United Sta…</td>
+    </tr>
+    <tr>
+      <td class="ticker">SOUN</td>
+      <td>SoundHound AI, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Application</td>
+      <td>United States</td>
+      <td class="num">$3.5B</td>
+      <td class="num ret-low-dn">-0.4%</td>
+      <td class="num ret-dn">-5.5%</td>
+      <td class="num ret-high-dn">-43.0%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-67.8</td>
+      <td class="biz">SoundHound AI, Inc. provides independent voice artificial intelligence (AI) solutions that enables businesses across the…</td>
+    </tr>
+    <tr>
+      <td class="ticker">DNN</td>
+      <td>Denison Mines Corp.</td>
+      <td><span class="badge sector-energy">Energy</span></td>
+      <td>Uranium</td>
+      <td>Canada</td>
+      <td class="num">$3.0B</td>
+      <td class="num ret-dn">-13.7%</td>
+      <td class="num ret-dn">-19.9%</td>
+      <td class="num ret-high-up">+42.5%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-95.3</td>
+      <td class="biz">Denison Mines Corp. engages in the acquisition, exploration, and development of uranium bearing properties in Canada.</td>
+    </tr>
+    <tr>
+      <td class="ticker">QUBT</td>
+      <td>Quantum Computing Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Computer Hardware</td>
+      <td>United States</td>
+      <td class="num">$2.6B</td>
+      <td class="num ret-high-up">+28.4%</td>
+      <td class="num ret-high-up">+38.9%</td>
+      <td class="num ret-high-dn">-22.7%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-53.9</td>
+      <td class="biz">Quantum Computing Inc., an integrated photonics company, provides quantum machines to commercial and government markets …</td>
+    </tr>
+    <tr>
+      <td class="ticker">GRND</td>
+      <td>Grindr Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Application</td>
+      <td>United States</td>
+      <td class="num">$2.3B</td>
+      <td class="num ret-dn">-5.5%</td>
+      <td class="num ret-up">+12.6%</td>
+      <td class="num ret-dn">-16.3%</td>
+      <td class="num pe-mid">27.8</td>
+      <td class="num pe-mid">16.6</td>
+      <td class="biz">Grindr Inc. operates a social networking and dating application for the lesbian, gay, bisexual, transgender, and queer (…</td>
+    </tr>
+    <tr>
+      <td class="ticker">BBAI</td>
+      <td>BigBear.ai Holdings, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Information Technology Services</td>
+      <td>United States</td>
+      <td class="num">$2.0B</td>
+      <td class="num ret-up">+12.1%</td>
+      <td class="num ret-up">+5.6%</td>
+      <td class="num ret-dn">-16.1%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-20.9</td>
+      <td class="biz">BigBear.ai Holdings, Inc. provides artificial intelligence-powered decision intelligence solutions for national security…</td>
+    </tr>
+    <tr>
+      <td class="ticker">CAPR</td>
+      <td>Capricor Therapeutics, Inc.</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Biotechnology</td>
+      <td>United States</td>
+      <td class="num">$1.7B</td>
+      <td class="num ret-dn">-16.4%</td>
+      <td class="num ret-up">+5.1%</td>
+      <td class="num ret-high-up">+335.6%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-38.4</td>
+      <td class="biz">Capricor Therapeutics, Inc., a clinical-stage biotechnology company, engages in the development of transformative cell a…</td>
+    </tr>
+    <tr>
+      <td class="ticker">OPRA</td>
+      <td>Opera Limited</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Internet Content & Information</td>
+      <td>Norway</td>
+      <td class="num">$1.6B</td>
+      <td class="num ret-low-up">+4.8%</td>
+      <td class="num ret-up">+10.5%</td>
+      <td class="num ret-low-up">+2.2%</td>
+      <td class="num pe-cheap">14.1</td>
+      <td class="num pe-cheap">10.2</td>
+      <td class="biz">Opera Limited, together with its subsidiaries, provides mobile and PC web browsers and related products and services in …</td>
+    </tr>
+    <tr>
+      <td class="ticker">SBET</td>
+      <td>Sharplink, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>United States</td>
+      <td class="num">$1.2B</td>
+      <td class="num ret-dn">-13.9%</td>
+      <td class="num ret-dn">-9.4%</td>
+      <td class="num ret-high-dn">-58.6%</td>
+      <td class="num "></td>
+      <td class="num pe-cheap">3.1</td>
+      <td class="biz">Sharplink, Inc. engages in the digital asset treasury business in the United States and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">AMC</td>
+      <td>AMC Entertainment Holdings, Inc.</td>
+      <td><span class="badge sector-communicatio">Communication Services</span></td>
+      <td>Entertainment</td>
+      <td>United States</td>
+      <td class="num">$1.2B</td>
+      <td class="num ret-low-dn">-3.6%</td>
+      <td class="num ret-high-up">+37.1%</td>
+      <td class="num ret-high-dn">-42.2%</td>
+      <td class="num "></td>
+      <td class="num pe-neg">-6.9</td>
+      <td class="biz">AMC Entertainment Holdings, Inc. engages in the theatrical exhibition business in the United States and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">BTGO</td>
+      <td>BitGo Holdings, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>United States</td>
+      <td class="num">$692M</td>
+      <td class="num ret-high-dn">-41.9%</td>
+      <td class="num ret-high-dn">-39.3%</td>
+      <td class="num "></td>
+      <td class="num "></td>
+      <td class="num pe-mid">19.4</td>
+      <td class="biz">Bitgo Holdings, Inc. operates as a digital asset infrastructure company in the United States and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">GEMI</td>
+      <td>Gemini Space Station, Inc.</td>
+      <td><span class="badge sector-financial_se">Financial Services</span></td>
+      <td>Capital Markets</td>
+      <td>United States</td>
+      <td class="num">$604M</td>
+      <td class="num ret-up">+9.4%</td>
+      <td class="num ret-high-dn">-20.7%</td>
+      <td class="num "></td>
+      <td class="num "></td>
+      <td class="num pe-neg">-3.0</td>
+      <td class="biz">Gemini Space Station, Inc. operates a cryptocurrency platform in the United States and internationally.</td>
+    </tr>
+    <tr>
+      <td class="ticker">EXOD</td>
+      <td>Exodus Movement, Inc.</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Infrastructure</td>
+      <td>United States</td>
+      <td class="num">$198M</td>
+      <td class="num ret-dn">-16.5%</td>
+      <td class="num ret-high-dn">-35.3%</td>
+      <td class="num ret-high-dn">-72.5%</td>
+      <td class="num "></td>
+      <td class="num pe-cheap">4.7</td>
+      <td class="biz">Exodus Movement, Inc. operates as a financial technology for blockchain and digital asset industry in the United States.</td>
+    </tr>
+    <tr>
+      <td class="ticker">ENLV</td>
+      <td>Enlivex Ltd.</td>
+      <td><span class="badge sector-healthcare">Healthcare</span></td>
+      <td>Biotechnology</td>
+      <td>Israel</td>
+      <td class="num">$165M</td>
+      <td class="num ret-high-dn">-22.4%</td>
+      <td class="num ret-high-dn">-40.5%</td>
+      <td class="num ret-high-dn">-35.5%</td>
+      <td class="num pe-cheap">0.0</td>
+      <td class="num pe-neg">-0.9</td>
+      <td class="biz">Enlivex Ltd., together with its subsidiaries, operates as a clinical-stage macrophage reprogramming immunotherapy compan…</td>
+    </tr>
+    <tr>
+      <td class="ticker">STRC</td>
+      <td>Strategy Inc</td>
+      <td><span class="badge sector-technology">Technology</span></td>
+      <td>Software - Application</td>
+      <td>United States</td>
+      <td class="num">nan</td>
+      <td class="num ret-low-up">+1.0%</td>
+      <td class="num ret-low-up">+2.4%</td>
+      <td class="num ret-up">+10.7%</td>
+      <td class="num "></td>
+      <td class="num "></td>
+      <td class="biz">Strategy Inc, together with its subsidiaries, operates as a bitcoin treasury company in the United States, Europe, the M…</td>
+    </tr>
+</tbody>
+</table>
+</div>
+
+<script>
+new Tablesort(document.getElementById('mainTable'));
+
+function filterTable() {
+  const q       = document.getElementById('searchInput').value.toLowerCase();
+  const sector  = document.getElementById('sectorFilter').value.toLowerCase();
+  const country = document.getElementById('countryFilter').value.toLowerCase();
+  const rows    = document.querySelectorAll('#tableBody tr');
+  let count = 0;
+  rows.forEach(row => {
+    const text    = row.textContent.toLowerCase();
+    const secCell = row.cells[2].textContent.toLowerCase();
+    const cntCell = row.cells[4].textContent.toLowerCase();
+    const show = (!q || text.includes(q)) &&
+                 (!sector  || secCell.includes(sector)) &&
+                 (!country || cntCell.includes(country));
+    row.style.display = show ? '' : 'none';
+    if (show) count++;
+  });
+  document.getElementById('rowCount').textContent = count + '개 종목';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.claude/settings.local.json
+
+# 원천/중간 데이터 — 파이프라인으로 재생성됨, 용량 커서 git에서 제외
+data/*.db
+data/analytics/
+
+# 이 프로젝트와 무관한 별도 참고용 대형 저장소 (6GB+)
+reference/
+
+# 자동화 로그
+automation/logs/
+automation/__pycache__/
