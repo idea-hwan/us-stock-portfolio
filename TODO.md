@@ -41,11 +41,15 @@
 
 ## 다음
 
-- **[최우선] Cyclical 버킷 재작업 — 팩터→결과가 아니라 가격→팩터 방향으로 뒤집기** (착수 예정, 오래 걸리는 작업이라 별도 세션에서)
-  - **배경**: semiconductor 베이스 12m 알파가 +5~7%로 비정상적으로 높은 이유 추적 → `stock_universe.csv`가 오늘 기준 시총 상위 종목만 담고 있어, 과거엔 컸지만 지금은 인수합병·상장폐지로 사라진 종목(Maxim/Xilinx/Cypress/Linear Tech/Altera/Microsemi 등)이 전체 백테스트 기간에서 통째로 빠져있는 **유니버스 자체의 생존편향** 발견. yfinance·stooq 둘 다 이런 상폐 종목의 과거 가격을 대부분 못 줌(9개 중 2개만 성공) — 무료 소스로는 완전한 해결 불가, 유료 point-in-time 데이터(CRSP/Compustat급)가 필요해 이번엔 포기.
-  - **결론**: Cyclical(및 growth/value도 동일 원리로 일부) 절대 알파 수치는 생존편향으로 부풀려져 있다고 보고 해석해야 함. 그래서 접근 자체를 바꾸기로 함 — 지금까지는 "팩터를 정하고 → 그 팩터가 뜬 시점 이후 알파가 어떻게 나오는지" 봤는데(팩터→결과), 다음엔 **"주가가 실제로 경기순환적으로 움직였는지(진짜 저점·고점을 찍었는지) 가격 자체를 먼저 보고 → 그 turning point 앞뒤로 어떤 팩터(밸류에이션·CAPEX·매출 등)가 실제로 끼어 있었는지" 역방향으로 접근**(가격→팩터). 유의미한 결과가 안 나올 수도 있음을 전제하고 시작.
-  - 참고: cyclical 매수/매도 신호는 위 2026-07-08 작업으로 대시보드에서 이미 꺼둔 상태 — 재작업 끝나면 `signal_cyclical`/`sell_cyclical` 호출부 복원.
-  - 상세 배경: 메모리 `feedback_backtest_methodology`(원칙 7), `project_next_steps`.
+- **[최우선] Cyclical 버킷 재작업 — 가격→팩터 역방향 방법론, 업종별 순차 진행 중**
+  - **배경**: semiconductor 베이스 12m 알파가 +5~7%로 비정상적으로 높은 이유 추적 → `stock_universe.csv`가 오늘 기준 시총 상위 종목만 담고 있어, 과거엔 컸지만 지금은 인수합병·상장폐지로 사라진 종목이 전체 백테스트 기간에서 통째로 빠져있는 **유니버스 자체의 생존편향** 발견(무료 소스로는 해결 불가, 포기). 대안으로 "팩터→결과"가 아니라 **"가격 turning point(zigzag 30% 되돌림) 먼저 찾고 → 그 앞뒤로 재무 팩터가 어떻게 끼었는지" 역방향 접근**으로 전환.
+  - **진행 현황 — cyclical_universe.txt 전체 카테고리를 대표주 기준으로 완료(2026-07-13)**: 반도체(MU/AMAT/NVDA) → 자동차(F/GM, 방법론 부적합으로 종료) → 에너지(XOM/SLB/EOG)·소재(FCX/CF/NUE) → 건설(MLM/URI/PWR) → 레저(LVS/CCL)·리테일(BBY/AMZN)·자본재(CAT/VRT)·항공방산(BA/RTX)·운송(DAL/UNP). 상세: `docs/cyclical_semiconductor_analysis.md`, `docs/cyclical_energy_materials_analysis.md`, `docs/cyclical_construction_analysis.md`, `docs/cyclical_leisure_retail_capital_transport_analysis.md`. **종합 분류: `docs/cyclical_classification_summary.md`** — 사이클있음/없음(유념대상)/판단보류 3그룹.
+  - **실전 결론**: 매수/매도 타이밍 신호로 실제 쓸 수 있는 건 여전히 반도체(MU/AMAT)뿐. "사이클 없음"(NVDA/PWR/VRT, 경계사례 AMZN)은 전부 AI 데이터센터 인프라 수혜주로 몰려있고 진짜 무사이클인지 아직 다운턴을 안 겪어서인지 구분 불가(n=0 사이클). "판단보류"(F/GM/BA/RTX/URI/BBY/MLM/UNP)는 대표성·데이터품질 문제로 이 방법론 자체가 안 맞음.
+  - **재사용 가능한 도구**: `scripts/archive/cyclical_price_factor/`에 zigzag 탐지(`zigzag.py`)·재무 팩터 조회(`factors.py`) 스크립트 저장.
+  - 참고: cyclical 매수/매도 신호는 대시보드에서 이미 꺼둔 상태(2026-07-08) — 이 재작업 전체가 끝나면 `signal_cyclical`/`sell_cyclical` 호출부 복원 검토(다만 반도체 외 업종은 신호화 실패했으므로 복원 범위는 반도체 한정 검토).
+  - **git 커밋 아직 안 함** — 사용자와 결과 리뷰 중, 다음에 커밋 여부 확인.
+  - 남은 여지: auto의 부품리테일/중고차(ORLY/AZO/CVNA) 미확인 보류, energy/materials/leisure 등 카테고리 내 나머지 종목으로 표본 확장(대표주 1~3개만 봄, 전체 검증은 아님).
+  - 상세 배경: 메모리 `feedback_backtest_methodology`(원칙 7~8), `project_next_steps`.
 
 ---
 
