@@ -1,6 +1,6 @@
 # 경기순환 분류 종합 — 사이클 있음 / 없음(유념대상) / 판단보류 (2026-07-13)
 
-지금까지 "가격→팩터" 역방향 방법론으로 살펴본 전체 종목(반도체·자동차·에너지·소재·건설·레저·리테일·자본재·항공방산·운송)을 종합해 세 그룹으로 분류. 근거는 각 업종 문서 참조: [[cyclical_semiconductor_analysis]], [[cyclical_energy_materials_analysis]], [[cyclical_construction_analysis]], [[cyclical_leisure_retail_capital_transport_analysis]].
+지금까지 "가격→팩터" 역방향 방법론으로 살펴본 전체 종목(반도체·자동차·에너지·소재·건설·레저·리테일·자본재·항공방산·운송)을 종합해 세 그룹으로 분류. 근거는 각 업종 문서 참조: [반도체](cyclical_semiconductor_analysis.md), [에너지·소재](cyclical_energy_materials_analysis.md), [건설](cyclical_construction_analysis.md), [레저·리테일·자본재·항공방산·운송](cyclical_leisure_retail_capital_transport_analysis.md).
 
 ## A. 사이클 없음 — 구조적 성장주 ("경기순환주 아니냐"는 오해를 조심해야 하는 종목)
 

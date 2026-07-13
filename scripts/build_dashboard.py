@@ -577,6 +577,7 @@ td{padding:7px 8px;border-bottom:1px solid #252838;white-space:nowrap;font-size:
         <tr><td class="bc">cyclical</td><td>수동 지정 — 반도체·자동차·항공방산·건설·자본재·레저·리테일 등 경기민감 업종</td></tr>
       </tbody>
     </table>
+    <p class="lnote" style="margin-top:8px">cyclical 태그는 분류용 라벨일 뿐 매수/매도 신호는 없음(가격→팩터 역방향 재검증 결과 반도체 외엔 타이밍 신호로 못 씀 — 결론 확정, 신호는 대시보드에서 제거). 개별 업종 국면 판단은 참고 문서로: <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_classification_summary.md" target="_blank">종합분류</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_semiconductor_analysis.md" target="_blank">반도체</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_energy_materials_analysis.md" target="_blank">에너지·소재</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_construction_analysis.md" target="_blank">건설</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_leisure_retail_capital_transport_analysis.md" target="_blank">레저·리테일·자본재·항공방산·운송</a></p>
   </div>
 
   <div class="lsec">
