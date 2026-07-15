@@ -3,7 +3,6 @@
 분기 재무 데이터 수집 전에 실행
 
 - S&P 500 유니버스: Wikipedia + yfinance + SEC EDGAR → data/stock_universe.csv
-- Ondo 유니버스:    CoinGecko API               → data/ondo_universe.csv
 """
 
 import re
@@ -113,36 +112,7 @@ def build_sp500_universe():
         print(f'     실패: {failed}')
 
 
-# ── Ondo 유니버스 ──────────────────────────────────────────────────
-
-def build_ondo_universe():
-    print('\n[ Ondo 유니버스 업데이트 ]')
-
-    params = {
-        'vs_currency': 'usd',
-        'category':    'ondo-tokenized-assets',
-        'per_page':    250,
-        'page':        1,
-    }
-    r = requests.get('https://api.coingecko.com/api/v3/coins/markets',
-                     params=params, timeout=30)
-    r.raise_for_status()
-
-    rows = []
-    for item in r.json():
-        symbol = item['symbol']
-        ticker = symbol[:-2].upper() if symbol.endswith('on') else symbol.upper()
-        name   = re.sub(r'\s*\(Ondo Tokenized [^\)]+\)', '', item['name']).strip()
-        rows.append({'id': item['id'], 'symbol': symbol, 'ticker': ticker, 'name': name})
-
-    df   = pd.DataFrame(rows)
-    path = f'{DATA_DIR}/ondo_universe.csv'
-    df.to_csv(path, index=False)
-    print(f'  ✅ 저장: {path}  ({len(df)}개)')
-
-
 # ── 실행 ──────────────────────────────────────────────────────────
 
 if __name__ == '__main__':
     build_sp500_universe()
-    build_ondo_universe()
