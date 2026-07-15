@@ -11,14 +11,16 @@ import sqlite3
 from datetime import date, timedelta
 from pathlib import Path
 
+import markdown
 import pandas as pd
 
-ROOT     = Path(__file__).parent.parent
-ANA_DIR  = ROOT / 'data' / 'analytics'
-PX_DB    = ROOT / 'data' / 'prices.db'
-VAL_DB   = ROOT / 'data' / 'valuation.db'
-CUR_VAL  = ROOT / 'data' / 'analytics' / 'valuation_current.json'
-OUT      = ROOT / 'docs' / 'index.html'
+ROOT         = Path(__file__).parent.parent
+ANA_DIR      = ROOT / 'data' / 'analytics'
+PX_DB        = ROOT / 'data' / 'prices.db'
+VAL_DB       = ROOT / 'data' / 'valuation.db'
+CUR_VAL      = ROOT / 'data' / 'analytics' / 'valuation_current.json'
+REPORTS_DIR  = ROOT / 'docs' / 'buy_signal_reports'
+OUT          = ROOT / 'docs' / 'index.html'
 
 
 # ── 데이터 로드 ───────────────────────────────────────────────────────────────
@@ -392,6 +394,43 @@ def build_stocks(
     return stocks
 
 
+# ── 매수 신호 리포트 (주간) ────────────────────────────────────────────────────
+
+def load_buy_signal_reports() -> list[dict]:
+    """docs/buy_signal_reports/YYYY-MM-DD.md → 최신순 정렬된 [{date, html}, ...]."""
+    if not REPORTS_DIR.exists():
+        return []
+    reports = []
+    for path in sorted(REPORTS_DIR.glob('*.md'), reverse=True):
+        text = path.read_text(encoding='utf-8')
+        body_html = markdown.markdown(text, extensions=['tables'])
+        reports.append({'date': path.stem, 'html': body_html})
+    return reports
+
+
+def render_reports_panel(reports: list[dict]) -> str:
+    """리포트 선택 드롭다운 + 리포트별 hidden div 마크업."""
+    if not reports:
+        return '<p class="lnote">아직 저장된 주간 리포트가 없습니다.</p>'
+
+    options = '\n'.join(
+        f'<option value="{r["date"]}"{" selected" if i == 0 else ""}>{r["date"]}</option>'
+        for i, r in enumerate(reports)
+    )
+    docs = '\n'.join(
+        f'<div class="report-body" data-date="{r["date"]}" style="display:{"block" if i == 0 else "none"}">'
+        f'{r["html"]}</div>'
+        for i, r in enumerate(reports)
+    )
+    return f'''<div class="report-select-row">
+  <label for="report-date-select">주차 선택:</label>
+  <select id="report-date-select" onchange="showReportDate(this.value)">
+{options}
+  </select>
+</div>
+{docs}'''
+
+
 # ── HTML 생성 ─────────────────────────────────────────────────────────────────
 
 HTML_TEMPLATE = r"""<!DOCTYPE html>
@@ -584,6 +623,28 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
 .stat-num{font-size:22px;font-weight:800;color:var(--green)}
 .stat-vs{font-size:11px;color:var(--muted)}
 .stat-vs strong{color:var(--text);font-weight:700}
+
+/* 매수 신호 주간 리포트 */
+.reports-wrap{display:none;max-width:920px;margin-top:4px}
+.report-select-row{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.report-select-row label{color:var(--muted);font-size:12px}
+.report-select-row select{background:var(--surf);border:1px solid var(--bord);color:var(--text);
+  padding:5px 10px;border-radius:4px;font-family:inherit;font-size:12px;cursor:pointer}
+.report-select-row select:focus{outline:none;border-color:var(--blue)}
+.report-body{font-size:13px;line-height:1.7}
+.report-body h1{font-size:16px;font-weight:700;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--bord)}
+.report-body h2{font-size:13.5px;font-weight:700;color:var(--blue);margin:24px 0 10px}
+.report-body h3{font-size:12.5px;font-weight:700;margin:16px 0 8px}
+.report-body p{margin:0 0 12px}
+.report-body strong{color:var(--text);font-weight:700}
+.report-body em{color:var(--muted);font-style:italic}
+.report-body a{color:var(--blue);text-decoration:underline}
+.report-body hr{border:none;border-top:1px solid var(--bord);margin:20px 0}
+.report-body table{border-collapse:collapse;width:100%;margin:8px 0 16px;font-size:12px}
+.report-body th{background:var(--surf);color:var(--muted);font-weight:500;padding:6px 10px;
+  border-bottom:1px solid var(--bord);text-align:left}
+.report-body td{padding:6px 10px;border-bottom:1px solid #1e2130;vertical-align:top;line-height:1.6}
+.report-body ul,.report-body ol{margin:0 0 12px 20px}
 </style>
 </head>
 <body>
@@ -616,6 +677,7 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
     <input type="text" id="search" class="search" placeholder="Ticker 검색…">
   </div>
   <div class="cg" style="margin-left:auto">
+    <button class="btn" id="btn-reports" onclick="toggleReports()">매수 신호 리포트</button>
     <button class="btn" id="btn-logic" onclick="toggleLogic()">판단 로직</button>
   </div>
 </div>
@@ -889,6 +951,10 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
 
 </div><!-- /logic -->
 
+<div id="reports" class="reports-wrap">
+__REPORTS_HTML__
+</div><!-- /reports -->
+
 <script>
 const STOCKS = __STOCKS_JSON__;
 
@@ -896,16 +962,29 @@ let sCol = 'mktcap_m', sDir = -1;
 let fBucket = 'all', fSig = 'any', fSell = 'all', fTicker = '';
 let expanded = null;
 
+function showPanel(name) {
+  document.querySelector('.tbl-wrap').style.display = name === 'table' ? '' : 'none';
+  document.getElementById('logic').style.display     = name === 'logic'   ? 'block' : 'none';
+  document.getElementById('reports').style.display   = name === 'reports' ? 'block' : 'none';
+  document.querySelector('.ctrl').style.opacity       = name === 'table' ? '' : '0.4';
+  document.getElementById('btn-logic').classList.toggle('on', name === 'logic');
+  document.getElementById('btn-reports').classList.toggle('on', name === 'reports');
+}
+
 function toggleLogic() {
-  const panel = document.getElementById('logic');
-  const wrap  = document.querySelector('.tbl-wrap');
-  const ctrl  = document.querySelector('.ctrl');
-  const btn   = document.getElementById('btn-logic');
-  const show  = panel.style.display !== 'block';
-  panel.style.display = show ? 'block' : 'none';
-  wrap.style.display  = show ? 'none'  : '';
-  ctrl.style.opacity  = show ? '0.4'   : '';
-  btn.classList.toggle('on', show);
+  const isOpen = document.getElementById('logic').style.display === 'block';
+  showPanel(isOpen ? 'table' : 'logic');
+}
+
+function toggleReports() {
+  const isOpen = document.getElementById('reports').style.display === 'block';
+  showPanel(isOpen ? 'table' : 'reports');
+}
+
+function showReportDate(dateStr) {
+  document.querySelectorAll('.report-body').forEach(el => {
+    el.style.display = el.dataset.date === dateStr ? 'block' : 'none';
+  });
 }
 
 function fmt(v, d) {
@@ -1165,12 +1244,13 @@ renderTable();
 """
 
 
-def generate_html(stocks: list[dict], price_date: str) -> str:
+def generate_html(stocks: list[dict], price_date: str, reports: list[dict]) -> str:
     data_json = json.dumps(stocks, ensure_ascii=False, separators=(',', ':'))
     return (
         HTML_TEMPLATE
         .replace('__STOCKS_JSON__', data_json)
         .replace('__PRICE_DATE__', price_date)
+        .replace('__REPORTS_HTML__', render_reports_panel(reports))
     )
 
 
@@ -1183,13 +1263,14 @@ def main():
     shares         = load_shares()
     perf           = load_price_perf()
     val_now        = load_valuation_current()
+    reports        = load_buy_signal_reports()
 
-    print(f'  스냅샷 {len(snap)}행, 가격 {len(prices)}종목, 수익률 {len(perf)}종목, 현재 밸류에이션 {len(val_now)}종목')
+    print(f'  스냅샷 {len(snap)}행, 가격 {len(prices)}종목, 수익률 {len(perf)}종목, 현재 밸류에이션 {len(val_now)}종목, 주간 리포트 {len(reports)}건')
 
     stocks = build_stocks(snap, prices, shares, perf, val_now)
     print(f'  최종 {len(stocks)}종목 (시총 순 정렬)')
 
-    html = generate_html(stocks, px_dt)
+    html = generate_html(stocks, px_dt, reports)
     OUT.write_text(html, encoding='utf-8')
     size_kb = OUT.stat().st_size / 1024
     print(f'→ {OUT.relative_to(ROOT)} 저장 완료 ({size_kb:.0f} KB)')
