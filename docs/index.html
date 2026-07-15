@@ -89,24 +89,105 @@ td{padding:7px 8px;border-bottom:1px solid #252838;white-space:nowrap;font-size:
 .gr-v{text-align:right;font-weight:500}
 
 /* 로직 패널 */
-.logic-wrap{display:none;max-width:900px;margin-top:4px}
-.lsec{margin-bottom:28px}
-.lh1{font-size:12px;font-weight:600;color:var(--text);letter-spacing:.05em;
-     border-bottom:1px solid var(--bord);padding-bottom:6px;margin-bottom:12px}
-.ltbl{border-collapse:collapse;width:100%;font-size:11px;margin-bottom:0}
+.logic-wrap{display:none;max-width:920px;margin-top:4px;font-size:13px;line-height:1.6}
+.lsec{margin-bottom:32px}
+.lh1{font-size:14px;font-weight:700;color:var(--text);letter-spacing:.02em;
+     border-bottom:1px solid var(--bord);padding-bottom:8px;margin-bottom:14px}
+.lsub{color:var(--muted);font-size:12px;margin:-8px 0 14px;line-height:1.6}
+.ltbl{border-collapse:collapse;width:100%;font-size:12px;margin-bottom:0}
 .ltbl th{background:var(--surf);color:var(--muted);font-weight:500;
-         padding:6px 10px;border-bottom:1px solid var(--bord);text-align:left;white-space:nowrap}
-.ltbl td{padding:5px 10px;border-bottom:1px solid #1e2130;vertical-align:top;line-height:1.5}
+         padding:7px 10px;border-bottom:1px solid var(--bord);text-align:left;white-space:nowrap}
+.ltbl td{padding:7px 10px;border-bottom:1px solid #1e2130;vertical-align:top;line-height:1.6}
 .ltbl td:first-child{white-space:nowrap}
-.lnote{color:var(--muted);font-size:11px;margin-top:8px;line-height:1.6;
+.lnote{color:var(--muted);font-size:12px;margin-top:8px;line-height:1.7;
        border-left:2px solid var(--bord);padding-left:10px}
-.lgrp{margin-bottom:18px}
-.lgrp-h{color:var(--blue);font-size:11px;font-weight:600;margin-bottom:8px;letter-spacing:.04em}
-.ev{color:var(--green);font-size:11px}
-.lind{color:var(--yellow);font-size:11px;font-weight:600;margin:14px 0 6px;letter-spacing:.03em}
+.lgrp{margin-bottom:20px;padding:14px 16px;background:var(--surf);border:1px solid var(--bord);border-radius:8px}
+.lgrp-h{color:var(--blue);font-size:12px;font-weight:700;margin-bottom:10px;letter-spacing:.02em}
+.ev{color:var(--green);font-size:12px}
+.lind{color:var(--yellow);font-size:12px;font-weight:600;margin:14px 0 6px;letter-spacing:.03em}
 .lind.bad{color:var(--red)}
 .num{text-align:right;color:var(--muted)}
-.lguide{margin-top:10px;padding:8px 10px;border-left:3px solid var(--blue);background:rgba(96,165,250,.08);border-radius:4px;font-size:11px;color:var(--text);line-height:1.6}
+.lguide{margin-top:10px;padding:10px 12px;border-left:3px solid var(--blue);background:rgba(96,165,250,.08);border-radius:4px;font-size:12px;color:var(--text);line-height:1.7}
+
+/* 잘 몰라도 되는 용어 설명 */
+abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help;color:inherit}
+
+/* 인트로 4단계 흐름 */
+.lflow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+@media(max-width:760px){.lflow{grid-template-columns:1fr 1fr}}
+.lstep{background:var(--surf);border:1px solid var(--bord);border-radius:8px;padding:12px 14px;position:relative}
+.lstep-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+           border-radius:50%;background:var(--blue);color:#0f1117;font-size:11px;font-weight:700;margin-bottom:8px}
+.lstep-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:4px}
+.lstep-body{font-size:11.5px;color:var(--muted);line-height:1.55}
+.lflow-arrow{display:none}
+@media(min-width:761px){
+  .lstep:not(:last-child)::after{content:'→';position:absolute;right:-16px;top:50%;transform:translateY(-50%);
+    color:var(--muted);font-size:14px;z-index:1}
+}
+
+/* 용어 사전 */
+.gloss{display:flex;flex-wrap:wrap;gap:8px 10px;margin-bottom:6px}
+.gloss-item{background:var(--surf);border:1px solid var(--bord);border-radius:6px;padding:6px 10px;font-size:11.5px}
+.gloss-term{color:var(--blue);font-weight:700;margin-right:5px}
+.gloss-def{color:var(--muted)}
+
+/* 버킷/판단 라벨 카드 */
+.lcard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:760px){.lcard-grid{grid-template-columns:1fr}}
+.lcard{background:var(--surf);border:1px solid var(--bord);border-radius:8px;padding:12px 14px}
+.lcard-h{font-size:12.5px;font-weight:700;margin-bottom:4px}
+.lcard-b{font-size:11.5px;color:var(--muted);line-height:1.55}
+
+.lbadge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;
+        white-space:nowrap}
+.lbadge.up2{background:rgba(52,211,153,.15);color:var(--green)}
+.lbadge.up1{background:rgba(52,211,153,.1);color:#86efac}
+.lbadge.dn2{background:rgba(248,113,113,.15);color:var(--red)}
+.lbadge.dn1{background:rgba(248,113,113,.1);color:#fca5a5}
+.lbadge.flat{background:rgba(107,114,128,.15);color:var(--muted)}
+.lbadge.cheap{background:rgba(52,211,153,.15);color:var(--green)}
+.lbadge.rich{background:rgba(248,113,113,.15);color:var(--red)}
+.lbadge.mix{background:rgba(251,191,36,.15);color:var(--yellow)}
+.lbadge.neu{background:rgba(107,114,128,.15);color:var(--muted)}
+
+/* 조건문 — 쉬운 말 + 원래 조건식 */
+.cond-plain{color:var(--text);font-size:12.5px;line-height:1.6}
+.cond-tech{color:var(--muted);font-size:11px;margin-top:2px}
+
+/* 신호 발동 빈도/카드 헤더 */
+.sig-hd{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.sig-freq{color:var(--muted);font-size:11px;background:var(--bg);border:1px solid var(--bord);
+          border-radius:4px;padding:1px 7px}
+
+/* 12m/18m/24m 비교 미니 막대 (베이스 vs 신호) */
+.dbar-block{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:10px 0 4px}
+@media(max-width:640px){.dbar-block{grid-template-columns:1fr}}
+.dbar-col{background:var(--bg);border:1px solid var(--bord);border-radius:6px;padding:8px 10px}
+.dbar-h{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.dbar-track{position:relative;height:26px;margin-bottom:4px}
+.dbar-mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--bord)}
+.dbar{position:absolute;height:7px;border-radius:3px}
+.dbar.base{top:2px;background:var(--muted);opacity:.55}
+.dbar.sig{top:14px}
+.dbar.pos{background:var(--green)}
+.dbar.neg{background:var(--red)}
+.dbar-legend{display:flex;justify-content:space-between;font-size:11px}
+.dbar-legend .l-base{color:var(--muted)}
+.dbar-legend .l-sig.pos{color:var(--green);font-weight:700}
+.dbar-legend .l-sig.neg{color:var(--red);font-weight:700}
+
+/* 최종 검증 스탯 타일 */
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:8px}
+@media(max-width:640px){.stat-grid{grid-template-columns:1fr}}
+.stat-tile{background:var(--surf);border:1px solid var(--bord);border-radius:8px;padding:14px 16px}
+.stat-tile-h{font-size:12px;color:var(--muted);margin-bottom:10px}
+.stat-tile-h .bg{font-weight:700}
+.stat-tile-h .bv{font-weight:700}
+.stat-row{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.stat-num{font-size:22px;font-weight:800;color:var(--green)}
+.stat-vs{font-size:11px;color:var(--muted)}
+.stat-vs strong{color:var(--text);font-weight:700}
 </style>
 </head>
 <body>
@@ -172,146 +253,242 @@ td{padding:7px 8px;border-bottom:1px solid #252838;white-space:nowrap;font-size:
 <div id="logic" class="logic-wrap">
 
   <div class="lsec">
-    <div class="lh1">버킷 분류 기준</div>
-    <table class="ltbl">
-      <thead><tr><th>버킷</th><th>분류 조건</th></tr></thead>
-      <tbody>
-        <tr><td class="bg">growth</td><td>16분기 연속 영업이익 흑자</td></tr>
-        <tr><td class="bv">value</td><td>16분기 연속 순이익 흑자</td></tr>
-        <tr><td class="bc">cyclical</td><td>수동 지정 — 반도체·자동차·항공방산·건설·자본재·레저·리테일 등 경기민감 업종</td></tr>
-      </tbody>
-    </table>
-    <p class="lnote" style="margin-top:8px">cyclical 태그는 분류용 라벨일 뿐 매수/매도 신호는 없음(가격→팩터 역방향 재검증 결과 반도체 외엔 타이밍 신호로 못 씀 — 결론 확정, 신호는 대시보드에서 제거). 개별 업종 국면 판단은 참고 문서로: <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_classification_summary.md" target="_blank">종합분류</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_semiconductor_analysis.md" target="_blank">반도체</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_energy_materials_analysis.md" target="_blank">에너지·소재</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_construction_analysis.md" target="_blank">건설</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_leisure_retail_capital_transport_analysis.md" target="_blank">레저·리테일·자본재·항공방산·운송</a></p>
+    <div class="lh1">이 대시보드는 이렇게 판단합니다</div>
+    <div class="lflow">
+      <div class="lstep">
+        <div class="lstep-num">1</div>
+        <div class="lstep-title">종목을 3그룹으로 나눈다</div>
+        <div class="lstep-body">실적 성격이 다른 종목을 <b>growth(성장)·value(가치)·cyclical(경기민감)</b>로 나눠 따로 비교한다.</div>
+      </div>
+      <div class="lstep">
+        <div class="lstep-num">2</div>
+        <div class="lstep-title">이익 추세 + 주가 수준을 본다</div>
+        <div class="lstep-body">회사가 버는 돈(영업이익)이 늘고 있는지, 지금 주가가 이 회사의 평소 벌이 대비 싼지 비싼지를 확인한다.</div>
+      </div>
+      <div class="lstep">
+        <div class="lstep-num">3</div>
+        <div class="lstep-title">겹치는 조건을 신호로 표시</div>
+        <div class="lstep-body">"이익 잘 나옴 + 주가 쌈"이 겹치면 매수(▲), "이익 줄어듦 + 주가 비쌈"이 겹치면 매도(▼) 신호를 띄운다.</div>
+      </div>
+      <div class="lstep">
+        <div class="lstep-num">4</div>
+        <div class="lstep-title">실제로 통했는지 검증</div>
+        <div class="lstep-body">2013~2026년 데이터로, 이 신호대로 매매했다면 S&amp;P500 지수보다 얼마나 더/덜 벌었을지 미리 계산해봤다.</div>
+      </div>
+    </div>
+    <p class="lsub" style="margin-top:2px">아래는 각 단계의 세부 기준과 실제 검증 결과. 낯선 용어는 아래 <b>용어 설명</b>을 참고하거나, 점선 밑줄 위에 마우스를 올리면 바로 설명이 뜬다.</p>
   </div>
 
   <div class="lsec">
-    <div class="lh1">이익 추세 판단 — 영업이익 CAGR 기준</div>
-    <table class="ltbl">
-      <thead><tr><th style="width:130px">라벨</th><th>조건 (연환산 CAGR)</th></tr></thead>
-      <tbody>
-        <tr><td>▼▼ 2y역성장</td><td>1y CAGR &lt; 0 <em>and</em> 2y CAGR &lt; 0 — 2년 연속 영업이익 감소</td></tr>
-        <tr><td>▼ 1y역성장</td><td>1y CAGR &lt; 0 — 최근 1년 영업이익 감소</td></tr>
-        <tr><td>▲▲ 가속</td><td>1y CAGR &gt; 0 <em>and</em> 1y CAGR &gt; 2y CAGR — 성장 중이고 속도가 빨라지는 중</td></tr>
-        <tr><td>▲ 성장</td><td>1y CAGR &gt; 0 — 영업이익 증가 (속도는 둔화)</td></tr>
-        <tr><td>— 보합</td><td>기타 (데이터 부족 등)</td></tr>
-      </tbody>
-    </table>
-    <p class="lnote">CAGR 계산: TTM(직전 4분기 누적) 기준, 분기 단위 기하평균 → 연환산. 1y = 최근 4분기 vs 직전 4분기.</p>
+    <div class="lh1">용어 설명</div>
+    <div class="gloss">
+      <span class="gloss-item"><span class="gloss-term">CAGR</span><span class="gloss-def">연평균 성장 속도 — 이익이 1년 동안 몇 %씩 늘었는지</span></span>
+      <span class="gloss-item"><span class="gloss-term">alpha(초과수익)</span><span class="gloss-def">S&amp;P500 지수보다 얼마나 더(혹은 덜) 벌었는지의 차이</span></span>
+      <span class="gloss-item"><span class="gloss-term">CAPEX(설비투자)</span><span class="gloss-def">공장·장비 등에 쓰는 돈 — 늘리면 미래에 배팅, 줄이면 방어적</span></span>
+      <span class="gloss-item"><span class="gloss-term">P/E·P/S·P/OP·P/FCF</span><span class="gloss-def">주가가 이익·매출·영업이익·현금흐름 대비 몇 배인지 — 낮을수록 저평가</span></span>
+      <span class="gloss-item"><span class="gloss-term">PIT 검증</span><span class="gloss-def">미래 정보를 미리 알고 계산한 게 아니라, 그 당시 알 수 있었던 정보만으로 재현한 백테스트</span></span>
+    </div>
   </div>
 
   <div class="lsec">
-    <div class="lh1">밸류 평가 판단 — 현재 배수 vs 4년 역사 평균</div>
-    <table class="ltbl">
-      <thead><tr><th style="width:90px">라벨</th><th>조건</th></tr></thead>
-      <tbody>
-        <tr><td>저평가</td><td>현재(최근 20일 평균) &lt; 4년 평균 × <strong>0.75</strong> — 역사 대비 25% 이상 할인 (백테스트 최적 임계값)</td></tr>
-        <tr><td>고평가</td><td>현재(최근 20일 평균) &gt; 4년 평균 × <strong>1.25</strong> — 역사 대비 25% 이상 프리미엄</td></tr>
-        <tr><td>혼재</td><td>배수별로 방향이 엇갈림 — ↓ 표기된 배수가 현재 저평가 쪽</td></tr>
-        <tr><td>중립</td><td>모든 배수가 ±25% 이내</td></tr>
-      </tbody>
-    </table>
-    <p class="lnote">판정 대상 배수: <strong>P/E · P/S · P/OP · P/FCF</strong> 각각 독립 판정. 예) "저평가 (P/S+P/E)" = P/S와 P/E 현재값이 4년 평균보다 25%+ 낮음. 4년 평균은 과거 16분기 기하평균.</p>
+    <div class="lh1">1단계 — 버킷 분류 기준</div>
+    <div class="lcard-grid">
+      <div class="lcard"><div class="lcard-h bg">growth</div><div class="lcard-b">16분기(4년) 연속 <b>영업이익 흑자</b> — 꾸준히 돈을 버는 성장주</div></div>
+      <div class="lcard"><div class="lcard-h bv">value</div><div class="lcard-b">16분기(4년) 연속 <b>순이익 흑자</b> — 이익 안정성이 검증된 가치주</div></div>
+      <div class="lcard"><div class="lcard-h bc">cyclical</div><div class="lcard-b">반도체·자동차·항공방산·건설·자본재·레저·리테일 등 경기 흐름에 민감한 업종. 분류용 라벨일 뿐 <b>매수/매도 신호는 없음</b></div></div>
+    </div>
+    <p class="lnote" style="margin-top:10px">cyclical은 가격→팩터 역방향 재검증 결과 반도체 외엔 타이밍 신호로 쓸 수 없다는 결론이 확정돼, 신호는 대시보드에서 제거했다. 개별 업종 국면 판단은 참고 문서로: <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_classification_summary.md" target="_blank">종합분류</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_semiconductor_analysis.md" target="_blank">반도체</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_energy_materials_analysis.md" target="_blank">에너지·소재</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_construction_analysis.md" target="_blank">건설</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_leisure_retail_capital_transport_analysis.md" target="_blank">레저·리테일·자본재·항공방산·운송</a></p>
   </div>
 
   <div class="lsec">
-    <p class="lnote"><strong>Growth·Value 공통 방법론:</strong> PIT(point-in-time) 보정 — 16분기 연속 흑자를 각 시점마다 롤링 재판정한 유니버스(2013Q4~2026) 사용. alpha는 평균이 아닌 <strong>중앙값(median)</strong>, 전부 <strong>SPY(S&amp;P 500) 대비 초과수익</strong>. 방법론 상세는 STATUS.md 참조.</p>
+    <div class="lh1">2단계 — 이익 추세 판단</div>
+    <p class="lsub">영업이익 <abbr class="term" title="연평균 성장 속도 — 1년간 몇 %씩 늘었는지">CAGR</abbr> 기준. 좋은 순서대로 정렬.</p>
+    <div class="lcard-grid" style="grid-template-columns:repeat(5,1fr)">
+      <div class="lcard"><span class="lbadge up2">▲▲ 가속</span><div class="lcard-b" style="margin-top:8px">이익이 늘고 있고, 그 <b>속도까지 빨라지는 중</b> — 가장 좋은 신호</div></div>
+      <div class="lcard"><span class="lbadge up1">▲ 성장</span><div class="lcard-b" style="margin-top:8px">최근 1년간 영업이익이 늘었다 (다만 속도는 둔화)</div></div>
+      <div class="lcard"><span class="lbadge flat">— 보합</span><div class="lcard-b" style="margin-top:8px">뚜렷한 추세 없음 (데이터 부족 등)</div></div>
+      <div class="lcard"><span class="lbadge dn1">▼ 1년 감소</span><div class="lcard-b" style="margin-top:8px">최근 1년간 영업이익이 줄었다</div></div>
+      <div class="lcard"><span class="lbadge dn2">▼▼ 2년 감소</span><div class="lcard-b" style="margin-top:8px">최근 1년, 그 이전 1년 모두 감소 — <b>실적이 계속 나빠지는 중</b></div></div>
+    </div>
+    <p class="lnote">계산 방식: TTM(직전 4분기 누적) 기준으로 분기 단위 기하평균 → 연환산. "1년 CAGR"은 최근 4분기를 그 직전 4분기와 비교.</p>
   </div>
 
   <div class="lsec">
-    <div class="lh1">Growth 버킷 — 매수 시뮬 / 매도 시뮬</div>
+    <div class="lh1">2단계 — 밸류(주가 수준) 판단</div>
+    <p class="lsub">지금 주가 배수(<abbr class="term" title="주가가 이익·매출·영업이익·현금흐름 대비 몇 배인지">P/E·P/S·P/OP·P/FCF</abbr>)를 최근 4년 평균과 비교.</p>
+    <div class="lcard-grid">
+      <div class="lcard"><span class="lbadge cheap">저평가</span><div class="lcard-b" style="margin-top:8px">지금 주가가 4년 평균보다 <b>25% 이상 싸다</b> — 살 만한 가격일 가능성 (백테스트로 찾은 최적 임계값)</div></div>
+      <div class="lcard"><span class="lbadge rich">고평가</span><div class="lcard-b" style="margin-top:8px">지금 주가가 4년 평균보다 <b>25% 이상 비싸다</b></div></div>
+      <div class="lcard"><span class="lbadge mix">혼재</span><div class="lcard-b" style="margin-top:8px">배수마다 판단이 엇갈림 — 일부는 싸고 일부는 비쌈</div></div>
+      <div class="lcard"><span class="lbadge neu">중립</span><div class="lcard-b" style="margin-top:8px">모든 배수가 평균 대비 ±25% 이내 — 특별히 싸지도 비싸지도 않음</div></div>
+    </div>
+    <p class="lnote">4개 배수(P/E·P/S·P/OP·P/FCF)를 각각 독립적으로 판정한다. 예) "저평가(P/S+P/E)" = 그 두 배수만 4년 평균보다 25%+ 낮다는 뜻. 4년 평균은 과거 16분기 기하평균, 현재값은 최근 20일 평균.</p>
+  </div>
+
+  <div class="lsec">
+    <p class="lnote"><b>Growth·Value 공통 방법론:</b> <abbr class="term" title="미래 정보를 미리 알고 계산한 게 아니라, 그 당시 알 수 있었던 정보만으로 재현한 백테스트">PIT(그 시점 기준) 검증</abbr> — 16분기 연속 흑자 여부를 각 시점마다 그때 기준으로 다시 판정한 유니버스(2013Q4~2026)를 사용했다. 아래 alpha는 평균이 아닌 <b>중앙값</b>, 전부 <b>S&amp;P500 대비 초과수익</b>. 방법론 상세는 STATUS.md 참조.</p>
+  </div>
+
+  <div class="lsec">
+    <div class="lh1">3단계 — Growth 버킷 매수/매도 신호</div>
 
     <div class="lgrp">
-      <div class="lgrp-h">▸ 매수 시뮬 (진입 조건)</div>
-      <table class="ltbl">
-        <thead><tr><th style="width:36px">신호</th><th>조건</th><th style="text-align:right;width:55px">빈도</th><th style="text-align:right;width:90px">12m alpha</th><th style="text-align:right;width:90px">18m alpha</th><th style="text-align:right;width:90px">24m alpha</th></tr></thead>
-        <tbody>
-          <tr>
-            <td class="dim">—</td>
-            <td>베이스 — 신호 없음, 성장 버킷 전체 중앙값</td>
-            <td class="num">100%</td>
-            <td class="sw2" style="text-align:right">−1.4%</td>
-            <td class="sw2" style="text-align:right">−1.7%</td>
-            <td class="sw2" style="text-align:right">−2.1%</td>
-          </tr>
-          <tr>
-            <td class="ss">▲</td>
-            <td>매출 2y CAGR &gt; 4y CAGR (가속) <em>and</em> P/OP 저평가 <em>and</em> CAPEX 1y↓</td>
-            <td class="num">2.1%</td>
-            <td class="ev" style="text-align:right"><strong>+2.6%</strong></td>
-            <td class="ev" style="text-align:right">+4.4%</td>
-            <td class="ev" style="text-align:right">+2.7%</td>
-          </tr>
-        </tbody>
-      </table>
-      <p class="lnote"><strong>▲는 전 구간 우위 유지:</strong> 베이스 대비 12m +4.0%p, 18m +6.1%p, 24m +4.8%p. Energy·소재·유틸 편입 후 베이스 자체가 더 낮아지며(−0.8%→−1.4% 등) 신호의 절대 수익률도 함께 낮아졌지만 격차는 전 구간에서 견고. 이 신호(매출 2y가속 + P/OP 저평가 + CAPEX 삭감) 하나만 매수 기준으로 채택.</p>
+      <div class="sig-hd"><span class="lbadge up2">▲ 매수 신호</span><span class="sig-freq">성장주 전체의 2.1%에서만 발생</span></div>
+      <p class="cond-plain">최근 2년간 매출 성장 속도가 더 빨라지고 있고, 이익 대비 주가는 저평가 상태이며, 설비투자는 줄이고 있다.</p>
+      <p class="cond-tech">조건식: 매출 2y CAGR &gt; 4y CAGR(가속) <em>and</em> P/OP 저평가 <em>and</em> CAPEX 1y↓</p>
+      <div class="dbar-block">
+        <div class="dbar-col">
+          <div class="dbar-h">12개월 후</div>
+          <div class="dbar-track"><div class="dbar-mid"></div>
+            <div class="dbar base" style="right:50%;width:12.7%"></div>
+            <div class="dbar sig pos" style="left:50%;width:23.6%"></div>
+          </div>
+          <div class="dbar-legend"><span class="l-base">신호 없음 −1.4%</span><span class="l-sig pos">신호 있음 +2.6%</span></div>
+        </div>
+        <div class="dbar-col">
+          <div class="dbar-h">18개월 후</div>
+          <div class="dbar-track"><div class="dbar-mid"></div>
+            <div class="dbar base" style="right:50%;width:15.5%"></div>
+            <div class="dbar sig pos" style="left:50%;width:40%"></div>
+          </div>
+          <div class="dbar-legend"><span class="l-base">신호 없음 −1.7%</span><span class="l-sig pos">신호 있음 +4.4%</span></div>
+        </div>
+        <div class="dbar-col">
+          <div class="dbar-h">24개월 후</div>
+          <div class="dbar-track"><div class="dbar-mid"></div>
+            <div class="dbar base" style="right:50%;width:19.1%"></div>
+            <div class="dbar sig pos" style="left:50%;width:24.5%"></div>
+          </div>
+          <div class="dbar-legend"><span class="l-base">신호 없음 −2.1%</span><span class="l-sig pos">신호 있음 +2.7%</span></div>
+        </div>
+      </div>
+      <p class="lnote">회색 막대(신호 없이 그냥 들고 있었을 때)보다 초록 막대(신호가 떴을 때)가 전 구간에서 확실히 낫다 — 격차는 12개월 +4.0%p, 18개월 +6.1%p, 24개월 +4.8%p. 이 조합(매출 가속+P/OP 저평가+CAPEX 삭감) 하나만 매수 기준으로 채택했다.</p>
     </div>
 
     <div class="lgrp">
-      <div class="lgrp-h">▸ 매도 시뮬 (청산 조건)</div>
-      <table class="ltbl">
-        <thead><tr><th style="width:36px">신호</th><th>조건</th><th style="text-align:right;width:55px">빈도</th><th style="text-align:right;width:90px">alpha_3m</th><th style="text-align:right;width:90px">alpha_6m</th><th style="text-align:right;width:90px">alpha_9m</th></tr></thead>
-        <tbody>
-          <tr><td class="dim">—</td><td>베이스 — 신호 없음, 성장 버킷 전체 중앙값</td><td class="num">100%</td><td class="sw2" style="text-align:right">−0.2%</td><td class="sw2" style="text-align:right">−0.6%</td><td class="sw2" style="text-align:right">−1.1%</td></tr>
-          <tr><td class="sw">▼</td><td>rev↓ <em>and</em> (P/OP고평가+CAPEX↑ <em>or</em> P/FCF고평가+CAPEX가속)</td><td class="num">4.7%</td><td class="sw" style="text-align:right">−1.8%</td><td class="sw" style="text-align:right">−3.2%</td><td class="sw" style="text-align:right">−5.1%</td></tr>
-        </tbody>
-      </table>
-      <p class="lnote">매출 역성장(rev↓)에 고평가(P/OP 또는 P/FCF)와 CAPEX 부담이 겹칠 때 발동. 베이스 대비 9m 기준 −4.0%p.</p>
+      <div class="sig-hd"><span class="lbadge dn2">▼ 매도 신호</span><span class="sig-freq">성장주 전체의 4.7%에서 발생</span></div>
+      <p class="cond-plain">매출이 줄어드는데, 주가는 여전히 비싸고(고평가) 설비투자 부담까지 늘고 있다.</p>
+      <p class="cond-tech">조건식: 매출↓ <em>and</em> (P/OP고평가+CAPEX↑ <em>or</em> P/FCF고평가+CAPEX가속)</p>
+      <div class="dbar-block">
+        <div class="dbar-col">
+          <div class="dbar-h">3개월 후</div>
+          <div class="dbar-track"><div class="dbar-mid"></div>
+            <div class="dbar base" style="right:50%;width:1.8%"></div>
+            <div class="dbar sig neg" style="right:50%;width:16.4%"></div>
+          </div>
+          <div class="dbar-legend"><span class="l-base">신호 없음 −0.2%</span><span class="l-sig neg">신호 있음 −1.8%</span></div>
+        </div>
+        <div class="dbar-col">
+          <div class="dbar-h">6개월 후</div>
+          <div class="dbar-track"><div class="dbar-mid"></div>
+            <div class="dbar base" style="right:50%;width:5.5%"></div>
+            <div class="dbar sig neg" style="right:50%;width:29.1%"></div>
+          </div>
+          <div class="dbar-legend"><span class="l-base">신호 없음 −0.6%</span><span class="l-sig neg">신호 있음 −3.2%</span></div>
+        </div>
+        <div class="dbar-col">
+          <div class="dbar-h">9개월 후</div>
+          <div class="dbar-track"><div class="dbar-mid"></div>
+            <div class="dbar base" style="right:50%;width:10%"></div>
+            <div class="dbar sig neg" style="right:50%;width:46.4%"></div>
+          </div>
+          <div class="dbar-legend"><span class="l-base">신호 없음 −1.1%</span><span class="l-sig neg">신호 있음 −5.1%</span></div>
+        </div>
+      </div>
+      <p class="lnote">빨간 막대가 회색 막대보다 훨씬 길다 — 이 신호가 뜨면 그냥 들고 있는 것보다 손실이 더 크게 난다는 뜻(9개월 기준 격차 −4.0%p). 매출 역성장에 고평가+CAPEX 부담이 겹칠 때 발동한다.</p>
     </div>
   </div><!-- /lsec Growth -->
 
   <div class="lsec">
-    <div class="lh1">Value 버킷 — 매수 시뮬 / 매도 시뮬</div>
+    <div class="lh1">3단계 — Value 버킷 매수/매도 신호</div>
 
     <div class="lgrp">
-      <div class="lgrp-h">▸ 매수 시뮬 (진입 조건)</div>
-      <table class="ltbl">
-        <thead><tr><th style="width:36px">신호</th><th>조건</th><th style="text-align:right;width:55px">빈도</th><th style="text-align:right;width:90px">12m alpha</th><th style="text-align:right;width:90px">18m alpha</th><th style="text-align:right;width:90px">24m alpha</th></tr></thead>
-        <tbody>
-          <tr>
-            <td class="dim">—</td>
-            <td>베이스 — 신호 없음, 가치 버킷 전체 중앙값</td>
-            <td class="num">100%</td>
-            <td class="sw2" style="text-align:right">−1.2%</td>
-            <td class="sw2" style="text-align:right">−1.5%</td>
-            <td class="sw2" style="text-align:right">−1.8%</td>
-          </tr>
-          <tr>
-            <td class="ss">▲</td>
-            <td>매출 2y CAGR 가속 <em>and</em> P/OP 저평가 <em>and</em> CAPEX 1y↓</td>
-            <td class="num">1.8%</td>
-            <td class="ev" style="text-align:right"><strong>+7.9%</strong></td>
-            <td class="ev" style="text-align:right"><strong>+10.3%</strong></td>
-            <td class="ev" style="text-align:right">+7.4%</td>
-          </tr>
-        </tbody>
-      </table>
-      <p class="lnote"><strong>▲는 Growth보다 더 강함:</strong> 베이스 대비 12m +9.1%p, 18m +11.8%p, 24m +9.2%p — 전 구간 확대되는 패턴으로 가치 버킷에서 오히려 더 뚜렷한 edge. Energy·소재·유틸 편입 후에도 이 우위는 거의 그대로 유지(원래 +9.2%p/+11.5%p/+8.7%p). 매수 신호는 이 조합 하나로 단순화.</p>
+      <div class="sig-hd"><span class="lbadge up2">▲ 매수 신호</span><span class="sig-freq">가치주 전체의 1.8%에서만 발생</span></div>
+      <p class="cond-plain">최근 2년간 매출 성장 속도가 더 빨라지고 있고, 이익 대비 주가는 저평가 상태이며, 설비투자는 줄이고 있다. (Growth와 동일 조건)</p>
+      <p class="cond-tech">조건식: 매출 2y CAGR 가속 <em>and</em> P/OP 저평가 <em>and</em> CAPEX 1y↓</p>
+      <div class="dbar-block">
+        <div class="dbar-col">
+          <div class="dbar-h">12개월 후</div>
+          <div class="dbar-track"><div class="dbar-mid"></div>
+            <div class="dbar base" style="right:50%;width:10.9%"></div>
+            <div class="dbar sig pos" style="left:50%;width:71.8%"></div>
+          </div>
+          <div class="dbar-legend"><span class="l-base">신호 없음 −1.2%</span><span class="l-sig pos">신호 있음 +7.9%</span></div>
+        </div>
+        <div class="dbar-col">
+          <div class="dbar-h">18개월 후</div>
+          <div class="dbar-track"><div class="dbar-mid"></div>
+            <div class="dbar base" style="right:50%;width:13.6%"></div>
+            <div class="dbar sig pos" style="left:50%;width:93.6%"></div>
+          </div>
+          <div class="dbar-legend"><span class="l-base">신호 없음 −1.5%</span><span class="l-sig pos">신호 있음 +10.3%</span></div>
+        </div>
+        <div class="dbar-col">
+          <div class="dbar-h">24개월 후</div>
+          <div class="dbar-track"><div class="dbar-mid"></div>
+            <div class="dbar base" style="right:50%;width:16.4%"></div>
+            <div class="dbar sig pos" style="left:50%;width:67.3%"></div>
+          </div>
+          <div class="dbar-legend"><span class="l-base">신호 없음 −1.8%</span><span class="l-sig pos">신호 있음 +7.4%</span></div>
+        </div>
+      </div>
+      <p class="lnote"><b>Growth보다 더 강한 신호:</b> 격차가 12개월 +9.1%p, 18개월 +11.8%p, 24개월 +9.2%p로, 전 구간에서 오히려 더 뚜렷하다. 매수 신호는 이 조합 하나로 단순화했다.</p>
     </div>
 
     <div class="lgrp">
-      <div class="lgrp-h">▸ 매도 시뮬 (청산 조건)</div>
-      <table class="ltbl">
-        <thead><tr><th style="width:36px">신호</th><th>조건</th><th style="text-align:right;width:55px">빈도</th><th style="text-align:right;width:90px">alpha_3m</th><th style="text-align:right;width:90px">alpha_6m</th><th style="text-align:right;width:90px">alpha_9m</th></tr></thead>
-        <tbody>
-          <tr><td class="dim">—</td><td>베이스 — 신호 없음, 가치 버킷 전체 중앙값</td><td class="num">100%</td><td class="sw2" style="text-align:right">−0.2%</td><td class="sw2" style="text-align:right">−0.5%</td><td class="sw2" style="text-align:right">−0.9%</td></tr>
-          <tr><td class="sw">▼</td><td>rev↓ <em>and</em> (P/OP고평가+CAPEX↑ <em>or</em> P/FCF고평가+CAPEX가속)</td><td class="num">4.7%</td><td class="sw" style="text-align:right">−1.9%</td><td class="sw" style="text-align:right">−3.2%</td><td class="sw" style="text-align:right">−5.1%</td></tr>
-        </tbody>
-      </table>
-      <p class="lnote">Growth와 동일 조건 사용 (가치 버킷에서도 동일하게 유효함을 확인). 베이스 대비 9m 기준 −4.2%p — Growth(−4.0%p)보다 소폭 더 강한 매도 신호.</p>
+      <div class="sig-hd"><span class="lbadge dn2">▼ 매도 신호</span><span class="sig-freq">가치주 전체의 4.7%에서 발생</span></div>
+      <p class="cond-plain">매출이 줄어드는데, 주가는 여전히 비싸고(고평가) 설비투자 부담까지 늘고 있다. (Growth와 동일 조건)</p>
+      <p class="cond-tech">조건식: 매출↓ <em>and</em> (P/OP고평가+CAPEX↑ <em>or</em> P/FCF고평가+CAPEX가속)</p>
+      <div class="dbar-block">
+        <div class="dbar-col">
+          <div class="dbar-h">3개월 후</div>
+          <div class="dbar-track"><div class="dbar-mid"></div>
+            <div class="dbar base" style="right:50%;width:1.8%"></div>
+            <div class="dbar sig neg" style="right:50%;width:17.3%"></div>
+          </div>
+          <div class="dbar-legend"><span class="l-base">신호 없음 −0.2%</span><span class="l-sig neg">신호 있음 −1.9%</span></div>
+        </div>
+        <div class="dbar-col">
+          <div class="dbar-h">6개월 후</div>
+          <div class="dbar-track"><div class="dbar-mid"></div>
+            <div class="dbar base" style="right:50%;width:4.5%"></div>
+            <div class="dbar sig neg" style="right:50%;width:29.1%"></div>
+          </div>
+          <div class="dbar-legend"><span class="l-base">신호 없음 −0.5%</span><span class="l-sig neg">신호 있음 −3.2%</span></div>
+        </div>
+        <div class="dbar-col">
+          <div class="dbar-h">9개월 후</div>
+          <div class="dbar-track"><div class="dbar-mid"></div>
+            <div class="dbar base" style="right:50%;width:8.2%"></div>
+            <div class="dbar sig neg" style="right:50%;width:46.4%"></div>
+          </div>
+          <div class="dbar-legend"><span class="l-base">신호 없음 −0.9%</span><span class="l-sig neg">신호 있음 −5.1%</span></div>
+        </div>
+      </div>
+      <p class="lnote">Growth와 동일 조건인데, 가치 버킷에서도 똑같이 유효함을 확인했다 (9개월 기준 격차 −4.2%p로 Growth보다 소폭 더 강함).</p>
     </div>
   </div><!-- /lsec Value -->
 
   <div class="lsec">
-    <div class="lh1">정적 신호 검증 — 동적 포트폴리오 시뮬 (Growth/Value)</div>
-    <p class="lnote" style="margin-bottom:10px">위 표들은 "신호가 떴을 때 1건의 알파"만 보여줌. 실제로 <strong>10슬롯 포트폴리오</strong>(12m 최소·18m 최대 보유, ▲ 뜨면 매수·▼ 뜨면 즉시 매도·무신호 12개월↑ 중 최고령 교체)를 이 신호로 계속 회전 매매했다면 어떤 결과가 나왔는지 별도 시뮬(`scripts/simulate_growth_portfolio.py`, PIT 이벤트 기준)로 검증.</p>
-    <table class="ltbl">
-      <thead><tr><th>버킷</th><th style="width:150px">기간</th><th style="text-align:right;width:100px">포트폴리오 CAGR</th><th style="text-align:right;width:90px">SPY CAGR</th><th style="text-align:right;width:80px">초과</th><th style="text-align:right;width:110px">총수익률</th></tr></thead>
-      <tbody>
-        <tr><td>growth</td><td>12.5년(2013-12~2026-07)</td><td class="ev" style="text-align:right"><strong>+26.69%</strong></td><td class="num" style="text-align:right">+14.05%</td><td class="ev" style="text-align:right">+12.63%p</td><td class="ev" style="text-align:right">+1843.2%</td></tr>
-        <tr><td>value</td><td>12.5년(2013-12~2026-07)</td><td class="ev" style="text-align:right"><strong>+25.53%</strong></td><td class="num" style="text-align:right">+14.05%</td><td class="ev" style="text-align:right">+11.48%p</td><td class="ev" style="text-align:right">+1632.1%</td></tr>
-      </tbody>
-    </table>
-    <p class="lguide" style="margin-top:8px"><strong>종합:</strong> 정적 시뮬의 신호를 실제 회전매매에 그대로 적용해도 growth·value 둘 다 SPY 대비 확실한 초과수익 유지. 단, 유니버스 자체가 오늘 기준 생존 종목 위주로 구성돼 있어(인수합병·상장폐지 종목 누락) 절대 수익률은 과장돼 있을 가능성이 있음 — 방법론 상세는 STATUS.md 참조.</p>
+    <div class="lh1">4단계 — 실제로 매매했다면? (동적 포트폴리오 검증)</div>
+    <p class="lsub" style="margin-bottom:10px">위 막대그래프는 "신호가 떴을 때 한 번 사서 계속 들고 있었다면"의 결과다. 실제로 <b>10슬롯 포트폴리오</b>(최소 12개월·최대 18개월 보유, ▲가 뜨면 매수·▼가 뜨면 즉시 매도, 신호 없이 12개월 넘은 것 중 가장 오래된 것부터 교체)를 이 신호로 계속 회전매매했다면 어떤 결과가 나왔는지 별도 시뮬로 검증했다.</p>
+    <div class="stat-grid">
+      <div class="stat-tile">
+        <div class="stat-tile-h"><span class="bg">growth</span> 버킷 · 12.5년 (2013.12 ~ 2026.07)</div>
+        <div class="stat-row">
+          <span class="stat-num">+26.69%</span>
+          <span class="stat-vs">연평균 수익률 · S&amp;P500 <strong>+14.05%</strong> 대비 <strong>+12.63%p</strong> 초과 · 누적 총수익률 <strong>+1843.2%</strong></span>
+        </div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-tile-h"><span class="bv">value</span> 버킷 · 12.5년 (2013.12 ~ 2026.07)</div>
+        <div class="stat-row">
+          <span class="stat-num">+25.53%</span>
+          <span class="stat-vs">연평균 수익률 · S&amp;P500 <strong>+14.05%</strong> 대비 <strong>+11.48%p</strong> 초과 · 누적 총수익률 <strong>+1632.1%</strong></span>
+        </div>
+      </div>
+    </div>
+    <p class="lguide"><b>종합:</b> 정적 시뮬의 신호를 실제 회전매매에 그대로 적용해도 growth·value 둘 다 S&amp;P500 대비 확실한 초과수익을 유지한다. 다만 유니버스 자체가 오늘 기준 생존 종목 위주로 구성돼 있어(인수합병·상장폐지 종목 누락) 절대 수익률은 과장돼 있을 가능성이 있다 — 방법론 상세는 STATUS.md 참조.</p>
   </div><!-- /lsec 동적시뮬 -->
 
 </div><!-- /logic -->
