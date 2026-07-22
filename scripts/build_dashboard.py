@@ -26,22 +26,15 @@ OUT          = ROOT / 'docs' / 'index.html'
 # ── 데이터 로드 ───────────────────────────────────────────────────────────────
 
 def load_snapshots() -> pd.DataFrame:
-    """전체 버킷 최신 스냅샷 (ticker당 마지막 anchor_term)."""
-    parts = []
-    for bucket in ['cyclical', 'growth', 'value', 'unclassified']:
-        path = ANA_DIR / f'{bucket}_stocks.csv'
-        if not path.exists():
-            continue
-        df = pd.read_csv(path)
-        df = df.sort_values('anchor_term').groupby('ticker').last().reset_index()
-        parts.append(df)
-    snap = pd.concat(parts, ignore_index=True)
-    # 중복 ticker 제거 — growth+value 등 복수 버킷 종목은 최신 anchor_term 기준 한 행만 유지
+    """전체 종목 최신 스냅샷 (ticker당 마지막 anchor_term)."""
+    snap = pd.read_csv(ANA_DIR / 'all_stocks.csv')
+    snap['bucket'] = snap['bucket'].fillna('')
     snap = snap.sort_values('anchor_term').groupby('ticker').last().reset_index()
 
     univ = pd.read_csv(ROOT / 'data' / 'stock_universe.csv', usecols=['ticker', 'company', 'biz_model'])
     snap = snap.merge(univ, on='ticker', how='left')
-    snap['company'] = snap['company'].fillna('')
+    snap['company']   = snap['company'].fillna('')
+    snap['biz_model'] = snap['biz_model'].fillna('')
     return snap
 
 
@@ -179,10 +172,7 @@ def _high_val(row, cur_key, avg_key, T_HIGH=1.25) -> bool:
 
 
 def _sig_prefix(txt: str) -> str:
-    for p in ('▲', '★★', '★', '○', '✗'):
-        if txt.startswith(p):
-            return p
-    return ''
+    return '▲' if txt.startswith('▲') else ''
 
 
 def signal_growth(row) -> str:
@@ -210,7 +200,7 @@ def get_signals(row) -> list[tuple[str, str]]:
     """매수 신호 수집 — 성장·가치.
 
     Cyclical 버킷은 가격→팩터 역방향 재검증 결과 반도체(MU/AMAT) 외엔 타이밍 신호로
-    쓸 수 없다는 결론이 나 매수/매도 신호 자체를 폐기함. 상세: docs/cyclical_classification_summary.md
+    쓸 수 없다는 결론이 나 매수/매도 신호 자체를 폐기함. 상세: docs/cyclical/cyclical_classification_summary.md
     """
     labels = [b.strip() for b in str(row.get('bucket', '')).split(',')]
     out = []
@@ -260,7 +250,7 @@ def get_sell_signals(row) -> list[tuple[str, str]]:
     """매도 신호 수집 — 성장·가치.
 
     Cyclical 버킷은 가격→팩터 역방향 재검증 결과 반도체(MU/AMAT) 외엔 타이밍 신호로
-    쓸 수 없다는 결론이 나 매수/매도 신호 자체를 폐기함. 상세: docs/cyclical_classification_summary.md
+    쓸 수 없다는 결론이 나 매수/매도 신호 자체를 폐기함. 상세: docs/cyclical/cyclical_classification_summary.md
     """
     labels = [b.strip() for b in str(row.get('bucket', '')).split(',')]
     out = []
@@ -323,6 +313,7 @@ def build_stocks(
     df = df.merge(shares,  on='ticker', how='left')
     df = df.merge(perf,    on='ticker', how='left')
     df = df.merge(val_now, on='ticker', how='left')
+    df['val_asof'] = df['val_asof'].fillna('')
     df['mktcap'] = df['price'] * df['shares_latest']
 
     stocks = []
@@ -334,7 +325,6 @@ def build_stocks(
             'company':       str(d.get('company', '') or ''),
             'biz_model':     str(d.get('biz_model', '') or ''),
             'bucket':        str(d.get('bucket', '')),
-            'cyclical_type': str(d.get('cyclical_type', '') or ''),
             'anchor_term':   str(d.get('anchor_term', '')),
             # 현재가 / 시총
             'price':         _sf(d.get('price'), 2),
@@ -493,13 +483,11 @@ td{padding:7px 8px;border-bottom:1px solid #252838;white-space:nowrap;font-size:
 .neg{color:var(--red)!important}
 
 .bg{color:var(--green)}
-.bc{color:var(--yellow)}
 .bv{color:var(--purple)}
 .bu{color:var(--muted)}
 
 .sep{padding-left:20px}
 .ss{color:var(--green);font-weight:600}
-.so{color:#86efac}
 .sw{color:var(--red);font-weight:600}
 .sw2{color:#fca5a5}
 
@@ -660,8 +648,7 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
     <button class="btn on" data-f="bucket" data-v="all">전체</button>
     <button class="btn" data-f="bucket" data-v="growth">growth</button>
     <button class="btn" data-f="bucket" data-v="value">value</button>
-    <button class="btn" data-f="bucket" data-v="cyclical">cyclical</button>
-    <button class="btn" data-f="bucket" data-v="unclassified">unclassified</button>
+    <button class="btn" data-f="bucket" data-v="unclassified">미분류</button>
   </div>
   <div class="cg">
     <span class="cg-lbl">매수신호:</span>
@@ -715,8 +702,8 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
     <div class="lflow">
       <div class="lstep">
         <div class="lstep-num">1</div>
-        <div class="lstep-title">종목을 3그룹으로 나눈다</div>
-        <div class="lstep-body">실적 성격이 다른 종목을 <b>growth(성장)·value(가치)·cyclical(경기민감)</b>로 나눠 따로 비교한다.</div>
+        <div class="lstep-title">종목을 그룹으로 나눈다</div>
+        <div class="lstep-body">실적 성격이 다른 종목을 <b>growth(성장)·value(가치)</b>로 나눠 따로 비교한다.</div>
       </div>
       <div class="lstep">
         <div class="lstep-num">2</div>
@@ -753,9 +740,7 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
     <div class="lcard-grid">
       <div class="lcard"><div class="lcard-h bg">growth</div><div class="lcard-b">16분기(4년) 연속 <b>영업이익 흑자</b> — 꾸준히 돈을 버는 성장주</div></div>
       <div class="lcard"><div class="lcard-h bv">value</div><div class="lcard-b">16분기(4년) 연속 <b>순이익 흑자</b> — 이익 안정성이 검증된 가치주</div></div>
-      <div class="lcard"><div class="lcard-h bc">cyclical</div><div class="lcard-b">반도체·자동차·항공방산·건설·자본재·레저·리테일 등 경기 흐름에 민감한 업종. 분류용 라벨일 뿐 <b>매수/매도 신호는 없음</b></div></div>
     </div>
-    <p class="lnote" style="margin-top:10px">cyclical은 가격→팩터 역방향 재검증 결과 반도체 외엔 타이밍 신호로 쓸 수 없다는 결론이 확정돼, 신호는 대시보드에서 제거했다. 개별 업종 국면 판단은 참고 문서로: <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_classification_summary.md" target="_blank">종합분류</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_semiconductor_analysis.md" target="_blank">반도체</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_energy_materials_analysis.md" target="_blank">에너지·소재</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_construction_analysis.md" target="_blank">건설</a> · <a href="https://github.com/idea-hwan/us-stock-portfolio/blob/main/docs/cyclical_leisure_retail_capital_transport_analysis.md" target="_blank">레저·리테일·자본재·항공방산·운송</a></p>
   </div>
 
   <div class="lsec">
@@ -1016,12 +1001,7 @@ function uvCls(v) {
 }
 
 function sigRank(s) {
-  if (s.includes('▲'))  return 3;
-  if (s.includes('★★')) return 3;
-  if (s.includes('★'))  return 2;
-  if (s.includes('○'))  return 1;
-  if (s.includes('✗'))  return -1;
-  return 0;
+  return s.includes('▲') ? 1 : 0;
 }
 function sellCls(v) {
   if (!v || v === '—') return '';
@@ -1029,19 +1009,16 @@ function sellCls(v) {
 }
 
 function getPrimary(bucket) {
-  const lbls = bucket.split(',');
-  if (lbls.some(l => l.startsWith('cyclical'))) return 'cyclical';
-  if (lbls.includes('growth'))                   return 'growth';
-  if (lbls.includes('value'))                    return 'value';
+  const lbls = bucket.split(',').filter(Boolean);
+  if (lbls.includes('growth')) return 'growth';
+  if (lbls.includes('value'))  return 'value';
   return 'unclassified';
 }
 function getFiltered() {
   return STOCKS.filter(s => {
     if (fBucket !== 'all') {
-      const lbls = s.bucket.split(',');
-      const hit = fBucket === 'cyclical'
-        ? lbls.some(l => l.startsWith('cyclical'))
-        : lbls.includes(fBucket);
+      const lbls = s.bucket.split(',').filter(Boolean);
+      const hit = fBucket === 'unclassified' ? lbls.length === 0 : lbls.includes(fBucket);
       if (!hit) return false;
     }
     if (fSig === 'any' && s.signal === '—') return false;
@@ -1064,7 +1041,7 @@ function buildDetail(s) {
   const r = (lbl, val) =>
     `<div class="drow"><span class="dl">${lbl}</span><span class="dv">${val}</span></div>`;
 
-  const bktFull = s.bucket + (s.cyclical_type ? '/' + s.cyclical_type : '');
+  const bktFull = s.bucket || '(미분류)';
 
   const gHdr = `<div class="gr-hdr"><div></div><div style="text-align:right">1y</div><div style="text-align:right">2y</div><div style="text-align:right">4y</div></div>`;
   const gRow = (lbl, y1, y2, y4) =>
@@ -1132,12 +1109,9 @@ function renderTable() {
 
   stocks.forEach((s, idx) => {
     const pri  = getPrimary(s.bucket);
-    const bCls = pri === 'growth' ? 'bg' : pri === 'cyclical' ? 'bc'
-               : pri === 'value'  ? 'bv' : 'bu';
-    const sCls = (s.signal.includes('▲') || s.signal.includes('★★')) ? 'ss'
-               : (s.signal.includes('★') || s.signal.includes('○')) ? 'so'
-               : s.signal.includes('✗') ? 'sw' : '';
-    const bktLbl = s.bucket;
+    const bCls = pri === 'growth' ? 'bg' : pri === 'value' ? 'bv' : 'bu';
+    const sCls = s.signal.includes('▲') ? 'ss' : '';
+    const bktLbl = s.bucket || '미분류';
 
     const rc = v => `<span class="${pcls(v)}">${fmtPct(v)}</span>`;
 

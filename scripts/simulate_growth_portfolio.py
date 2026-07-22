@@ -6,8 +6,9 @@ Growth/Value 버킷 포트폴리오 회전 전략 시뮬레이션 (이벤트 기
 기존 버전은 growth_stocks.csv(현재 시점 기준 static 분류를 전체 과거에 역산 적용 — 생존편향)를
 그대로 썼고, 신호도 ★★/★/○ 다단계였음. 이번엔:
   - 이벤트 소스를 pit_buckets16 테이블(각 앵커마다 롤링 재판정된 growth_pit16/value_pit16)로 교체
-  - 4개 분류 CSV(growth/value/cyclical/unclassified)를 합쳐 종목의 전체 팩터 히스토리를 복원한 뒤
-    PIT 플래그로 필터 (static 분류에서 빠진 과거 적격 구간까지 포함)
+  - 종목별 전체 팩터 히스토리(data/analytics/all_stocks.csv)에 PIT 플래그로 필터
+    (2026-07-22: classify_stocks.py가 버킷별 4개 CSV로 쪼개던 방식을 폐지하고 단일 CSV로 통합 —
+    쪼개면 종목의 "현재" 라벨 기준으로만 파일이 갈려 과거 적격 구간이 통째로 누락되는 문제가 있었음)
   - 신호를 build_dashboard.py의 최종 단일조건(▲ 매수 / ▼ 매도)으로 통일 — growth/value 동일 로직
 
 규칙 (버킷 공통):
@@ -94,14 +95,8 @@ def signal_sell(row) -> str:
 # ── 데이터 로드 ────────────────────────────────────────────────────────────
 
 def load_full_factor_panel() -> pd.DataFrame:
-    """4개 분류 CSV(growth/value/cyclical/unclassified)를 합쳐 종목의 전체 팩터
-    히스토리를 복원. 각 CSV는 '현재 시점 기준' 분류라 어떤 종목이 지금은 growth가
-    아니어도 과거 특정 분기엔 growth_pit16=True였을 수 있어, 개별 CSV만 쓰면
-    그 구간이 누락된다(2026-07-03 확인: growth 1,189개 PIT 이벤트 누락)."""
-    frames = [pd.read_csv(ANA_DIR / f'{name}_stocks.csv')
-              for name in ('growth', 'value', 'cyclical', 'unclassified')]
-    panel = pd.concat(frames, ignore_index=True)
-    panel = panel.drop_duplicates(subset=['ticker', 'anchor_term'])
+    """전종목 전체 팩터 히스토리 (data/analytics/all_stocks.csv, 종목당 한 행씩)."""
+    panel = pd.read_csv(ANA_DIR / 'all_stocks.csv')
     panel['filing_anchor_date'] = pd.to_datetime(panel['filing_anchor_date'])
     return panel
 
