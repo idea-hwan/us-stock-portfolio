@@ -187,7 +187,7 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
 .stat-vs{font-size:11px;color:var(--muted)}
 .stat-vs strong{color:var(--text);font-weight:700}
 
-/* 매수 신호 주간 리포트 */
+/* 매수·매도 신호 주간 리포트 */
 .reports-wrap{display:none;max-width:920px;margin-top:4px}
 .report-select-row{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .report-select-row label{color:var(--muted);font-size:12px}
@@ -239,7 +239,7 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
     <input type="text" id="search" class="search" placeholder="Ticker 검색…">
   </div>
   <div class="cg" style="margin-left:auto">
-    <button class="btn" id="btn-reports" onclick="toggleReports()">매수 신호 리포트</button>
+    <button class="btn" id="btn-reports" onclick="toggleReports()">매수·매도 신호 리포트</button>
     <button class="btn" id="btn-logic" onclick="toggleLogic()">판단 로직</button>
   </div>
 </div>
@@ -515,11 +515,60 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
 <div class="report-select-row">
   <label for="report-date-select">주차 선택:</label>
   <select id="report-date-select" onchange="showReportDate(this.value)">
-<option value="2026-07-21" selected>2026-07-21</option>
+<option value="2026-07-28" selected>2026-07-28</option>
+<option value="2026-07-21">2026-07-21</option>
 <option value="2026-07-15">2026-07-15</option>
   </select>
 </div>
-<div class="report-body" data-date="2026-07-21" style="display:block"><h1>매수 신호 종목 리뷰 — 2026-07-21</h1>
+<div class="report-body" data-date="2026-07-28" style="display:block"><h1>매수·매도 신호 종목 리뷰 — 2026-07-28</h1>
+<p>매수 신호 14종목 중 최종 후보 1종목(VEEV, 3주 연속), 고위험 4종목. 매도 신호 13종목 중 최종 후보(매도 타당) 1종목(LEN), 신중 4종목 — 이번 회차부터 매수·매도 리포트를 하나로 합쳐서 기록한다.</p>
+<h2>매수 신호</h2>
+<p>14종목 매수 신호 중 숫자 스크리닝 5종목, 뉴스 검증 4종목 추가 제외. 최종 후보 1종목, 고위험 4종목 — 구조는 지난주와 거의 동일하나 ISRG·INTU의 리스크가 신규 사실로 더 뚜렷해졌다.</p>
+<h3>제외 — 9종목</h3>
+<p><strong>숫자 스크리닝</strong> (가속 조건은 통과했지만 실질 이익·최근 추세가 안 따라옴)
+- <strong>ACN</strong>: 영업이익 거의 정체(+0.6%), 순이익 감소(−2.0%)
+- <strong>IQV</strong>: 영업이익 사실상 0%(+0.4%)
+- <strong>CDW</strong>: 영업이익(−0.9%)·순이익(−0.9%) 둘 다 역성장
+- <strong>LDOS</strong>: 최근 1년 매출 성장(2.4%)이 2·4년 평균보다 낮음
+- <strong>CTSH</strong>: 순이익 −5.4%로 역성장</p>
+<p><strong>뉴스 검증 중 신호 왜곡 확인</strong>
+- <strong>INCY</strong>: 순이익 급증이 CMS와 Opzelura 소송 합의에 따른 일회성 비현금 충당금 환입(약 2.46억 달러)으로 확인
+- <strong>PTC</strong>: 순이익 급증은 Kepware·ThingWorx 매각 일회성 이익 재확인, 실적 발표(7/29) 앞두고 목표가·주가 모두 하향 추세
+- <strong>MKC</strong>: 멕시코 자회사 지분 재평가 일회성 이익 재확인, 신규 뉴스는 Unilever Foods 합병發 런던 상장 계획뿐
+- <strong>JKHY</strong>: 마진 우려·은행 통합發 고객 이탈 우려를 반박할 근거 없이 주가만 소폭 반등 — 하향 판단 유지</p>
+<h3>고위험 — 저평가는 진짜지만 원인이 실적 부진이거나 구조적 리스크</h3>
+<ul>
+<li><strong>ISRG</strong>: J&amp;J의 소프트티슈 로봇수술기 "Ottava"가 7/22 FDA 승인을 받으며 독점 시장에 첫 실질 경쟁자가 등장, 여기에 다수 애널리스트의 연쇄 목표가 하향(Bernstein·Stifel·RBC·Evercore·Barclays)까지 겹쳐 미국 시술 성장 둔화라는 기존 리스크가 오히려 확대됨</li>
+<li><strong>INTU</strong>: TurboTax 가격공시 관련 증권사기 "조사"가 정식 집단소송(Baldwin v. Intuit)으로 격상됐고 Perplexity Tax·Prime Meridian 등 AI 경쟁자가 실명으로 구체화되며 디스럽션 우려가 완화되지 않고 더 선명해짐</li>
+<li><strong>STE</strong>: Stephens가 목표가를 2주 연속 하향($300→$270→$240)했고 장비판매·서비스매출 감소, AST 마진 서사 관련 검증은 8/6 다음 분기 실적까지 미해소</li>
+<li><strong>GDDY</strong>: 7/30 실적 발표를 앞두고 AI 디스럽션 논쟁(강세·약세 리포트 공존)과 도메인 가격공시 관련 증권소송 조사가 여전히 해소되지 않음 — 실적이 분수령</li>
+</ul>
+<h3>최종 후보 — 1종목, 신호와 뉴스 부합</h3>
+<p><strong>VEEV (Veeva Systems)</strong> — 3주 연속 최종 후보 유지. Guggenheim이 신규 매수 커버리지를 개시하고 Wells Fargo도 매수 의견을 재확인하며 애널리스트 지지가 오히려 확대됐고, 목표가 컨센서스(평균 $244, 업사이드 약 26%)도 그대로 유지됐다. 주가는 주 초반 눌렸다가 후반 반등하며 저가 매수세를 확인시켰고, Salesforce Agentforce發 경쟁 서사는 신규 악재 없이 반복되는 수준에 그쳤다.</p>
+<h2>매도 신호 (신설 1회차)</h2>
+<p>13종목 매도 신호 중 숫자 스크리닝 6종목, 뉴스 검증 2종목 추가 제외. 신중 4종목, 최종 후보(매도 타당) 1종목.</p>
+<h3>제외 — 8종목</h3>
+<p><strong>숫자 스크리닝</strong> (실제로는 이익이 안 줄거나 매출 감소폭이 오히려 완화되는 추세라 실질 악화 신호 아님)
+- <strong>MO</strong>: 매출 감소폭이 2·4년 평균보다 오히려 완화 추세(-1.1% vs -1.8%/-2.4%)
+- <strong>MPC</strong>: 영업이익(+58.1%)·순이익(+90.3%) 오히려 급증 — 매출감소 신호와 반대 방향
+- <strong>DD</strong>: 순이익 +297.2% 급증(영업이익 -72.2%와 극단적 괴리, 일회성 의심)
+- <strong>CHRW</strong>: 영업이익(+10.4%)·순이익(+17.9%) 오히려 증가 — 매출감소가 마진 훼손으로 이어지지 않음
+- <strong>NWS/NWSA</strong>: 매출 감소폭이 2·4년 평균보다 완화 추세, 순이익 +133.5%는 일회성 의심</p>
+<p><strong>뉴스 검증 중 신호 왜곡 확인</strong>
+- <strong>GPN</strong>: 매출 -18.2%는 Issuer Solutions 사업부 매각(FIS 대상)에 따른 회계상 축소일 뿐 실질 위축 아님, 애널리스트는 오히려 목표가 상향(Morgan Stanley $65→$100)
+- <strong>GNRC</strong>: 이익 급감은 2025년 정전수요 정상화+관세 부담이라는 이미 지나간 저점(후행지표), 2026년 1분기 이미 반등(순이익+66%)했고 AI데이터센터 백업전력 테마로 애널리스트 목표가 일제 상향(평균 $293.75)</p>
+<h3>신중 — 부진은 실재하나 사이클성/일시적 요인이 커 매도 확정은 이름</h3>
+<ul>
+<li><strong>XOM</strong>: Q1 정제마진 정상화로 실적 하락은 실재하나, 호르무즈 해협발 유가 급등이 Q2 실적을 크게 끌어올리는 중(동일 요인이 밸류에이션과 실적을 함께 움직임), CAPEX 증가는 가이아나·퍼미안 성장투자</li>
+<li><strong>CVX</strong>: 유가 사이클+Hess 통합 초기비용 성격이 크고, Q2 EBITDA +136% 전망, 애널리스트 Strong Buy 우세(목표가 상단 $213선)</li>
+<li><strong>COP</strong>: 가스가격 약세+중동발 생산차질이 주 요인, 애널리스트는 여전히 매수 우위 유지</li>
+<li><strong>DHI</strong>: 금리 사이클發 업종 전반 마진압박(모기지 6%대·인센티브 확대)이 뉴스로 확인되나, pop/pfcf 밸류에이션 신호가 서로 엇갈리고 컨센서스는 아직 Hold</li>
+</ul>
+<h3>최종 후보 — 1종목, 신호와 뉴스 부합 (매도 타당)</h3>
+<p><strong>LEN (Lennar)</strong> — 순이익이 전년比 -36%(Q2 FY2026 $305M)로 반토막 수준까지 밀렸고, "land-light"(랜드뱅킹) 전략 전환에 따른 옵션유지비 자본화로 현금흐름 부담이 향후 2년 지속될 전망이다. Argus·KBW·UBS·RBC 등 애널리스트 목표가가 잇달아 하향되며 주가는 52주 신저가($80.51)를 기록했다. 같은 주택건설 업황 둔화를 겪는 DHI와 비교해도 순마진(5.4% vs 9.9%)·FCF 창출력(0.1% vs 8.5%) 모두 상대적으로 취약해, 업종 공통 요인을 감안해도 매도 신호가 타당하다.</p>
+<hr />
+<p><em>매주 반복 검토. <code>docs/signal_reports/</code>에 날짜별로 쌓임.</em></p></div>
+<div class="report-body" data-date="2026-07-21" style="display:none"><h1>매수 신호 종목 리뷰 — 2026-07-21</h1>
 <p>14종목 매수 신호 중 숫자 스크리닝 5종목, 뉴스 검증 4종목 추가 제외. 최종 후보 1종목, 고위험 4종목 — 지난주 최종 후보였던 ISRG·STE가, 안정 후보였던 JKHY가 이번 주 새 뉴스로 강등됐다.</p>
 <h2>제외 — 9종목</h2>
 <p><strong>숫자 스크리닝</strong> (가속 조건은 통과했지만 실질 이익·최근 추세가 안 따라옴)

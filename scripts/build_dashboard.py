@@ -19,7 +19,7 @@ ANA_DIR      = ROOT / 'data' / 'analytics'
 PX_DB        = ROOT / 'data' / 'prices.db'
 VAL_DB       = ROOT / 'data' / 'valuation.db'
 CUR_VAL      = ROOT / 'data' / 'analytics' / 'valuation_current.json'
-REPORTS_DIR  = ROOT / 'docs' / 'buy_signal_reports'
+REPORTS_DIR  = ROOT / 'docs' / 'signal_reports'
 OUT          = ROOT / 'docs' / 'index.html'
 
 
@@ -384,10 +384,10 @@ def build_stocks(
     return stocks
 
 
-# ── 매수 신호 리포트 (주간) ────────────────────────────────────────────────────
+# ── 매수·매도 신호 리포트 (주간) ────────────────────────────────────────────────
 
-def load_buy_signal_reports() -> list[dict]:
-    """docs/buy_signal_reports/YYYY-MM-DD.md → 최신순 정렬된 [{date, html}, ...]."""
+def load_signal_reports() -> list[dict]:
+    """docs/signal_reports/YYYY-MM-DD.md → 최신순 정렬된 [{date, html}, ...]."""
     if not REPORTS_DIR.exists():
         return []
     reports = []
@@ -612,7 +612,7 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
 .stat-vs{font-size:11px;color:var(--muted)}
 .stat-vs strong{color:var(--text);font-weight:700}
 
-/* 매수 신호 주간 리포트 */
+/* 매수·매도 신호 주간 리포트 */
 .reports-wrap{display:none;max-width:920px;margin-top:4px}
 .report-select-row{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .report-select-row label{color:var(--muted);font-size:12px}
@@ -664,7 +664,7 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
     <input type="text" id="search" class="search" placeholder="Ticker 검색…">
   </div>
   <div class="cg" style="margin-left:auto">
-    <button class="btn" id="btn-reports" onclick="toggleReports()">매수 신호 리포트</button>
+    <button class="btn" id="btn-reports" onclick="toggleReports()">매수·매도 신호 리포트</button>
     <button class="btn" id="btn-logic" onclick="toggleLogic()">판단 로직</button>
   </div>
 </div>
@@ -1237,7 +1237,7 @@ def main():
     shares         = load_shares()
     perf           = load_price_perf()
     val_now        = load_valuation_current()
-    reports        = load_buy_signal_reports()
+    reports        = load_signal_reports()
 
     print(f'  스냅샷 {len(snap)}행, 가격 {len(prices)}종목, 수익률 {len(perf)}종목, 현재 밸류에이션 {len(val_now)}종목, 주간 리포트 {len(reports)}건')
 
