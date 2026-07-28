@@ -13,6 +13,7 @@ from pathlib import Path
 
 import markdown
 import pandas as pd
+from bs4 import BeautifulSoup
 
 ROOT         = Path(__file__).parent.parent
 ANA_DIR      = ROOT / 'data' / 'analytics'
@@ -386,6 +387,26 @@ def build_stocks(
 
 # ── 매수·매도 신호 리포트 (주간) ────────────────────────────────────────────────
 
+def _wrap_report_sections(html: str) -> str:
+    """h2(매수 신호/매도 신호)와 그 아래 내용을 카드 박스(.report-card)로 감싼다."""
+    soup = BeautifulSoup(html, 'html.parser')
+    elements = list(soup.contents)
+    out = BeautifulSoup('', 'html.parser')
+    section = None
+    for el in elements:
+        if getattr(el, 'name', None) == 'h2':
+            if section is not None:
+                out.append(section)
+            section = out.new_tag('div', **{'class': 'report-card'})
+        if section is not None:
+            section.append(el)
+        else:
+            out.append(el)
+    if section is not None:
+        out.append(section)
+    return str(out)
+
+
 def load_signal_reports() -> list[dict]:
     """docs/signal_reports/YYYY-MM-DD.md → 최신순 정렬된 [{date, html}, ...]."""
     if not REPORTS_DIR.exists():
@@ -394,6 +415,7 @@ def load_signal_reports() -> list[dict]:
     for path in sorted(REPORTS_DIR.glob('*.md'), reverse=True):
         text = path.read_text(encoding='utf-8')
         body_html = markdown.markdown(text, extensions=['tables'])
+        body_html = _wrap_report_sections(body_html)
         reports.append({'date': path.stem, 'html': body_html})
     return reports
 
@@ -621,7 +643,8 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
 .report-select-row select:focus{outline:none;border-color:var(--blue)}
 .report-body{font-size:13px;line-height:1.7}
 .report-body h1{font-size:16px;font-weight:700;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--bord)}
-.report-body h2{font-size:13.5px;font-weight:700;color:var(--blue);margin:24px 0 10px}
+.report-card{background:var(--surf);border:1px solid var(--bord);border-radius:8px;padding:14px 18px;margin:0 0 20px}
+.report-body h2{font-size:13.5px;font-weight:700;color:var(--blue);margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--bord)}
 .report-body h3{font-size:12.5px;font-weight:700;margin:16px 0 8px}
 .report-body p{margin:0 0 12px}
 .report-body strong{color:var(--text);font-weight:700}
