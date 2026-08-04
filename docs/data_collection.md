@@ -113,6 +113,20 @@ else:
 | updated_at | TEXT | 수집 일시 (UTC) |
 | PRIMARY KEY | (ticker, term) | |
 
+### `filing_meta` 테이블 (2026-08-04 추가 — 대시보드 실적 업데이트/잠정 배지용)
+
+`quarterly_financials`와 별개로, 종목별 최신 SEC 제출일만 추적하는 테이블. `build_dashboard.py`가 이걸 읽어 회사명 옆에 배지를 표시함.
+
+| 컬럼 | 타입 | 설명 |
+|---|---|---|
+| ticker | TEXT | 종목 티커 (PK) |
+| latest_filed | TEXT | 가장 최근 10-Q/10-K 제출일 — `companyfacts` API 응답에서 추출(`latest_filing()`), 추가 API 호출 없음 |
+| latest_form | TEXT | 위 제출의 폼 유형 (10-Q 또는 10-K) |
+| latest_8k_202_filed | TEXT | 가장 최근 8-K Item 2.02(실적발표 프레스릴리즈) 제출일 — `submissions` API 신규 호출(`fetch_submissions()`/`latest_8k_202()`) |
+| updated_at | TEXT | 수집 일시 (UTC) |
+
+**배지 판정 로직(`build_dashboard.py`)**: `latest_8k_202_filed`가 `latest_filed`보다 최신이면 "잠정"(정식 재무제표 전, 8-K 프레스릴리즈만 나온 상태) — `latest_filed`가 오늘 기준 7일 이내면 "실적 업데이트"(정식 10-Q/10-K 반영 완료). 두 상태는 정의상 상호배타적.
+
 ### 알려진 NULL 한계
 
 | 항목 | 대상 | NULL 수준 | 이유 |
@@ -140,14 +154,14 @@ else:
 |---|---|
 | `config.py` | 공통 상수 (EXCLUDED_SECTORS 등) — 모든 스크립트 공유 |
 | `update_universe.py` | stock_universe.csv 갱신 (연 1회 또는 S&P500 리밸런싱 후) |
-| `collect_financials.py` | EDGAR에서 분기 재무 수집 → stocks.db upsert |
+| `collect_financials.py` | EDGAR에서 분기 재무 수집 → stocks.db upsert (`quarterly_financials` + `filing_meta`, 티커당 API 호출 2회) |
 | `archive/patch_shares_yfinance.py` | shares_diluted NULL 종목을 yfinance로 보정 (2026-07 1회성 패치, 필요 시 재사용) |
 | `check_quality.py` | 수집 후 데이터 품질 검증 |
 
 ### 일반적인 수집 절차 (분기마다)
 
 ```bash
-python scripts/collect_financials.py      # ~10~15분
+python scripts/collect_financials.py      # ~10~15분 (2026-08 기준: 티커당 API 호출 2회로 늘어 이전보다 오래 걸림)
 python scripts/check_quality.py           # 이상 없으면 분석 진행
 ```
 

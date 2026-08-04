@@ -19,9 +19,11 @@ ROOT         = Path(__file__).parent.parent
 ANA_DIR      = ROOT / 'data' / 'analytics'
 PX_DB        = ROOT / 'data' / 'prices.db'
 VAL_DB       = ROOT / 'data' / 'valuation.db'
+SRC_DB       = ROOT / 'data' / 'stocks.db'
 CUR_VAL      = ROOT / 'data' / 'analytics' / 'valuation_current.json'
 REPORTS_DIR  = ROOT / 'docs' / 'signal_reports'
 OUT          = ROOT / 'docs' / 'index.html'
+FILED_RECENT_DAYS = 7
 
 
 # ── 데이터 로드 ───────────────────────────────────────────────────────────────
@@ -89,6 +91,20 @@ def load_valuation_current() -> pd.DataFrame:
     return pd.DataFrame(rows, columns=cols)
 
 
+def load_filing_meta() -> pd.DataFrame:
+    """종목별 최근 10-Q/10-K 제출일 + 8-K(Item 2.02) 실적발표일 (collect_financials.py가 EDGAR에서 채움)."""
+    cols = ['ticker', 'latest_filed', 'latest_form', 'latest_8k_202_filed']
+    if not SRC_DB.exists():
+        return pd.DataFrame(columns=cols)
+    con = sqlite3.connect(SRC_DB)
+    try:
+        df = pd.read_sql(f'SELECT {", ".join(cols)} FROM filing_meta', con)
+    except pd.errors.DatabaseError:
+        df = pd.DataFrame(columns=cols)
+    con.close()
+    return df
+
+
 def load_price_perf() -> pd.DataFrame:
     """종목별 1m / 3m / 1y 주가 수익률."""
     con = sqlite3.connect(PX_DB)
@@ -135,6 +151,30 @@ def _sf(x, d=None):
     if math.isnan(f) or math.isinf(f):
         return None
     return round(f, d) if d is not None else f
+
+
+def _filed_recent(filed_str, today: date, days: int = FILED_RECENT_DAYS) -> bool:
+    """최근 10-Q/10-K 제출일이 오늘 기준 N일 이내인지."""
+    if not filed_str:
+        return False
+    try:
+        filed = date.fromisoformat(str(filed_str))
+    except ValueError:
+        return False
+    delta = (today - filed).days
+    return 0 <= delta <= days
+
+
+def _is_provisional(latest_8k, latest_filed) -> bool:
+    """8-K(실적발표)가 마지막 정식 10-Q/10-K보다 더 최근이면 '잠정' 상태."""
+    if not latest_8k:
+        return False
+    if not latest_filed:
+        return True
+    try:
+        return date.fromisoformat(str(latest_8k)) > date.fromisoformat(str(latest_filed))
+    except ValueError:
+        return False
 
 
 def _annualize(q_pct):
@@ -308,15 +348,20 @@ def build_stocks(
     shares: pd.DataFrame,
     perf: pd.DataFrame,
     val_now: pd.DataFrame,
+    filing: pd.DataFrame,
 ) -> list[dict]:
     df = snap.copy()
     df = df.merge(prices,  on='ticker', how='left')
     df = df.merge(shares,  on='ticker', how='left')
     df = df.merge(perf,    on='ticker', how='left')
     df = df.merge(val_now, on='ticker', how='left')
+    df = df.merge(filing,  on='ticker', how='left')
     df['val_asof'] = df['val_asof'].fillna('')
+    for col in ('latest_filed', 'latest_form', 'latest_8k_202_filed'):
+        df[col] = df[col].fillna('')
     df['mktcap'] = df['price'] * df['shares_latest']
 
+    today = date.today()
     stocks = []
     for _, row in df.iterrows():
         d = row.to_dict()
@@ -327,6 +372,13 @@ def build_stocks(
             'biz_model':     str(d.get('biz_model', '') or ''),
             'bucket':        str(d.get('bucket', '')),
             'anchor_term':   str(d.get('anchor_term', '')),
+            # 실적 업데이트(확정 10-Q/10-K) 인지 배지
+            'latest_filed':  str(d.get('latest_filed', '') or ''),
+            'latest_form':   str(d.get('latest_form', '') or ''),
+            'filed_recent':  _filed_recent(d.get('latest_filed'), today),
+            # 잠정(8-K Item 2.02 실적발표, 정식 10-Q/10-K 전) 배지
+            'latest_8k_filed':  str(d.get('latest_8k_202_filed', '') or ''),
+            'is_provisional':   _is_provisional(d.get('latest_8k_202_filed'), d.get('latest_filed')),
             # 현재가 / 시총
             'price':         _sf(d.get('price'), 2),
             'mktcap_m':      round(mktcap / 1e6) if mktcap else None,
@@ -498,7 +550,9 @@ td{padding:7px 8px;border-bottom:1px solid #252838;white-space:nowrap;font-size:
 
 .rk{color:var(--muted);text-align:right;width:36px}
 .tk{color:var(--blue);font-weight:600;font-size:12px}
-.co{color:var(--text);max-width:200px;overflow:hidden;text-overflow:ellipsis}
+.co{color:var(--text);white-space:nowrap}
+.bkt{width:70px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sigc{width:105px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .num{text-align:right;color:var(--muted)}
 .dim{color:var(--muted)}
 .pos{color:var(--green)!important}
@@ -507,6 +561,10 @@ td{padding:7px 8px;border-bottom:1px solid #252838;white-space:nowrap;font-size:
 .bg{color:var(--green)}
 .bv{color:var(--purple)}
 .bu{color:var(--muted)}
+
+.tag{padding:2px 6px;border-radius:4px;font-size:11px;margin-left:5px;flex-shrink:0}
+.tag.fresh{background:rgba(52,211,153,.18);color:var(--green);cursor:help}
+.tag.prelim{background:rgba(251,191,36,.18);color:var(--yellow);cursor:help}
 
 .sep{padding-left:20px}
 .ss{color:var(--green);font-weight:600}
@@ -685,6 +743,12 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
   </div>
   <div class="cg">
     <input type="text" id="search" class="search" placeholder="Ticker 검색…">
+  </div>
+  <div class="cg">
+    <span class="tag prelim">잠정: 07-31</span>
+    <span class="cg-lbl">= 실적발표(8-K), 정식 제출 전</span>
+    <span class="tag fresh">실적: 07-31</span>
+    <span class="cg-lbl">= 최근 7일 내 10-Q/10-K 정식 제출</span>
   </div>
   <div class="cg" style="margin-left:auto">
     <button class="btn" id="btn-reports" onclick="toggleReports()">매수·매도 신호 리포트</button>
@@ -1016,6 +1080,22 @@ function pcls(v) {
   return Number(v) >= 0 ? 'pos' : 'neg';
 }
 
+function filedBadge(s) {
+  if (!s.filed_recent) return '';
+  const md = s.latest_filed.slice(5); // YYYY-MM-DD → MM-DD
+  return ` <span class="tag fresh" title="${s.latest_form} 제출 · ${s.latest_filed}">실적: ${md}</span>`;
+}
+
+function provisionalBadge(s) {
+  if (!s.is_provisional) return '';
+  const md = s.latest_8k_filed.slice(5);
+  return ` <span class="tag prelim" title="8-K 실적발표(잠정, 정식 10-Q/10-K 전) · ${s.latest_8k_filed}">잠정: ${md}</span>`;
+}
+
+function earningsBadges(s) {
+  return provisionalBadge(s) + filedBadge(s);
+}
+
 function uvCls(v) {
   if (!v || v === '—') return '';
   if (v.startsWith('저평가')) return 'pos';
@@ -1079,7 +1159,7 @@ function buildDetail(s) {
     <div class="ds">
       <div class="dh">기본 정보</div>
       ${r('Ticker', '<strong>' + s.ticker + '</strong>')}
-      ${r('회사명', s.company)}
+      ${r('회사명', s.company + earningsBadges(s))}
       ${s.biz_model ? r('사업 개요', '<span style="white-space:normal;line-height:1.5">' + s.biz_model + '</span>') : ''}
       ${r('버킷', bktFull)}
       ${r('앵커', s.anchor_term)}
@@ -1145,16 +1225,16 @@ function renderTable() {
     tr.innerHTML =
       `<td class="rk">${idx + 1}</td>` +
       `<td class="tk">${s.ticker}</td>` +
-      `<td class="co">${s.company}</td>` +
-      `<td class="${bCls}">${bktLbl}</td>` +
+      `<td class="co">${s.company}${earningsBadges(s)}</td>` +
+      `<td class="${bCls} bkt">${bktLbl}</td>` +
       `<td class="num">${fmt(s.mktcap_m, 0)}</td>` +
       `<td class="num">${fmt(s.price, 2)}</td>` +
       `<td class="num">${fmt(s.pe_20d, 1)}</td>` +
       `<td class="num">${fmt(s.pe_4y, 1)}</td>` +
       `<td class="sep">${s.op_trend}</td>` +
       `<td class="${uvCls(s.undervalued)}">${s.undervalued}</td>` +
-      `<td class="${sCls}">${s.signal}</td>` +
-      `<td class="${sellCls(s.sell_sig)}">${s.sell_sig}</td>` +
+      `<td class="${sCls} sigc">${s.signal}</td>` +
+      `<td class="${sellCls(s.sell_sig)} sigc">${s.sell_sig}</td>` +
       `<td class="num">${rc(s.ret_1w)}</td>` +
       `<td class="num">${rc(s.ret_1m)}</td>` +
       `<td class="num">${rc(s.ret_3m)}</td>` +
@@ -1260,11 +1340,12 @@ def main():
     shares         = load_shares()
     perf           = load_price_perf()
     val_now        = load_valuation_current()
+    filing         = load_filing_meta()
     reports        = load_signal_reports()
 
-    print(f'  스냅샷 {len(snap)}행, 가격 {len(prices)}종목, 수익률 {len(perf)}종목, 현재 밸류에이션 {len(val_now)}종목, 주간 리포트 {len(reports)}건')
+    print(f'  스냅샷 {len(snap)}행, 가격 {len(prices)}종목, 수익률 {len(perf)}종목, 현재 밸류에이션 {len(val_now)}종목, 제출일 메타 {len(filing)}종목, 주간 리포트 {len(reports)}건')
 
-    stocks = build_stocks(snap, prices, shares, perf, val_now)
+    stocks = build_stocks(snap, prices, shares, perf, val_now, filing)
     print(f'  최종 {len(stocks)}종목 (시총 순 정렬)')
 
     html = generate_html(stocks, px_dt, reports)

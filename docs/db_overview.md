@@ -3,8 +3,9 @@
 ## 데이터 흐름
 
 ```
-SEC EDGAR (XBRL API)
+SEC EDGAR (XBRL API + submissions API)
   └─▶ stocks.db / quarterly_financials       ← collect_financials.py
+  └─▶ stocks.db / filing_meta                ← collect_financials.py (실적 업데이트·잠정 배지용)
         └─▶ ttm_valuation.db / ttm_financials    ← compute_ttm.py
               └─▶ ttm_growth.db / ttm_growth_series   ← compute_growth.py
 
@@ -20,6 +21,7 @@ ttm_valuation.db + prices.db
 | 파일 | 테이블 | 역할 | 명세 |
 |------|--------|------|------|
 | `data/stocks.db` | `quarterly_financials` | 분기 원천 재무 (EDGAR) | [data_collection.md](data_collection.md) |
+| `data/stocks.db` | `filing_meta` | 종목별 최근 10-Q/10-K·8-K(2.02) 제출일 (대시보드 배지) | [data_collection.md](data_collection.md) |
 | `data/ttm_valuation.db` | `ttm_financials` | TTM 시계열 | [ttm_computation.md](ttm_computation.md) |
 | `data/ttm_growth.db` | `ttm_growth_series` | 성장률 시계열 (1y/2y/4y/8y CAGR) | [growth_computation.md](growth_computation.md) |
 | `data/prices.db` | `daily_prices` | 일별 수정주가 (yfinance, 2006~) | — |

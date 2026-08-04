@@ -75,6 +75,18 @@ def init_db(conn: sqlite3.Connection):
             PRIMARY KEY (ticker, term)
         )
     """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS filing_meta (
+            ticker              TEXT PRIMARY KEY,
+            latest_filed        TEXT,
+            latest_form         TEXT,
+            latest_8k_202_filed TEXT,
+            updated_at          TEXT
+        )
+    """)
+    cols = {row[1] for row in conn.execute("PRAGMA table_info(filing_meta)")}
+    if "latest_8k_202_filed" not in cols:
+        conn.execute("ALTER TABLE filing_meta ADD COLUMN latest_8k_202_filed TEXT")
     conn.commit()
 
 
@@ -85,6 +97,43 @@ def fetch_facts(cik: str) -> dict:
     r = requests.get(url, headers=HEADERS, timeout=30)
     r.raise_for_status()
     return r.json()
+
+
+def fetch_submissions(cik: str) -> dict:
+    url = f"https://data.sec.gov/submissions/CIK{cik}.json"
+    r = requests.get(url, headers=HEADERS, timeout=30)
+    r.raise_for_status()
+    return r.json()
+
+
+def latest_8k_202(submissions: dict) -> str | None:
+    """가장 최근 8-K Item 2.02(실적 발표 프레스릴리즈) 제출일 — 정식 10-Q/10-K 전 '잠정' 신호."""
+    recent = submissions.get("filings", {}).get("recent", {})
+    forms  = recent.get("form", [])
+    items  = recent.get("items", [])
+    dates  = recent.get("filingDate", [])
+    best = None
+    for form, item, filed in zip(forms, items, dates):
+        if form != "8-K" or "2.02" not in item.split(","):
+            continue
+        if filed and (best is None or filed > best):
+            best = filed
+    return best
+
+
+def latest_filing(facts: dict) -> tuple[str | None, str | None]:
+    """이미 받아온 companyfacts 안에서 가장 최근 10-Q/10-K 제출일 찾기 (추가 API 호출 없음)."""
+    usgaap = facts.get("facts", {}).get("us-gaap", {})
+    best_filed, best_form = None, None
+    for entry in usgaap.values():
+        for unit_rows in entry.get("units", {}).values():
+            for r in unit_rows:
+                if r.get("form") not in ("10-Q", "10-K") or r.get("dimensions"):
+                    continue
+                filed = r.get("filed", "")
+                if filed and (best_filed is None or filed > best_filed):
+                    best_filed, best_form = filed, r["form"]
+    return best_filed, best_form
 
 
 def _best_record_per_period(records: list[dict], prefer_ytd: bool = True,
@@ -233,8 +282,7 @@ def normalize_shares(s: pd.Series) -> pd.Series:
     return s.apply(fix)
 
 
-def collect_ticker(cik: str, fy_end_month: int = 12) -> pd.DataFrame:
-    facts = fetch_facts(cik)
+def collect_ticker(facts: dict, fy_end_month: int = 12) -> pd.DataFrame:
     quarterly_frames = []
 
     for label, tags, unit in TARGETS:
@@ -301,6 +349,22 @@ def upsert(conn: sqlite3.Connection, ticker: str, df_q: pd.DataFrame, fy_end_mon
     conn.commit()
 
 
+def upsert_filing_meta(conn: sqlite3.Connection, ticker: str, filed: str | None, form: str | None,
+                        latest_8k: str | None, now: str):
+    if not filed and not latest_8k:
+        return
+    conn.execute("""
+        INSERT INTO filing_meta (ticker, latest_filed, latest_form, latest_8k_202_filed, updated_at)
+        VALUES (?, ?, ?, ?, ?)
+        ON CONFLICT(ticker) DO UPDATE SET
+            latest_filed        = excluded.latest_filed,
+            latest_form         = excluded.latest_form,
+            latest_8k_202_filed = excluded.latest_8k_202_filed,
+            updated_at          = excluded.updated_at
+    """, (ticker, filed, form, latest_8k, now))
+    conn.commit()
+
+
 # ── 실행 ──────────────────────────────────────────────────────────
 
 def main():
@@ -339,7 +403,16 @@ def main():
 
         try:
             fy_end = fy_map.get(ticker, 12)
-            df_q = collect_ticker(cik, fy_end_month=fy_end)
+            facts = fetch_facts(cik)
+            filed, form = latest_filing(facts)
+
+            time.sleep(0.12)  # EDGAR ~8 req/s — 티커당 2번째 호출
+            submissions = fetch_submissions(cik)
+            latest_8k = latest_8k_202(submissions)
+
+            upsert_filing_meta(conn, ticker, filed, form, latest_8k, now=datetime.utcnow().isoformat())
+
+            df_q = collect_ticker(facts, fy_end_month=fy_end)
             if df_q.empty:
                 print(f'[{i:3}/{len(tickers)}] {ticker:8} | 데이터 없음 — skip')
                 skipped += 1
