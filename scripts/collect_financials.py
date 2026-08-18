@@ -389,13 +389,21 @@ def main():
                for v in r.json().values()}
     print(f'EDGAR CIK 맵: {len(cik_map)}개\n')
 
+    # company_tickers.json에서 구조적으로 못 찾는 종목 수동 보정.
+    # SATS(EchoStar): SEC 자체에 등록된 티커가 "ECHO"라 실거래 티커로는 영영 안 잡힘.
+    # AEP: 회사·CIK 정상인데 SEC 벌크 파일에서만 일시 누락(2026-08 2주째, XOM/FDXF가 겪었던 것과 같은 유형).
+    CIK_OVERRIDES = {
+        'SATS': '0001415404',
+        'AEP':  '0000004904',
+    }
+
     conn = sqlite3.connect(DB_PATH)
     init_db(conn)
 
     ok, skipped, failed = 0, 0, []
 
     for i, ticker in enumerate(tickers, 1):
-        cik = cik_map.get(ticker)
+        cik = cik_map.get(ticker) or CIK_OVERRIDES.get(ticker)
         if not cik:
             print(f'[{i:3}/{len(tickers)}] {ticker:8} | CIK 없음 — skip')
             skipped += 1
