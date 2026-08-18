@@ -1031,7 +1031,7 @@ __REPORTS_HTML__
 const STOCKS = __STOCKS_JSON__;
 
 let sCol = 'mktcap_m', sDir = -1;
-let fBucket = 'all', fSig = 'any', fSell = 'all', fTicker = '';
+let fBucket = 'all', fSig = 'all', fSell = 'all', fTicker = '';
 let expanded = null;
 
 function showPanel(name) {
