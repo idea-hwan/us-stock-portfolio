@@ -528,7 +528,8 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
 <div class="report-select-row">
   <label for="report-date-select">주차 선택:</label>
   <select id="report-date-select" onchange="showReportDate(this.value)">
-<option value="2026-08-18" selected>2026-08-18</option>
+<option value="2026-09-01" selected>2026-09-01</option>
+<option value="2026-08-18">2026-08-18</option>
 <option value="2026-08-11">2026-08-11</option>
 <option value="2026-08-04">2026-08-04</option>
 <option value="2026-07-28">2026-07-28</option>
@@ -536,7 +537,47 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
 <option value="2026-07-15">2026-07-15</option>
   </select>
 </div>
-<div class="report-body" data-date="2026-08-18" style="display:block"><h1>매수·매도 신호 종목 리뷰 — 2026-08-18</h1>
+<div class="report-body" data-date="2026-09-01" style="display:block"><h1>매수·매도 신호 종목 리뷰 — 2026-09-01</h1>
+<p>직전 8/18 회차 이후 2주 만(8/25 회차 없음)의 점검이다. 매수 신호 12종목 중 최종 후보 1종목(VEEV), 고위험 5종목(ISRG·INTU·FICO·GDDY·UHS). 매도 신호 6종목 중 최종 후보(매도 타당) 1종목(LEN), 신중 1종목(DHI) — 그 사이 VEEV는 8/26 실적에서 매출·EPS 서프라이즈에 가이던스 상향까지 확인돼 최종후보 사유가 오히려 강화됐고, GDDY는 증권소송이 정식 집단소송으로 격상돼 고위험 사유가 심화됐다.</p>
+<div class="report-card"><h2>매수 신호</h2>
+<p>12종목 매수 신호 중 숫자 스크리닝 4종목, 뉴스 검증 2종목 추가 제외. 최종 후보 1종목, 고위험 5종목.</p>
+<h3>제외 — 6종목</h3>
+<p><strong>숫자 스크리닝</strong> (가속 조건은 통과했지만 실질 이익·최근 추세가 안 따라옴)
+- <strong>ACN</strong>: 영업이익 거의 정체(+0.6%), 순이익도 감소(−2.0%)
+- <strong>IQV</strong>: 영업이익 사실상 0%(+0.4%)
+- <strong>CTSH</strong>: 순이익 역성장(−5.4%)
+- <strong>LDOS</strong>: 영업이익(−0.4%)·순이익(−1.9%) 둘 다 역성장</p>
+<p><strong>뉴스 검증 중 신호 왜곡 확인</strong>
+- <strong>INCY</strong>: 순이익 급증(+6631%)은 여전히 CMS·Opzelura 소송합의發 일회성 비현금 환입이 TTM에 남은 것(3분기 실적 미발표라 롤오프 변화 없음)
+- <strong>MKC</strong>: 순이익 급증(+108.7%)도 멕시코 자회사 지분재평가 일회성 이익 재확인(3분기 실적 미발표, 유기적 성장은 여전히 1.7%대)</p>
+<h3>고위험 — 저평가는 진짜지만 원인이 실적 부진이 아니라 구조적 리스크</h3>
+<ul>
+<li><strong>ISRG</strong>: Ottava(J&amp;J)는 select surgical centers 대상 초기 롤아웃만 진행돼 실질 점유율 영향은 아직 미확인, GLP-1發 비만수술 위축은 미국 매출 비중 3% 미만으로 줄어 영향은 제한적이나 지속 중이고 일본은 2026년 6월부터 로봇수술 신규 수가 반영으로 소폭 완화 조짐 — 애널리스트 등급은 개선(Oppenheimer·Piper Sandler 상향)됐지만 목표가는 오히려 순하향(UBS $550→500 등), 주가도 200일선 하회한 채 반전 미확인</li>
+<li><strong>INTU</strong>: 8/25 Q4 실적은 매출·EPS 서프라이즈했으나 FY27 가이던스가 FY26 실적보다 낮게 제시돼 "아웃룩 리셋"으로 해석됐고, Baldwin v. Intuit 리드플레인티프 마감(9/8)이 임박한 가운데 TurboTax 가격정책 관련 신규 증권사기 조사까지 추가로 열려 소송 리스크가 오히려 확대, 목표가도 Morgan Stanley·Truist·Oppenheimer·KeyBanc 등 다수 추가 하향</li>
+<li><strong>FICO</strong>: Florida CID는 소송 전환도 종결도 안 된 채 미해소 상태 그대로이고, 애널리스트 우려축이 "정치적 가격압박"에서 "VantageScore 실질 시장잠식"(6월 GSE 대체스코어 승인 확정)으로 옮겨가며 구조적 취약점이 재확인, Barclays·UBS·Mizuho·Jefferies 목표가 줄하향 지속</li>
+<li><strong>GDDY</strong>: 도메인 가격공시 증권소송이 조사 단계에서 정식 집단소송(Johnson v. GoDaddy, SDNY, 리드플레인티프 마감 10/20)으로 격상됐고, Wells Fargo가 AI 검색 노출 경쟁이라는 새 리스크축까지 제기하며 Underweight로 하향 — 리스크가 완화가 아니라 심화</li>
+<li><strong>UHS</strong>: 메디케이드 보조금 축소 정책은 변화 없이 그대로고, 기존 DOJ 합의는 종결됐으나 신규 내부고발자 소송(Corona Medical Center)이 제기돼 소송 리스크가 오히려 추가, 7/28 실적은 매출 서프라이즈했지만 연간 이익 가이던스는 하향</li>
+</ul>
+<h3>최종 후보 — 1종목, 신호와 뉴스 부합</h3>
+<p><strong>VEEV (Veeva Systems)</strong> — 8/18 회차까지 6주 연속에 이어 이번 회차(2주 만의 점검)에도 최종 후보 유지. 8/26 발표된 FY2027 2분기 실적은 매출 +18%(컨센서스 상회)·EPS 서프라이즈에 FY27 가이던스까지 상향됐고, 실적 후 주가가 20%대 급등하며 애널리스트 목표가도 대거 상향(Citi $190→273 등, 컨센서스 평균 $284)됐다. Vault CRM을 도입한 top20 바이오파마가 10곳→12곳(신규 Eli Lilly·Biogen·Regeneron)으로 늘어 Salesforce Agentforce 경쟁 구도에서도 오히려 우위가 강화됐다. 다만 급등 이후 진입 시점의 안전마진은 이전보다 축소됐다는 점은 계속 유의할 부분이다.</p>
+</div><div class="report-card"><h2>매도 신호</h2>
+<p>6종목 매도 신호 중 숫자 스크리닝 3종목, 뉴스 검증 1종목 추가 제외. 신중 1종목, 최종 후보(매도 타당) 1종목.</p>
+<h3>제외 — 4종목</h3>
+<p><strong>숫자 스크리닝</strong> (실제로는 이익이 안 줄거나 매출 감소폭이 오히려 완화되는 추세라 실질 악화 신호 아님)
+- <strong>MO</strong>: 매출 감소폭이 2·4년 평균보다 오히려 완화 추세
+- <strong>DD</strong>: 순이익 +99.1% 급증(영업이익 −63.5%와 극단적 괴리, 일회성 의심)
+- <strong>CHRW</strong>: 영업이익(+10.2%)·순이익(+18.5%) 오히려 증가</p>
+<p><strong>뉴스 검증 중 신호 왜곡 확인</strong>
+- <strong>CRL</strong>: 3주 연속 CDMO 사업부 매각發 회계효과로 재확인. 8/5 발표 2분기 실적에서 GAAP 순손실은 매각 관련 손실 때문이고 비GAAP EPS·매출 가이던스는 오히려 상향, DSA 부문 book-to-bill 1.19배로 3분기 연속 1.0배 초과, 주가는 52주 신고가 근접 거래 중</p>
+<h3>신중 — 부진은 실재하나 사이클성/일시적 요인이 커 매도 확정은 이름</h3>
+<ul>
+<li><strong>DHI</strong>: 모기지 금리 6.58~6.68%로 횡보, 다음 실적(10/29) 전이라 신규 실적 정보 없이 기존 "비트+역성장" 패턴 반복, 컨센서스 Hold 유지로 신규 악화·반전 트리거 모두 부재</li>
+</ul>
+<h3>최종 후보 — 1종목, 신호와 뉴스 부합 (매도 타당)</h3>
+<p><strong>LEN (Lennar)</strong> — 4주 연속(7/28~8/18)에 이어 이번 회차에도 매도 타당 유지. 다음 실적(9/17, 컨센서스 EPS $1.31로 전년比 -34.5%)은 아직 발표 전이라 신규 실적 정보는 없지만, 6개월 내 구매의향이 5.2%(7월 6.5%에서 5년래 최대 낙폭)로 수요 위축이 오히려 심화됐고 모기지 금리도 6.66%대로 정체돼 개선 조짐이 없다. 다만 버크셔 해서웨이가 2분기 13F에서 LEN 지분을 30% 늘려 1.2B(6.2%)까지 확대한 것으로 확인돼, 약세 컨센서스에 반하는 예외적 매수 신호로 계속 모니터링이 필요하다.</p>
+<hr/>
+<p><em>매주 반복 검토. <code>docs/signal_reports/</code>에 날짜별로 쌓임.</em></p></div></div>
+<div class="report-body" data-date="2026-08-18" style="display:none"><h1>매수·매도 신호 종목 리뷰 — 2026-08-18</h1>
 <p>매수 신호 13종목 중 최종 후보 1종목(VEEV, 6주 연속), 고위험 5종목(ISRG·INTU·FICO·GDDY·UHS 전원 유지). 매도 신호 6종목 중 최종 후보(매도 타당) 1종목(LEN, 4주 연속), 신중 1종목(DHI, 4주 연속) — JKHY는 이번 주 4Q/FY26 실적을 앞두고 디컨버전 수수료가 추정치를 크게 상회해 이탈 우려가 오히려 심화됐다.</p>
 <div class="report-card"><h2>매수 신호</h2>
 <p>13종목 매수 신호 중 숫자 스크리닝 4종목, 뉴스 검증 3종목 추가 제외. 최종 후보 1종목, 고위험 5종목 — 지난주 대비 새로 완화된 리스크는 없고, ISRG·INTU·FICO·GDDY·UHS 모두 기존 구조적 리스크가 그대로거나 소폭 심화된 채 유지됐다.</p>
