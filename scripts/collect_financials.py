@@ -99,24 +99,57 @@ def fetch_facts(cik: str) -> dict:
     return sec_get(url, HEADERS).json()
 
 
-# 지주회사 재편 등으로 SEC 종목 목록의 CIK가 새 법인으로 바뀌었는데 전체 이력은 옛 CIK에 남아 있는 종목.
-# {티커: [옛 CIK, ...]} — 새 CIK의 companyfacts에 옛 CIK의 레코드를 합쳐서 쓴다.
-# XOM: 2026년 ExxonMobil Holdings Corp(CIK 2115436, 레코드 227건)로 재편, 이력은 Exxon Mobil Corp(0000034088, 18,234건).
+# 지주회사 재편·사명 변경·합병으로 SEC 종목 목록의 CIK가 새 법인으로 바뀌었는데 전체 이력은 옛 CIK에 남아 있는 종목.
+# {티커: [옛 CIK, ...]} — 새 CIK의 companyfacts에 옛 CIK의 레코드를 합쳐 쓴다.
+# 사업이 이어지는 재편만 등록한다 (회계상 취득자의 이력이 새 법인의 비교 기간으로 이어지는 경우 포함).
+# 별개 사업의 합병·분사 신규 법인(PSKY·TKO·SW)이나 IFRS 시절 이력(CRH)은 합치지 않는다.
+#   XOM  Exxon Mobil Corp(0000034088) → ExxonMobil Holdings Corp (2026 재편)
+#   APA  Apache Corp(0000006769) → APA Corp (2021 지주회사 전환)
+#   TPL  Texas Pacific Land Trust(0000097517) → Texas Pacific Land Corp (2021 전환)
+#   BG   Bunge Ltd(0001144519) → Bunge Global SA (2023 Viterra 합병·이전)
+#   DIS  Walt Disney Co 옛 법인(0001001039) → 현 Walt Disney Co (2019 21CF 인수)
+#   CI   Cigna Corp 옛 법인(0000701221) → The Cigna Group (2018 Express Scripts 인수)
+#   LIN  Praxair(0000884905) → Linde plc (2018, 회계상 취득자 Praxair)
+#   EVRG Westar Energy(0000054507, 현 Evergy Kansas Central — 지금도 자회사로 공시) → Evergy Inc (2018)
+#   STE  STERIS plc 옛 영국 법인(0001624899) → STERIS plc (2019 아일랜드 이전)
+# 합치는 규칙(merge_facts): 옛 CIK 레코드를 모두 합치되 같은 레코드는 중복 제거, 값이 다르면 가장 최근 제출을 쓴다.
+# (옛 법인이 재편 직전까지 공시했고 새 법인에는 그 사이 분기가 없는 경우: XOM은 새 법인이 2025Q2 비교 기간부터,
+#  DIS·CI는 새 법인에 2016~2018년 분기가 10-Q로 없음.)
+# 옛 CIK가 재편 뒤에도 자회사로 계속 공시하는 종목은 그 값이 모회사 값이 아니므로 재편 시점까지만 쓴다:
+CIK_PREDECESSOR_UNTIL = {
+    'APA':  '2021-02-28',   # Apache Corp는 지금도 APA Corp의 자회사로 공시 (2021-03-01 지주회사 전환)
+    'EVRG': '2018-03-31',   # Westar Energy(현 Evergy Kansas Central)는 2018-06 합병 뒤 자회사 값을 냄
+}
 CIK_PREDECESSORS = {
-    'XOM': ['0000034088'],
+    'XOM':  ['0000034088'],
+    'APA':  ['0000006769'],
+    'TPL':  ['0000097517'],
+    'BG':   ['0001144519'],
+    'DIS':  ['0001001039'],
+    'CI':   ['0000701221'],
+    'LIN':  ['0000884905'],
+    'EVRG': ['0000054507'],
+    'STE':  ['0001624899'],
 }
 
 
-def merge_facts(new: dict, old: dict) -> dict:
-    """old의 companyfacts 레코드를 new에 합친다(중복 레코드는 건너뜀). new를 수정해 반환."""
+def merge_facts(new: dict, old: dict, until: str | None = None) -> dict:
+    """old의 companyfacts 레코드를 new에 합친다. 같은 레코드(접수번호·기간·값 동일)만 중복으로 건너뛰고,
+    값이 다른 같은 기간은 기존 선택 규칙(가장 최근 제출 우선)에 맡긴다. until(재편 시점)이 있으면 그 날짜까지
+    끝나는 기간만 가져온다. (기간 단위로 건너뛰면 안 된다 — 새 CIK에 그 기간이 10-K 분기 표나 8-K로만 있어
+    수집 로직이 쓰지 않는 양식이면 옛 10-Q 값까지 버려져 값이 사라진다: CI 2017Q1~Q3)"""
     for ns, tags in old.get('facts', {}).items():
         for tag, entry in tags.items():
             tgt = new.setdefault('facts', {}).setdefault(ns, {}).setdefault(tag, {'units': {}})
             for unit, rows in entry.get('units', {}).items():
                 cur = tgt['units'].setdefault(unit, [])
                 seen = {(r.get('accn'), r.get('start'), r.get('end'), r.get('val'), r.get('fp'), r.get('form')) for r in cur}
-                cur.extend(r for r in rows
-                           if (r.get('accn'), r.get('start'), r.get('end'), r.get('val'), r.get('fp'), r.get('form')) not in seen)
+                for r in rows:
+                    if until and r.get('end') and r['end'] > until:
+                        continue
+                    key = (r.get('accn'), r.get('start'), r.get('end'), r.get('val'), r.get('fp'), r.get('form'))
+                    if key not in seen:
+                        cur.append(r)
     return new
 
 
@@ -587,7 +620,7 @@ def main():
             fy_end = fy_map.get(ticker, 12)
             facts = fetch_facts(cik)
             for old_cik in CIK_PREDECESSORS.get(ticker.upper(), []):
-                facts = merge_facts(facts, fetch_facts(old_cik))
+                facts = merge_facts(facts, fetch_facts(old_cik), CIK_PREDECESSOR_UNTIL.get(ticker.upper()))
             filed, form = latest_filing(facts)
 
             time.sleep(0.12)  # EDGAR ~8 req/s — 티커당 2번째 호출

@@ -14,8 +14,8 @@
      CNC 'Total revenues', GM 'Total net sales and revenue')
   3) 그래도 없으면 값이 가장 큰 행
 
-회계 기준 변경(2018 ASC 606 등)으로 시대마다 최상단 태그가 다르므로 2014·2017·2020·2023년과 최신 10-Q를
-샘플링해 {제출연도: 태그}로 저장한다(종목당 최대 5개). collect_financials.py 는 각 분기에 대해
+회계 기준 변경(2018 ASC 606 등)으로 시대마다 최상단 태그가 다르고 연도 사이에도 바뀌는 종목이 있어(VRSK)
+2013년부터 매년 첫 10-Q와 최신 10-Q를 샘플링해 {제출연도: 태그}로 저장한다(종목당 최대 14개). collect_financials.py 는 각 분기에 대해
 '그 연도 이후 첫 샘플'의 태그를 1순위로 쓰고, 그 기간에 값이 없으면 기본 우선순위로 넘어간다.
 """
 
@@ -25,6 +25,7 @@ import re
 import sys
 import time
 import xml.etree.ElementTree as ET
+from datetime import date
 from pathlib import Path
 
 import requests
@@ -32,6 +33,7 @@ from bs4 import BeautifulSoup
 
 sys.path.insert(0, str(Path(__file__).parent))
 from config import sec_headers, sec_get
+from collect_financials import CIK_PREDECESSORS
 
 ROOT = Path(__file__).parent.parent
 OUT = ROOT / 'data' / 'revenue_tag_map.json'
@@ -116,7 +118,7 @@ def main():
     cik.update({'SATS': '0001415404', 'AEP': '0000004904'})
     old = json.loads(OUT.read_text()) if OUT.exists() else {}
     res, fail = dict(old), []
-    sample_years = (2014, 2017, 2020, 2023)
+    sample_years = tuple(range(2013, date.today().year + 1))   # 매년 샘플링 (2026-10-07: 5개 시점 → 매년, VRSK형 연도 사이 태그 변경 대응)
     for i, t in enumerate(tickers, 1):
         c = cik.get(t.upper())
         if not c:
@@ -124,25 +126,34 @@ def main():
             continue
         try:
             facts = get(f'https://data.sec.gov/api/xbrl/companyfacts/CIK{c}.json').json()['facts']['us-gaap']
-            filings = {}                                   # accn -> filed (10-Q만)
-            for tag in ('OperatingIncomeLoss', 'NetIncomeLoss', 'Revenues',
-                        'RevenueFromContractWithCustomerExcludingAssessedTax', 'SalesRevenueNet'):
-                for r in facts.get(tag, {}).get('units', {}).get('USD', []):
-                    if r.get('form') == '10-Q':
-                        filings[r['accn']] = r['filed']
+            filings = {}                                   # accn -> (filed, 제출자 CIK) (10-Q만)
+            def _collect(f, cik_):
+                for tag in ('OperatingIncomeLoss', 'NetIncomeLoss', 'Revenues',
+                            'RevenueFromContractWithCustomerExcludingAssessedTax', 'SalesRevenueNet'):
+                    for r in f.get(tag, {}).get('units', {}).get('USD', []):
+                        if r.get('form') == '10-Q':
+                            filings.setdefault(r['accn'], (r['filed'], cik_))
+            _collect(facts, c)
+            # 지주회사 재편 등으로 이력이 옛 CIK에 있는 종목(collect_financials.CIK_PREDECESSORS)은 옛 CIK 공시도 샘플링
+            for old_cik in CIK_PREDECESSORS.get(t.upper(), []):
+                oldf = get(f'https://data.sec.gov/api/xbrl/companyfacts/CIK{old_cik}.json').json()['facts']['us-gaap']
+                _collect(oldf, old_cik)
             if not filings:
                 fail.append((t, '10-Q 없음'))
                 continue
-            picks = [max(filings.items(), key=lambda kv: kv[1])[0]]           # 최신
+            by_year = {}
+            for acc, (filed, cik_) in filings.items():
+                by_year.setdefault(filed[:4], []).append((filed, acc, cik_))
+            picks = [max(((fd, a, ck) for a, (fd, ck) in filings.items()))]          # 최신
             for y in sample_years:
-                cand = sorted((f, a) for a, f in filings.items() if f.startswith(str(y)))
+                cand = sorted(by_year.get(str(y), []))
                 if cand:
-                    picks.append(cand[0][1])                                    # 그 해 첫 10-Q
+                    picks.append(cand[0])                                                # 그 해 첫 10-Q
             tags = {}
-            for acc in sorted(picks, key=lambda a: filings[a]):
-                tag = top_line_tag(f"https://www.sec.gov/Archives/edgar/data/{int(c)}/{acc.replace('-', '')}/")
+            for filed, acc, cik_ in sorted(picks):
+                tag = top_line_tag(f"https://www.sec.gov/Archives/edgar/data/{int(cik_)}/{acc.replace('-', '')}/")
                 if tag:
-                    tags[filings[acc][:4]] = tag          # 제출연도 → 최상단 매출 태그
+                    tags[filed[:4]] = tag                  # 제출연도 → 최상단 매출 태그
             if tags:
                 res[t.upper()] = tags
             else:
