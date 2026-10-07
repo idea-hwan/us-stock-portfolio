@@ -53,6 +53,84 @@
 
 ## 다음
 
+### ▶ 2026-10-07 재개: 재무 데이터 검증 마무리 (인수인계)
+
+> **⚠ 먼저 읽을 것 — 스케줄러를 켜기 전에:** `automation/daily_update.sh`는 마지막에 `git add -A` → commit → **push**를 자동으로 한다. 지금 작업 트리에는 검토 전 변경(수집 로직·감사 스크립트·`STATUS.md`·구버전 리포트 초안 `docs/signal_reports/2026-10-06.md`)이 커밋 없이 쌓여 있어, 이 상태로 스케줄러가 돌면 **미검토 상태 그대로 GitHub에 올라간다**. 스케줄러를 켜기 전에 아래 "커밋 계획"대로 먼저 커밋하거나, 검토가 끝날 때까지 켜지 말 것.
+
+**2026-10-07 진행 기록 (오전)**
+- 밤사이 push 없음 확인(이 프로젝트 스케줄러 꺼져 있음, 최신 커밋 `d4dc814` 그대로).
+- 파생 DB·대시보드·백테스트를 run7(아래 수정 전부 반영) 기준으로 **재계산 완료** — 위 "현재 상태"의 재계산 필요 항목은 해결됨. 단 아직 미커밋.
+- 추가 수정: ① SEC 요청 공용 재시도 함수 `config.sec_get`(간헐적 `self-signed certificate in certificate chain` SSL 오류 대응 — 어제 NVDA, 오늘 한 번 더 발생, 재시도하면 통과; 인증서 검증은 끄지 않음) ② `build_revenue_tag_map.py`가 비매출 태그 행에서 끊지 않고 첫 비용 행까지 읽도록 수정(HUM `Services` 1,264 → `Total revenues` 23,970 정상화, UNH·EQT·PM 정정).
+- run7 결과: 감사 분기 매출 98.4 / 영업이익 98.4 / 순이익 99.2%, 연간 합계 변화 없음, 하위 태그 의심 181건(RSG 41·PM 16·HAS 14·WMB 13은 대부분 정의 차이). 백테스트 growth +16.84%(초과 +3.09%p) / value +26.30%(초과 +12.55%p). **run4→run7 사이 growth 17.84→18.76→16.84, value 22.82→25.46→26.30으로 ±2~3%p 흔들림 — 10슬롯 회전 구조라 데이터가 조금만 바뀌어도 매수 종목이 달라지는 시뮬레이션 노이즈.** 팩터 수준 결과는 안정적(핵심 신호 12m: growth +14.1→+14.3%, value +18.8%). 백테스트 CAGR은 소수점까지 믿지 말고 범위(growth +17~19%, value +23~26%)로 볼 것.
+- 신호 변화 검증 완료: 매수 11→9(CTSH·IQV 소멸), 매도 6→7(DD 소멸, CARR·TRGP 신규). **TRGP 매도는 진짜**(SEC 원본: 총매출 TTM −2.0%, 예전 DB는 2024년에 계약 매출 태그·2025년부터 총매출 태그로 바뀌는 태그 혼용 때문에 +5.1%로 보였음). **XOM 버킷 변경은 정상**(예전 DB의 2025Q2·2026Q2 매출 0 구멍이 채워짐, 10-Q로 확인: 2026Q2 총수익 116,017). **CARR 매도는 신뢰 불가**(아래 2번 원인).
+- 새로 밝힌 원인 — **4분기 파생 시 보고 시점 혼합(CARR 확정)**: 2023 연간 매출은 원래 22,098(2024-02 10-K) → 사업 분리 후 18,951(2025-02 10-K)로 재작성. 분기 값은 Q1 원래(5,273)·Q3 재작성(4,935)이 섞여 있어 Q4 = 18,951 − 16,200 = 2,751(정상은 직전 분기의 0.56배 아님). 4분기가 Q1~Q3 평균의 0.55배 미만·1.9배 초과인 (종목, 연도)가 **37종목 48건**(GE·DHR·JCI·D·OXY·CARR·PPG·FTV·JNJ·PFE·MMM 등 분사·매각 종목; MRNA·SNDK·EXE는 실제 변동 가능). 현재 신호 종목 중에는 CARR뿐.
+- 새로 밝힌 한계 — **매출 태그 시대 샘플링 간격**: 2014·2017·2020·2023·최신 5개 시점만 샘플링해, 그 사이 연도에 최상단 태그가 바뀐 종목(VRSK 2022: 손익계산서 맨 윗줄이 `Revenues`인데 매핑은 계약 매출 태그)은 틀린다. 임의 표본 101건 중 일치 95건(94.1%, 불일치 6건: VRSK 2, 나머지는 KMB·DOV·GNRC 소급 재작성/CMS). 해결책은 매년 샘플링(약 3배, 45분).
+
+**2026-10-07 오전 후속 — 방침 A 구현 완료 (데이터 점검 플래그)**
+- `scripts/compute_data_quality.py`(신규, 읽기 전용): 최근 5개 회계연도에서 ① 4분기 매출이 1~3분기 평균의 0.55배 미만·1.9배 초과(`q4_anomaly`) ② 매출 0인 분기 ③ 분기 공백을 감지해 `data/analytics/data_quality.json` 저장. 현재 51종목(q4 40·gap 18·zero 1; CARR·DD·GE·DHR·JCI·D·OXY·PPG·FTV·JNJ·PFE·MMM 포함). 이번 주 리포트 대상 종목(VEEV·ISRG·FICO·GDDY·UHS·INCY·MKC·LEN·DHI·CRL·TRGP)은 모두 깨끗.
+- `build_dashboard.py`: 종목 레코드에 `dq` 추가, 회사명 옆 "⚠ 데이터 점검" 주황 배지(마우스 올리면 사유) + 상세 패널 "데이터 점검" 행(신호는 원본 공시로 확인 전까지 보류 문구).
+- `automation/daily_update.sh`: `compute_valuation_current` 다음, `build_dashboard` 직전에 `compute_data_quality.py` 실행 추가.
+- `automation/prompts/weekly_signal_report_prompt.md`: 신호 종목에 `dq`가 있으면 판정 보류("데이터 불연속 — 판정 보류") + `edgar_lookup.py`로 재작성 여부 확인 후에만 판정하도록 규칙 추가. 신호 있는 플래그 종목은 현재 CARR(매도)·LDOS(매수, 분기 공백 1개 — 숫자 스크리닝에서 이미 제외)뿐.
+- 4분기 보고 시점 혼합 자체의 해결(연도별 보고 시점 일관성)은 하지 않음 — 플래그 종목이 늘어나 신호에 자주 걸리면 그때 재검토.
+
+**현재 상태 (2026-10-06 저녁)**
+- `data/stocks.db` = 아래 수정이 전부 반영된 **최신 수집 결과**(run6). 그러나 파생 DB(`ttm_valuation`·`ttm_growth`·`valuation`·`returns`·`analytics/`)와 `docs/index.html`은 **직전(run5) 수집 기준**이라 재계산이 필요하다.
+- 재계산 순서(약 3분): `compute_ttm` → `compute_growth` → `compute_valuation` → `compute_returns` → `classify_stocks` → `compute_valuation_current` → `build_dashboard` (각각 `.venv/bin/python scripts/<이름>.py`). git push 없이 수동으로 돌릴 것.
+- 그 뒤 백테스트 3종(`simulate_growth_factors_pit`·`simulate_value_factors_pit`·`simulate_growth_portfolio`, 각 3~5초)을 돌려 기준선과 비교. 기준선·백업은 `data/analytics/handoff_20261006/`(git 제외)에 있다.
+
+**오늘 한 수정 (모두 `scripts/collect_financials.py`)**
+1. YTD 선택: "가장 큰 값" → "기간이 가장 긴 레코드" (손실·부호 혼재 구간 버그)
+2. Q1~Q3 손익(매출·영업이익·순이익)은 10-Q에 직접 보고된 3개월 값 사용, 4분기 = 연간 − (Q1+Q2+Q3). 분기는 `fp`가 아니라 기간 종료일로 판정
+3. 같은 태그에서 직전 분기와 값이 정확히 같으면 SEC 원본 오류로 보고 다음 태그 사용 / 값이 0이면 뒤 순위 태그의 0 아닌 값 사용
+4. 매출 태그: 종목별·시대별 "손익계산서 최상단 매출 태그" 매핑(`data/revenue_tag_map.json`, 생성: `scripts/build_revenue_tag_map.py`, 약 15분). 표준 총매출 태그 화이트리스트만 사용(`SalesRevenueGoodsNet`·`ServicesNet`·`PassengerRevenue` 등 하위 항목 태그는 제외 — UNH·INCY·BIIB에서 회귀가 났음)
+5. companyfacts 갱신이 멈춘 종목은 10-Q/10-K 원본 XBRL에서 보충(`scripts/edgar_xbrl_fallback.py`)
+6. SEC 연락처는 코드가 아니라 `.env`의 `SEC_USER_AGENT`(git 제외)에서 읽음
+
+**검증 결과 (SEC frames 전수 대조: `scripts/audit_financials.py`, 약 6분)**
+| 항목 | 원래 | 최종(run6) |
+|---|---|---|
+| 분기 매출 / 영업이익 / 순이익 일치율 | 97.3 / 97.3 / 98.4% | **98.5 / 98.4 / 99.2%** |
+| 연간 합계 매출 / 영업이익 / 순이익 / CFO / CAPEX | 99.3 / 98.8 / 97.6 / 99.3 / 99.5% | 99.2 / 98.8 / 97.6 / 99.3 / 99.5% |
+| 분석 대상 섹터 분기 불일치 | 748건 | 413건 (대부분 보고 시점 차이, 파생 오류 358 → 1) |
+| 매출 하위 태그 의심 | 310건 | 197건 |
+- 임의 표본 103건을 손익계산서 맨 윗줄과 대조: 101건 일치(98.1%). 불일치 2건(TEL 2014Q2, KMB 2014Q1)은 소급 재작성(KMB는 Halyard 분사) 차이.
+- 백테스트(2013-12~2026-10): growth CAGR +21.04% → +17.84%(초과 +4.09%p), value +31.61% → +22.82%(초과 +9.07%p) — **run4 시점 값**이며 run6 반영 후 재측정 필요.
+
+**남은 문제 (우선순위 순)**
+1. **매출 하위 태그 의심 181건(run7) 중 실제 오류 가려내기**: RSG 41건은 DB가 맞음(순매출 vs 내부거래 제거 전 총액), PM 16건도 소비세 제외 순매출이 정답이라 DB가 맞음. 확인 남음: **HAS 14·WMB 13·DVN 7·VST 7·EQT 5·PEG 5·OKE 3·HSIC·FTV 각 3**. HUM은 해결(`Total revenues` 행까지 읽도록 수정).
+2. **분사·사업매각 종목의 보고 시점 혼합**: DD·CARR 등은 분기마다 소급 재작성 시점이 달라 구간이 섞인다. 방침 결정 필요(최신 재작성 값으로 통일 vs 원래 보고값). 이번 대시보드의 "DD 매도 신호 소멸, CARR 신규 매도"는 이 때문에 신뢰 불가.
+3. 분기 공백 78종목 261분기(MAA 12, FDXF 9, CI·CRH·DASH·TPL·BG·STE·MRNA·AMCR 6 등) 원인 미조사.
+4. 순이익 0인 분기 8건·매출 0인 분기 12건(VRT는 SPAC 시절이라 정상, WDAY 2024Q1은 실제로 0에 가까움, WST 2017Q4는 확인 필요).
+5. 독립 검증 못 한 것: 분기 CFO·CAPEX(연간 합계로만 확인), 12월 결산이 아닌 131종목의 연간 합계, `check_stale_quarters.py`도 12월 결산만 점검.
+6. 주간 수집에서 스킵되는 3종목이 무엇인지, 신호 종목인지 확인.
+7. 대시보드 신호 변화 재확인(재계산 후): 원래 대비 매수 11→9(CTSH·IQV 소멸, INCY는 ▲ 가치만), 매도 6 유지(DD 소멸, CARR 신규).
+
+**커밋 계획 (검토 후, 사용자 확인 받고)**
+- 커밋 1 — 수집 로직·fallback·`.env` 분리: `scripts/collect_financials.py`, `config.py`, `update_universe.py`, `edgar_xbrl_fallback.py`, `build_revenue_tag_map.py`, `data/revenue_tag_map.json`, `.gitignore`
+- 커밋 2 — 점검 도구: `audit_financials.py`, `check_stale_quarters.py`, `edgar_lookup.py`
+- 커밋 3 — 문서: `STATUS.md`, `TODO.md`
+- 리포트·대시보드(`docs/signal_reports/…`, `docs/index.html`)는 데이터가 확정된 뒤 주간 리포트를 다시 쓰고 나서 커밋
+
+**주간 신호 리포트 (2026-10-06 회차) 재작성 시 필요한 1차 출처 확인 결과** (현재 `docs/signal_reports/2026-10-06.md`는 수정 전 수치의 초안 — 데이터 확정 후 다시 쓸 것)
+- 공통: 최종 후보·고위험·신중 종목(VEEV·ISRG·FICO·GDDY·UHS·LEN·DHI)은 2023년 이후 감사 불일치 0건 — 판정은 데이터 문제와 무관.
+- **LEN**: 버크셔 SEC Form 4 합계(9/17~10/2) 5억 9,529만 달러, 평균 $79.35. 10/1~10/2 매수만 1억 9,263만 달러(평균 $79.65, 10/5 제출). 10/2 기준 보유 Class A 2,844만 주 + Class B 56.8만 주(발행주식 2억 3,790만 주 대비 약 12.2%). 10/5 종가 $74.44는 평균 매수가보다 6.2% 낮음. 급락 원인 미확인.
+- **FICO**: Freddie Mac 공식 페이지에 9/30 날짜로 "Classic FICO와 VantageScore 4.0 크레딧 수수료 일치" 공지. 실제 적용 인수일은 Bulletin 본문 미확인(JS 렌더링). 지난주 기준("시행일 확정 시 제외 검토")이 이미 충족됐을 가능성 → 판정 결정 필요(제외 vs 고위험 유지).
+- **UHS**: Federal Register에 7/23 제안규칙만 있고 확정규칙은 없음(의견 마감 9/21). 10/1 임계값 동결은 법(OBBBA) 조항이라 규칙과 무관하게 발효.
+- **GDDY**: Gen Digital 8-K(9/28, Reg FD): CEO가 인수설을 확인·부인하지 않고 인수 판단 기준 5개(자사주 매입과의 비교 포함)만 공개. "가능성 낮아짐"은 RBC 해석.
+- **MKC**: 10-Q 확인 — 지분재평가 이익 8억 6,680만 달러는 2026-01-02 McCormick de Mexico 지분 25% 추가 취득(총 75%) 시 FQ1 2026에 인식 → TTM에서는 2027년 3월경 FQ1 2027 반영 때 빠짐. 3분기 영업이익 −25%는 특별비용 1억 4,150만 달러(거래·통합비 9,530만, 자산손상 4,310만) 때문, 특별비용 제외 시 약 +22%.
+- **INCY**: 일회성 환입(Contract dispute settlement)은 2025Q2 2억 4,225만 달러(리포트의 2억 4,600만은 오차). Vega 인수는 2026-07-06 종결, IPR&D 약 12억 7,000만 달러는 2026Q3 인식. 2024Q2~Q4 순이익은 −444.6/106.5/201.2(백만 달러)로 수정됐고 `ni_1y`는 +278%가 아니라 약 +85%.
+- **DHI**: Freddie Mac 30년 금리 10/1 7.28%(전주 7.03%). FY4Q 실적 10/29.
+- **CRL**: 새 악재 없음, 10/5 종가 $310.77(최근 1년 최고).
+- 서브에이전트가 가져온 주가·목표가는 `prices.db`와 안 맞는 경우가 있었음(FICO $1,195.85 등) — 가격은 항상 `prices.db`에서.
+
+**프로세스 개선 (미완)** — `automation/prompts/weekly_signal_report_prompt.md` 수정: ① 1차 출처(SEC 공시·원문) 우선, `scripts/edgar_lookup.py`(filings/form4/grep) 사용 ② 가격은 `prices.db` 값을 프롬프트에 주입 ③ 기사 게재일 기재, 이전 회차 이전 기사는 새 소식으로 세지 않기 ④ 2차 출처 단일 근거 수치는 "단일 출처" 표시 ⑤ 판정을 바꿀 사실만 1차 출처로 재대조. 그리고 `automation/weekly_collect_financials.sh` 끝에 `check_stale_quarters.py` 연결.
+
+**참고**
+- 백업·비교 기준(git 제외): `data/analytics/handoff_20261006/` — `stocks_before_ytdfix.db`(원래 DB), 수정 전 백테스트 출력, 감사 결과(run2·run4·run6), 대시보드 신호 스냅샷, YTD 선택 변경 목록.
+- 상세 기록: `STATUS.md`의 "재무 수집 YTD 선택 버그 수정 …(2026-10-06)" 섹션, 메모리 `project_ytd_fix_backtest`.
+- 읽기 전용 점검 도구: `scripts/audit_financials.py`(전수 대조), `scripts/check_stale_quarters.py`(SEC 지연 종목), `scripts/edgar_lookup.py`.
+
+
 - **주간 매수 신호 리포트 — 몇 주 더 수동 발행하며 지켜보기** — 매주 사용자가 요청하면 수동으로 신호 스크리닝+뉴스 검증+리포트 작성+커밋. 몇 회차 쌓인 뒤 자동화할지(어느 단계까지, 어떤 방식으로) 판단.
 
 ---
