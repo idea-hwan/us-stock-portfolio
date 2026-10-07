@@ -2,6 +2,7 @@
 재무 DB 최신 분기 누락 점검 (읽기 전용 — DB 수정 없음)
 
   python scripts/check_stale_quarters.py [--term 2026Q2] [--period 2026-06-30]
+  (기본값: 제출 기한(분기말 + 50일)이 지난 가장 최근 분기를 자동 계산)
 
 12월 결산 종목 중 stocks.db의 최신 분기가 --term 미만인 종목을 찾아, 각각
   1) EDGAR에 해당 분기 10-Q가 실제로 제출됐는지 (submissions API)
@@ -41,11 +42,25 @@ def get(url):
     return sec_get(url, HEADERS).json()
 
 
+def latest_due_quarter(today: date | None = None) -> tuple[str, str]:
+    """제출 기한(분기말 + 50일)이 지난 가장 최근 달력 분기 → (term, 분기말 날짜). 12월 결산 기준."""
+    today = today or date.today()
+    for y in (today.year, today.year - 1):
+        for q, (m, d) in reversed(list(enumerate([(3, 31), (6, 30), (9, 30), (12, 31)], 1))):
+            end = date(y, m, d)
+            if end + timedelta(days=50) <= today:
+                return f'{y}Q{q}', end.isoformat()
+    raise RuntimeError('기준 분기를 계산하지 못함')
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--term', default='2026Q2')
-    ap.add_argument('--period', default='2026-06-30')
+    ap.add_argument('--term', default=None)
+    ap.add_argument('--period', default=None)
     a = ap.parse_args()
+    if not a.term or not a.period:
+        a.term, a.period = latest_due_quarter()
+        print(f'기준 분기 자동 계산: {a.term} (분기말 {a.period})')
 
     con = sqlite3.connect(DB)
     stale = [r for r in con.execute(

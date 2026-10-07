@@ -99,6 +99,27 @@ def fetch_facts(cik: str) -> dict:
     return sec_get(url, HEADERS).json()
 
 
+# 지주회사 재편 등으로 SEC 종목 목록의 CIK가 새 법인으로 바뀌었는데 전체 이력은 옛 CIK에 남아 있는 종목.
+# {티커: [옛 CIK, ...]} — 새 CIK의 companyfacts에 옛 CIK의 레코드를 합쳐서 쓴다.
+# XOM: 2026년 ExxonMobil Holdings Corp(CIK 2115436, 레코드 227건)로 재편, 이력은 Exxon Mobil Corp(0000034088, 18,234건).
+CIK_PREDECESSORS = {
+    'XOM': ['0000034088'],
+}
+
+
+def merge_facts(new: dict, old: dict) -> dict:
+    """old의 companyfacts 레코드를 new에 합친다(중복 레코드는 건너뜀). new를 수정해 반환."""
+    for ns, tags in old.get('facts', {}).items():
+        for tag, entry in tags.items():
+            tgt = new.setdefault('facts', {}).setdefault(ns, {}).setdefault(tag, {'units': {}})
+            for unit, rows in entry.get('units', {}).items():
+                cur = tgt['units'].setdefault(unit, [])
+                seen = {(r.get('accn'), r.get('start'), r.get('end'), r.get('val'), r.get('fp'), r.get('form')) for r in cur}
+                cur.extend(r for r in rows
+                           if (r.get('accn'), r.get('start'), r.get('end'), r.get('val'), r.get('fp'), r.get('form')) not in seen)
+    return new
+
+
 def fetch_submissions(cik: str) -> dict:
     url = f"https://data.sec.gov/submissions/CIK{cik}.json"
     return sec_get(url, HEADERS).json()
@@ -249,12 +270,14 @@ def extract_periods(facts: dict, tags: list[str], label: str, unit: str = "USD",
                 continue
             start_date = r.get("start", "")
             end_date = r.get("end", "")
-            end_year  = int(end_date[:4]) if end_date else 0
-            end_month = int(end_date[5:7]) if end_date else 0
-            if fp == "FY":
-                year = end_year
-            else:
-                year = end_year + 1 if end_month > fy_end_month else end_year
+            if not end_date:
+                continue
+            # 회계연도 라벨 = "달력상 Y년 fy_end_month월에 끝나는 해". 52/53주 회계(연말이 12/28~1/3 등으로 흔들림)는
+            # 종료일에서 10일을 뺀 날짜로 판정한다 — FY·분기 모두 같은 규칙을 써야 한다.
+            # (2026-10-07 수정: 이전엔 FY만 end_year를 그대로 써서 연말이 12/28인 SNA·JNJ·TXT·SWK 등의
+            #  4분기가 한 해 일찍 붙고 그 해 4분기가 통째로 비었다)
+            adj = date.fromisoformat(end_date) - timedelta(days=10)
+            year = adj.year + 1 if adj.month > fy_end_month else adj.year
             if year < CUTOFF_YEAR:
                 continue
             q = FP_TO_Q[fp]
@@ -484,6 +507,23 @@ def upsert(conn: sqlite3.Connection, ticker: str, df_q: pd.DataFrame, fy_end_mon
     conn.commit()
 
 
+def prune_stale_terms(conn: sqlite3.Connection, ticker: str, keep_terms: set) -> int:
+    """이번 수집이 만든 분기에 없는 기존 행 삭제 — 연도 라벨 규칙이 바뀌면(52/53주 회계 수정) 옛 라벨의 행이
+    새 라벨 행과 겹쳐 남기 때문. upsert 직후에만 호출한다(수집이 비어 있으면 호출하지 않음)."""
+    old = {r[0] for r in conn.execute("SELECT term FROM quarterly_financials WHERE ticker = ?", (ticker,))}
+    stale = old - keep_terms
+    # 안전장치: 이번에 수집된 분기가 기존의 70% 미만이면 수집 쪽이 불완전한 것(예: XOM은 지주회사 재편으로 SEC 종목
+    # 목록의 CIK가 새 법인으로 바뀌어 2개 분기만 나옴 — 처음 구현에서 옛 이력 64행이 지워졌다). 정리하지 않고 경고한다.
+    if stale and len(old) >= 8 and len(keep_terms & old) < 0.7 * len(old):
+        print(f"      ⚠ {ticker}: 수집된 분기가 기존의 {len(keep_terms & old)}/{len(old)} — 옛 행 정리 건너뜀 (CIK 변경·수집 불완전 확인 필요)")
+        return 0
+    if stale:
+        conn.executemany("DELETE FROM quarterly_financials WHERE ticker = ? AND term = ?",
+                         [(ticker, t) for t in stale])
+        conn.commit()
+    return len(stale)
+
+
 def upsert_filing_meta(conn: sqlite3.Connection, ticker: str, filed: str | None, form: str | None,
                         latest_8k: str | None, now: str):
     if not filed and not latest_8k:
@@ -546,6 +586,8 @@ def main():
         try:
             fy_end = fy_map.get(ticker, 12)
             facts = fetch_facts(cik)
+            for old_cik in CIK_PREDECESSORS.get(ticker.upper(), []):
+                facts = merge_facts(facts, fetch_facts(old_cik))
             filed, form = latest_filing(facts)
 
             time.sleep(0.12)  # EDGAR ~8 req/s — 티커당 2번째 호출
@@ -566,7 +608,9 @@ def main():
                 skipped += 1
             else:
                 upsert(conn, ticker, df_q, fy_end_month=fy_end)
-                print(f'[{i:3}/{len(tickers)}] {ticker:8} | {len(df_q)}개 분기 저장')
+                removed = prune_stale_terms(conn, ticker, set(df_q.index))
+                msg = f' (옛 라벨 행 {removed}개 정리)' if removed else ''
+                print(f'[{i:3}/{len(tickers)}] {ticker:8} | {len(df_q)}개 분기 저장{msg}')
                 ok += 1
         except Exception as e:
             failed.append(ticker)

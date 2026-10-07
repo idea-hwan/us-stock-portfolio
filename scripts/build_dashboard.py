@@ -53,6 +53,22 @@ def load_current_prices() -> tuple[pd.DataFrame, str]:
     return df, latest
 
 
+STALE_PRICE_DAYS = 30
+
+
+def load_stale_tickers() -> set[str]:
+    """가격이 기준일보다 STALE_PRICE_DAYS일 넘게 갱신되지 않은 종목(상장폐지·비공개 전환 의심: EA, SATS 등).
+    일시적 수집 실패와 구분하려고 임계값을 30일로 둔다. 벤치마크 SPY는 제외 대상이 아니다."""
+    con = sqlite3.connect(PX_DB)
+    latest = con.execute('SELECT MAX(date) FROM daily_prices').fetchone()[0]
+    rows = con.execute(
+        "SELECT ticker FROM daily_prices GROUP BY ticker HAVING MAX(date) < date(?, ?)",
+        (latest, f'-{STALE_PRICE_DAYS} day'),
+    ).fetchall()
+    con.close()
+    return {r[0] for r in rows if r[0] != 'SPY'}
+
+
 def load_shares() -> pd.DataFrame:
     """최신 shares_latest per ticker (valuation.db)."""
     con = sqlite3.connect(VAL_DB)
@@ -361,6 +377,10 @@ def build_stocks(
     dq: dict | None = None,
 ) -> list[dict]:
     df = snap.copy()
+    stale = load_stale_tickers()
+    if stale:
+        print(f'  가격 {STALE_PRICE_DAYS}일 넘게 정지 → 대시보드 제외: {sorted(stale & set(df["ticker"]))}')
+        df = df[~df['ticker'].isin(stale)]
     df = df.merge(prices,  on='ticker', how='left')
     df = df.merge(shares,  on='ticker', how='left')
     df = df.merge(perf,    on='ticker', how='left')

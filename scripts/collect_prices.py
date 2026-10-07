@@ -18,6 +18,7 @@ PRICES_DB = ROOT / 'data' / 'prices.db'
 UNIV      = ROOT / 'data' / 'stock_universe.csv'
 
 START_DATE = '2006-01-01'
+BENCHMARK  = 'SPY'
 BATCH_SIZE = 100
 
 
@@ -96,6 +97,28 @@ def run_batches(conn: sqlite3.Connection, start_map: dict[str, str], end: str):
     return total
 
 
+def check_benchmark_lag(conn: sqlite3.Connection, end: str):
+    """SPY 가격이 다른 종목보다 3일 넘게 뒤처지면 한 번 재시도하고, 그래도 뒤처지면 경고를 크게 남긴다.
+    (SPY는 알파·백테스트의 벤치마크 — 멈춰 있으면 초과수익이 부풀려진다. 2026-06-18 정지 사례)"""
+    def lag():
+        latest = conn.execute("SELECT MAX(date) FROM daily_prices WHERE ticker != ?", (BENCHMARK,)).fetchone()[0]
+        spy = conn.execute("SELECT MAX(date) FROM daily_prices WHERE ticker = ?", (BENCHMARK,)).fetchone()[0]
+        if not latest or not spy:
+            return 999, spy, latest
+        return (date.fromisoformat(latest) - date.fromisoformat(spy)).days, spy, latest
+
+    days, spy, latest = lag()
+    if days <= 3:
+        return
+    print(f"  ⚠ 벤치마크 {BENCHMARK} 가격이 {days}일 뒤처짐 (SPY {spy} / 전체 {latest}) — 재시도")
+    nxt = (date.fromisoformat(spy) + timedelta(days=1)).isoformat() if spy else START_DATE
+    run_batches(conn, {BENCHMARK: nxt}, end)
+    days, spy, latest = lag()
+    if days > 3:
+        print(f"  ⚠⚠ 벤치마크 {BENCHMARK} 가격 갱신 실패: SPY {spy} / 전체 {latest} ({days}일 차이) — "
+              f"알파·백테스트 수치를 믿지 말고 확인할 것")
+
+
 def main():
     parser = argparse.ArgumentParser(description='수정주가 수집 → prices.db')
     parser.add_argument('--full', action='store_true', help=f'{START_DATE}부터 강제 전체 재수집')
@@ -103,7 +126,11 @@ def main():
 
     univ    = pd.read_csv(UNIV)
     tickers = sorted(univ[univ['exclude_analysis'] == False]['ticker'].tolist())
-    print(f"대상: {len(tickers)}개 종목\n")
+    # 벤치마크(SPY)는 유니버스에 없어서 일일 수집이 한 번도 갱신하지 않았고 2026-06-18에서 멈춰 있었다
+    # (compute_returns 알파·백테스트가 SPY를 쓰므로 7월 이후 수치가 영향을 받음) → 항상 포함한다.
+    if BENCHMARK not in tickers:
+        tickers = sorted(tickers + [BENCHMARK])
+    print(f"대상: {len(tickers)}개 종목 (벤치마크 {BENCHMARK} 포함)\n")
 
     conn = sqlite3.connect(PRICES_DB)
     init_db(conn)
@@ -134,6 +161,7 @@ def main():
         print(f"신규 {new}개 (전체 히스토리)  /  업데이트 {upd}개 (증분)")
 
     total = run_batches(conn, start_map, end)
+    check_benchmark_lag(conn, end)
     conn.close()
     print(f"\n완료  총 {total:,}행 저장")
 

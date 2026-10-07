@@ -104,15 +104,20 @@ def parse_instance(xml_text: str, wanted: dict) -> dict:
 
 
 def patch_missing_filings(facts: dict, submissions: dict, cik: int, targets: list,
-                          headers: dict, lookback_days: int = 240) -> list[str]:
-    """companyfacts에 없는 최근 10-Q/10-K를 인스턴스에서 읽어 facts에 병합. 반영한 접수번호 목록 반환."""
+                          headers: dict, lookback_days: int = 1200, max_filings: int = 8) -> list[str]:
+    """companyfacts에 없는 최근 10-Q/10-K를 인스턴스에서 읽어 facts에 병합. 반영한 접수번호 목록 반환.
+
+    companyfacts에 이미 들어 있는 접수번호가 아니면 모두 대상이다 — 가장 최근 제출일 '이후'만 보던 이전 로직은
+    중간 공시가 빠진 구멍(TAP 2026Q1, CAH 2026Q3: 뒤쪽 공시는 있는데 4/30 10-Q만 없음)을 못 메웠다.
+    요청 폭주를 막으려고 최근 순으로 max_filings건까지만 처리한다."""
     wanted = {tag: unit for _, tags, unit in targets for tag in tags}
     known, latest = _known_accessions(facts)
     cutoff = (date.today() - timedelta(days=lookback_days)).isoformat()
     r = submissions.get('filings', {}).get('recent', {})
     missing = [(d, f, a) for f, d, a in zip(r.get('form', []), r.get('filingDate', []),
                                             r.get('accessionNumber', []))
-               if f in ('10-Q', '10-K') and a not in known and d > latest and d >= cutoff]
+               if f in ('10-Q', '10-K') and a not in known and d >= cutoff]
+    missing = sorted(missing, reverse=True)[:max_filings]       # 최근 max_filings건
     patched = []
     usgaap = facts.setdefault('facts', {}).setdefault('us-gaap', {})
     for filed, form, acc in sorted(missing):
