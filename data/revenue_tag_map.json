@@ -1,0 +1,2945 @@
+{
+"A": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"AAPL": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ABBV": {
+"2014": "SalesRevenueNet",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"ABNB": {
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ABT": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ACGL": {
+"2014": "Revenues"
+},
+"ACN": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"ADBE": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"ADI": {
+"2014": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ADM": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"ADP": {
+"2014": "Revenues"
+},
+"ADSK": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"AEE": {
+"2014": "Revenues",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"AEP": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2026": "Revenues"
+},
+"AES": {
+"2014": "ElectricUtilityRevenue",
+"2017": "ElectricUtilityRevenue",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"AFL": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues"
+},
+"AIG": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"AIZ": {
+"2014": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"AJG": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"AKAM": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"ALB": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues"
+},
+"ALGN": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ALL": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"ALLE": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"AMAT": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"AMCR": {
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"AMD": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"AME": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"AMGN": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"AMP": {
+"2014": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"AMT": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"AMZN": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ANET": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"AON": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"AOS": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"APD": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues"
+},
+"APH": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"APO": {
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"APP": {
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"APTV": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"ARE": {
+"2014": "OperatingLeasesIncomeStatementLeaseRevenue",
+"2017": "OperatingLeasesIncomeStatementLeaseRevenue",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"ARES": {
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ATO": {
+"2014": "RegulatedAndUnregulatedOperatingRevenue",
+"2017": "RegulatedAndUnregulatedOperatingRevenue",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"AVGO": {
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"AVY": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"AWK": {
+"2014": "Revenues",
+"2017": "RegulatedAndUnregulatedOperatingRevenue",
+"2023": "RegulatedAndUnregulatedOperatingRevenue",
+"2026": "RegulatedAndUnregulatedOperatingRevenue"
+},
+"AXON": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"AZO": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"BA": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"BALL": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2024": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"BAX": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"BBY": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"BDX": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues"
+},
+"BEN": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"BF-B": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"BG": {
+"2026": "Revenues"
+},
+"BIIB": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"BKNG": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"BKR": {
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"BLDR": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"BMY": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet"
+},
+"BR": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"BRK-B": {
+"2014": "Revenues"
+},
+"BRO": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"BSX": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"BX": {
+"2014": "Revenues"
+},
+"BXP": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2026": "Revenues"
+},
+"CAG": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CAH": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CARR": {
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CASY": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CAT": {
+"2014": "Revenues",
+"2020": "Revenues",
+"2026": "Revenues"
+},
+"CB": {
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CBOE": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"CBRE": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CCI": {
+"2014": "SalesRevenueNet"
+},
+"CCL": {
+"2014": "SalesRevenueServicesGross",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CDNS": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CDW": {
+"2014": "Revenues",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CEG": {
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CF": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CHD": {
+"2014": "SalesRevenueGoodsNet",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CHRW": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CHTR": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CI": {
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CIEN": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CINF": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CL": {
+"2014": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CLX": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CMCSA": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CME": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CMG": {
+"2014": "FoodAndBeverageRevenue",
+"2017": "FoodAndBeverageRevenue",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CMI": {
+"2014": "SalesRevenueNet"
+},
+"CMS": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CNC": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CNP": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"COHR": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"COIN": {
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"COO": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"COP": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"COR": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"COST": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CPAY": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues"
+},
+"CPB": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2023": "Revenues"
+},
+"CPRT": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"CPT": {
+"2014": "OperatingLeasesIncomeStatementMinimumLeaseRevenue"
+},
+"CRH": {
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CRL": {
+"2014": "SalesRevenueNet",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CRM": {
+"2014": "Revenues"
+},
+"CRWD": {
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"CSCO": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CSGP": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CSX": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CTAS": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CTSH": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CTVA": {
+"2020": "Revenues"
+},
+"CVNA": {
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"CVS": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"CVX": {
+"2014": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"D": {
+"2014": "SalesRevenueNet"
+},
+"DAL": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"DASH": {
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"DD": {
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"DDOG": {
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"DE": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"DECK": {
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"DELL": {
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2026": "Revenues"
+},
+"DG": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"DGX": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"DHI": {
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"DHR": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"DIS": {
+"2020": "Revenues"
+},
+"DLR": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"DLTR": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"DOC": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"DOV": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"DOW": {
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"DPZ": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"DRI": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"DTE": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RegulatedAndUnregulatedOperatingRevenue",
+"2023": "RegulatedAndUnregulatedOperatingRevenue",
+"2026": "RegulatedAndUnregulatedOperatingRevenue"
+},
+"DUK": {
+"2014": "SalesRevenueNet",
+"2017": "RegulatedAndUnregulatedOperatingRevenue",
+"2020": "RegulatedAndUnregulatedOperatingRevenue",
+"2026": "RegulatedAndUnregulatedOperatingRevenue"
+},
+"DVA": {
+"2014": "HealthCareOrganizationRevenue",
+"2017": "HealthCareOrganizationRevenue",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"DVN": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"DXCM": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"EBAY": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ECL": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ED": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"EFX": {
+"2014": "SalesRevenueServicesNet",
+"2017": "SalesRevenueServicesNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"EIX": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"EL": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ELV": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"EME": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"EMR": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"EOG": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"EQIX": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"EQT": {
+"2014": "OilAndGasRevenue",
+"2017": "OilAndGasRevenue",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"ERIE": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ES": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"ESS": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"ETN": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ETR": {
+"2014": "UtilityRevenue",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "Revenues"
+},
+"EVRG": {
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"EW": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"EXC": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"EXE": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"EXPD": {
+"2014": "Revenues",
+"2017": "Revenues"
+},
+"EXPE": {
+"2014": "SalesRevenueNet"
+},
+"EXR": {
+"2014": "OperatingLeasesIncomeStatementMinimumLeaseRevenue",
+"2017": "OperatingLeasesIncomeStatementMinimumLeaseRevenue",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"F": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"FANG": {
+"2014": "OilAndGasRevenue",
+"2017": "OilAndGasRevenue",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"FAST": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"FCX": {
+"2014": "SalesRevenueNet",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"FDS": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"FDX": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"FE": {
+"2014": "SalesRevenueNet"
+},
+"FFIV": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"FICO": {
+"2014": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"FIS": {
+"2014": "SalesRevenueServicesNet",
+"2017": "SalesRevenueServicesNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"FISV": {
+"2014": "Revenues",
+"2017": "Revenues"
+},
+"FIX": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"FRT": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"FSLR": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"FTNT": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"FTV": {
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"GD": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"GE": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"GEHC": {
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"GEN": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"GEV": {
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"GILD": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"GIS": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"GL": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues"
+},
+"GLW": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"GM": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"GNRC": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"GOOG": {
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "Revenues"
+},
+"GOOGL": {
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "Revenues"
+},
+"GPC": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"GPN": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"GRMN": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"GS": {
+"2014": "InvestmentBankingRevenue",
+"2017": "InvestmentBankingRevenue",
+"2020": "InvestmentBankingRevenue",
+"2023": "InvestmentBankingRevenue",
+"2026": "InvestmentBankingRevenue"
+},
+"GWW": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"HAL": {
+"2014": "SalesRevenueNet",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"HAS": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"HCA": {
+"2014": "SalesRevenueServicesGross",
+"2017": "HealthCareOrganizationPatientServiceRevenue",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"HD": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"HIG": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"HII": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"HLT": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"HON": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"HPE": {
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"HPQ": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"HRL": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"HSIC": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"HST": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"HSY": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"HUBB": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"HUM": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"HWM": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"IBKR": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "BrokerageCommissionsRevenue",
+"2023": "BrokerageCommissionsRevenue",
+"2026": "BrokerageCommissionsRevenue"
+},
+"IBM": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"ICE": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"IDXX": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"IEX": {
+"2014": "SalesRevenueNet",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"IFF": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"INCY": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"INTC": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"INTU": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "Revenues"
+},
+"INVH": {
+"2017": "OperatingLeasesIncomeStatementLeaseRevenue",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"IP": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"IQV": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"IR": {
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"IRM": {
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ISRG": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"IT": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ITW": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"IVZ": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"J": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"JBHT": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"JBL": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"JCI": {
+"2014": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"JKHY": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"JNJ": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"JPM": {
+"2014": "PrincipalTransactionsRevenue",
+"2023": "PrincipalTransactionsRevenue",
+"2026": "PrincipalTransactionsRevenue"
+},
+"KDP": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"KEYS": {
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"KHC": {
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"KIM": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2026": "Revenues"
+},
+"KKR": {
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"KLAC": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"KMB": {
+"2014": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"KMI": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"KO": {
+"2014": "SalesRevenueGoodsNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"KR": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"KVUE": {
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"L": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"LDOS": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"LEN": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2026": "Revenues"
+},
+"LH": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2026": "Revenues"
+},
+"LHX": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"LII": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"LIN": {
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"LITE": {
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"LLY": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"LMT": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"LNT": {
+"2014": "Revenues",
+"2020": "RegulatedAndUnregulatedOperatingRevenue",
+"2023": "RegulatedAndUnregulatedOperatingRevenue",
+"2026": "Revenues"
+},
+"LOW": {
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"LRCX": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"LULU": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"LUV": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"LVS": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"LYB": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"LYV": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"MA": {
+"2014": "Revenues",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"MAA": {
+"2014": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"MAR": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues"
+},
+"MAS": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MCD": {
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"MCHP": {
+"2014": "SalesRevenueNet",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MCK": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MCO": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MDLZ": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"MDT": {
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MET": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"META": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MGM": {
+"2014": "Revenues",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MKC": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"MLM": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MMM": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"MNST": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MO": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MOS": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MPC": {
+"2014": "RefiningAndMarketingRevenue",
+"2017": "RefiningAndMarketingRevenue",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MPWR": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MRK": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"MRNA": {
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MRSH": {
+"2014": "SalesRevenueServicesNet",
+"2017": "SalesRevenueServicesNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MS": {
+"2014": "InvestmentBankingRevenue",
+"2017": "InvestmentBankingRevenue",
+"2020": "BrokerageCommissionsRevenue",
+"2023": "InvestmentBankingRevenue",
+"2026": "InvestmentBankingRevenue"
+},
+"MSCI": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MSFT": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MSI": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"MTD": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"MU": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"NCLH": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"NDAQ": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"NDSN": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"NEE": {
+"2014": "RegulatedAndUnregulatedOperatingRevenue"
+},
+"NEM": {
+"2014": "RevenueMineralSales"
+},
+"NFLX": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"NI": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2023": "RegulatedOperatingRevenue",
+"2026": "RegulatedOperatingRevenue"
+},
+"NKE": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"NOC": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"NOW": {
+"2014": "SalesRevenueNet"
+},
+"NRG": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"NSC": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"NTAP": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"NTRS": {
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"NUE": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"NVDA": {
+"2014": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"NVR": {
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"NWS": {
+"2014": "Revenues",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "Revenues"
+},
+"NWSA": {
+"2014": "Revenues",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "Revenues"
+},
+"NXPI": {
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"O": {
+"2014": "OperatingLeasesIncomeStatementLeaseRevenue",
+"2017": "OperatingLeasesIncomeStatementLeaseRevenue",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"ODFL": {
+"2014": "SalesRevenueServicesNet",
+"2017": "SalesRevenueServicesNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"OKE": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"OMC": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"ON": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ORCL": {
+"2014": "Revenues"
+},
+"ORLY": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"OTIS": {
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"OXY": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"PANW": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"PAYX": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"PCAR": {
+"2014": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"PCG": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"PEG": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2026": "Revenues"
+},
+"PEP": {
+"2014": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"PFE": {
+"2014": "SalesRevenueNet"
+},
+"PFG": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues"
+},
+"PG": {
+"2014": "SalesRevenueNet"
+},
+"PGR": {
+"2014": "Revenues",
+"2020": "Revenues",
+"2026": "Revenues"
+},
+"PH": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"PHM": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"PKG": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"PLD": {
+"2014": "OperatingLeasesIncomeStatementLeaseRevenue",
+"2017": "OperatingLeasesIncomeStatementLeaseRevenue",
+"2020": "Revenues"
+},
+"PLTR": {
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"PM": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"PNR": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"PNW": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"PODD": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"POOL": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"PPG": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"PPL": {
+"2014": "RegulatedAndUnregulatedOperatingRevenue"
+},
+"PRU": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues"
+},
+"PSA": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues"
+},
+"PSKY": {
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"PSX": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"PTC": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"PWR": {
+"2014": "SalesRevenueServicesNet",
+"2017": "SalesRevenueServicesNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"PYPL": {
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"Q": {
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"QCOM": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"RCL": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"REG": {
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"REGN": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"RJF": {
+"2014": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"RL": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"RMD": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ROK": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ROL": {
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ROP": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ROST": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"RSG": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"RTX": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"RVTY": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"SATS": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"SBAC": {
+"2014": "Revenues"
+},
+"SBUX": {
+"2014": "Revenues",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"SHW": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"SJM": {
+"2014": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"SLB": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"SMCI": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"SNA": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"SNDK": {
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"SNPS": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"SO": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"SOLV": {
+"2026": "Revenues"
+},
+"SPG": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"SPGI": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"SRE": {
+"2014": "RegulatedAndUnregulatedOperatingRevenue",
+"2020": "RegulatedAndUnregulatedOperatingRevenue",
+"2023": "RegulatedAndUnregulatedOperatingRevenue",
+"2026": "RegulatedAndUnregulatedOperatingRevenue"
+},
+"STE": {
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"STLD": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"STX": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"STZ": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"SW": {
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"SWK": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"SWKS": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"SYK": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"SYY": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"T": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"TAP": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"TDG": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues"
+},
+"TDY": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TECH": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TEL": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TER": {
+"2014": "Revenues",
+"2026": "Revenues"
+},
+"TGT": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TJX": {
+"2014": "Revenues",
+"2017": "SalesRevenueNet",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"TKO": {
+"2026": "Revenues"
+},
+"TMO": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TMUS": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TPL": {
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TPR": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TRGP": {
+"2014": "GasGatheringTransportationMarketingAndProcessingRevenue",
+"2017": "GasGatheringTransportationMarketingAndProcessingRevenue",
+"2020": "Revenues"
+},
+"TRMB": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TROW": {
+"2014": "AdministrativeServicesRevenue",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TRV": {
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"TSCO": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"TSLA": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TSN": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"TT": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TTD": {
+"2017": "SalesRevenueServicesNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TTWO": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TXN": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"TXT": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"TYL": {
+"2014": "Revenues",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"UAL": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"UBER": {
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"UDR": {
+"2014": "Revenues",
+"2017": "OperatingLeasesIncomeStatementMinimumLeaseRevenue",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"UHS": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ULTA": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"UNH": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"UNP": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"UPS": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"URI": {
+"2014": "Revenues",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"V": {
+"2014": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"VEEV": {
+"2014": "Revenues"
+},
+"VICI": {
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"VLO": {
+"2014": "RefiningAndMarketingRevenue"
+},
+"VLTO": {
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"VMC": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"VRSK": {
+"2014": "SalesRevenueServicesNet",
+"2017": "SalesRevenueServicesNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"VRSN": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"VRT": {
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"VRTX": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"VST": {
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"VTR": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2026": "Revenues"
+},
+"VTRS": {
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"VZ": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"WAB": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"WAT": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"WBD": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"WDAY": {
+"2014": "Revenues"
+},
+"WDC": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"WEC": {
+"2014": "SalesRevenueEnergyServices",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"WELL": {
+"2014": "Revenues",
+"2017": "Revenues"
+},
+"WM": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"WMB": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2026": "Revenues"
+},
+"WMT": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"WRB": {
+"2014": "Revenues",
+"2017": "Revenues"
+},
+"WSM": {
+"2014": "SalesRevenueNet",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"WST": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"WTW": {
+"2014": "Revenues",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"WY": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"WYNN": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerIncludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerIncludingAssessedTax"
+},
+"XEL": {
+"2014": "Revenues",
+"2017": "Revenues",
+"2020": "RegulatedAndUnregulatedOperatingRevenue"
+},
+"XOM": {
+"2026": "Revenues"
+},
+"XYL": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"XYZ": {
+"2017": "SalesRevenueNet",
+"2020": "Revenues",
+"2023": "Revenues",
+"2026": "Revenues"
+},
+"YUM": {
+"2014": "Revenues"
+},
+"ZBH": {
+"2014": "SalesRevenueGoodsNet",
+"2017": "SalesRevenueGoodsNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ZBRA": {
+"2014": "SalesRevenueNet",
+"2017": "SalesRevenueNet",
+"2020": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2023": "RevenueFromContractWithCustomerExcludingAssessedTax",
+"2026": "RevenueFromContractWithCustomerExcludingAssessedTax"
+},
+"ZTS": {
+"2014": "SalesRevenueNet",
+"2026": "Revenues"
+}
+}

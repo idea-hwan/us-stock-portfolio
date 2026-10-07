@@ -8,12 +8,14 @@ import sqlite3
 import time
 import requests
 import pandas as pd
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from pathlib import Path
 
 DATA_DIR = Path(__file__).parent.parent / 'data'
 DB_PATH  = DATA_DIR / 'stocks.db'
-HEADERS  = {'User-Agent': 'hwan@to.nexus (research)'}
+from config import sec_headers, sec_get
+from edgar_xbrl_fallback import patch_missing_filings
+HEADERS  = sec_headers()
 CUTOFF_YEAR = 2010
 
 TARGETS = [
@@ -94,16 +96,12 @@ def init_db(conn: sqlite3.Connection):
 
 def fetch_facts(cik: str) -> dict:
     url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
-    r = requests.get(url, headers=HEADERS, timeout=30)
-    r.raise_for_status()
-    return r.json()
+    return sec_get(url, HEADERS).json()
 
 
 def fetch_submissions(cik: str) -> dict:
     url = f"https://data.sec.gov/submissions/CIK{cik}.json"
-    r = requests.get(url, headers=HEADERS, timeout=30)
-    r.raise_for_status()
-    return r.json()
+    return sec_get(url, HEADERS).json()
 
 
 def latest_8k_202(submissions: dict) -> str | None:
@@ -149,8 +147,11 @@ def _best_record_per_period(records: list[dict], prefer_ytd: bool = True,
         df = (df.sort_values(["filed", "end"], ascending=[True, False])
                 .drop_duplicates(subset=["period_key"], keep="first"))
     elif prefer_ytd:
-        # 플로우 지표: YTD 누적값(가장 큰 값) 선택
-        df = (df.sort_values("val", ascending=False)
+        # 플로우 지표: YTD 누적값 선택 — 같은 (연도, 분기)의 레코드 중 기간(duration)이 가장 긴 것.
+        # (2026-10-06 수정: 이전엔 '가장 큰 값'을 골랐는데, 적자·부호 혼재 구간에서 3개월 값이
+        #  누적값 대신 뽑혀 이후 분기 차감이 틀어졌다. 예: INCY 2024Q2~Q4 순이익)
+        # 기간이 같으면 최근 제출분 우선.
+        df = (df.sort_values(["duration_days", "filed"], ascending=[False, False])
                 .drop_duplicates(subset=["period_key"], keep="first"))
     else:
         # 스냅샷 지표(total_assets 등): 단일 분기 기간(가장 짧은 duration) 선택
@@ -159,11 +160,72 @@ def _best_record_per_period(records: list[dict], prefer_ytd: bool = True,
     return df
 
 
+# ── 종목별·시대별 매출 태그 (scripts/build_revenue_tag_map.py 가 손익계산서 최상단 행에서 추출) ──
+# 매핑에서 1순위로 쓸 수 있는 표준 총매출 태그. 손익계산서 최상단 행이라도 ElectricUtilityRevenue·
+# PassengerRevenue·ClearingFeesRevenue 같은 하위 항목 태그나 SalesRevenueServicesNet(서비스만)·
+# SalesRevenueGoodsNet(제품만 — UNH·INCY·BIIB에서 하위 줄이 잡혀 오히려 틀림)은 총매출이 아닐 수 있어
+# 제외하고 기본 우선순위에 맡긴다.
+REV_TAG_WHITELIST = {
+    "Revenues",
+    "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "RevenueFromContractWithCustomerIncludingAssessedTax",
+    "SalesRevenueNet",
+    "RegulatedAndUnregulatedOperatingRevenue",
+}
+
+
+def _load_revenue_tag_map() -> dict:
+    import json
+    path = DATA_DIR / 'revenue_tag_map.json'
+    if not path.exists():
+        return {}
+    out = {}
+    for t, by_year in json.loads(path.read_text()).items():
+        ok = {y: tag for y, tag in by_year.items() if tag in REV_TAG_WHITELIST}
+        if ok:
+            out[t] = ok
+    return out
+
+
+REV_TAG_MAP = _load_revenue_tag_map()
+
+
+def _era_tag(era_tags: dict | None, year: int) -> str | None:
+    """era_tags {'2014': 태그, ...}: 해당 연도 이후 첫 샘플의 태그, 없으면 가장 최근 샘플의 태그."""
+    if not era_tags:
+        return None
+    ys = sorted(int(y) for y in era_tags)
+    for y in ys:
+        if y >= year:
+            return era_tags[str(y)]
+    return era_tags[str(ys[-1])]
+
+
+def _pick(per_tag: dict, order: list[str], key: tuple, era_tags: dict | None):
+    """태그별 값(per_tag)에서 key 기간의 값 선택: 그 시대 정답 태그 → 기본 우선순위.
+    먼저 찾은 값이 정확히 0이고 뒤 순위 태그에 0이 아닌 값이 있으면 후자 (예: BKR NetIncomeLoss=0)."""
+    pref = _era_tag(era_tags, key[0])
+    seq = ([pref] if pref in per_tag else []) + [t for t in order if t != pref]
+    chosen = None
+    for t in seq:
+        v = per_tag.get(t, {}).get(key)
+        if v is None:
+            continue
+        if chosen is None:
+            chosen = v
+        if chosen != 0:
+            break
+        if v != 0:
+            chosen = v
+            break
+    return chosen
+
+
 def extract_periods(facts: dict, tags: list[str], label: str, unit: str = "USD",
                     prefer_ytd: bool = True, prefer_earliest_filed: bool = False,
-                    fy_end_month: int = 12) -> pd.DataFrame:
+                    fy_end_month: int = 12, era_tags: dict | None = None) -> pd.DataFrame:
     usgaap = facts.get("facts", {}).get("us-gaap", {})
-    combined: dict[tuple, float] = {}
+    per_tag: dict[str, dict[tuple, float]] = {}
 
     for tag in tags:
         entry = usgaap.get(tag)
@@ -219,9 +281,13 @@ def extract_periods(facts: dict, tags: list[str], label: str, unit: str = "USD",
         df_tag = _best_record_per_period(records, prefer_ytd=prefer_ytd,
                                          prefer_earliest_filed=prefer_earliest_filed)
         for _, row in df_tag.iterrows():
-            k = (row["fiscal_year"], row["quarter"])
-            if k not in combined:
-                combined[k] = row["val"]
+            per_tag.setdefault(tag, {})[(row["fiscal_year"], row["quarter"])] = row["val"]
+
+    combined: dict[tuple, float] = {}
+    for k in {k for d in per_tag.values() for k in d}:
+        v = _pick(per_tag, tags, k, era_tags)
+        if v is not None:
+            combined[k] = v
 
     if not combined:
         return pd.DataFrame()
@@ -243,6 +309,64 @@ def ytd_to_single_quarter(df_ytd: pd.DataFrame, label: str) -> pd.Series:
         out[f"{y}Q3"] = (q3 - q2) if (pd.notna(q3) and pd.notna(q2)) else None
         out[f"{y}Q4"] = (fy - q3) if (pd.notna(fy) and pd.notna(q3)) else None
     return pd.Series(out, name=label)
+
+
+# 손익 항목은 10-Q에 3개월 값이 직접 보고된다. YTD 누적끼리 빼면(Q3 = 9개월 − 6개월) 두 값의
+# 보고 시점이 달라(소급 재작성) 어느 공시에도 없는 값이 나오는 경우가 있어, Q1~Q3는 직접 보고된
+# 3개월 값을 우선 쓴다. 현금흐름(cfo·capex)은 3개월 값이 없어 차감 방식을 유지한다.
+DIRECT_QUARTER_LABELS = {"revenue", "operating_income", "net_income"}
+
+
+def direct_quarters(facts: dict, tags: list[str], unit: str = "USD",
+                    fy_end_month: int = 12, era_tags: dict | None = None) -> dict[str, float]:
+    """10-Q에 직접 보고된 3개월(80~100일) 값 → {'2024Q2': 값}. 태그는 우선순위대로 먼저 값이 있는 쪽 사용,
+    같은 기간의 중복 보고는 가장 최근 제출분."""
+    usgaap = facts.get("facts", {}).get("us-gaap", {})
+    per_tag: dict[str, dict[tuple, float]] = {}
+    for tag in tags:
+        rows = usgaap.get(tag, {}).get("units", {}).get(unit, [])
+        best: dict[tuple, tuple] = {}
+        for r in rows:
+            if r.get("form") != "10-Q" or r.get("dimensions"):
+                continue
+            start, end = r.get("start", ""), r.get("end", "")
+            if not start or not end:
+                continue
+            try:
+                end_d = date.fromisoformat(end)
+                dur = (end_d - date.fromisoformat(start)).days
+            except ValueError:
+                continue
+            if not 80 <= dur <= 100:
+                continue
+            # 분기는 fp가 아니라 기간 종료일로 판정한다 — 3분기 10-Q에는 2분기에 끝난 3개월 값도
+            # fp=Q3으로 실려 있어 fp로는 엉뚱한 분기에 들어간다. 52/53주 회계의 종료일 흔들림(±며칠)은
+            # 종료일에서 10일을 뺀 달 기준으로 흡수한다.
+            adj = end_d - timedelta(days=10)
+            k = (adj.month - fy_end_month) % 12          # 회계연도 말 이후 경과 개월 (0이면 연말)
+            q = 4 if k == 0 else (k + 2) // 3
+            if q == 4:
+                continue                                   # 4분기 3개월 값은 10-Q에 없음
+            year = adj.year + 1 if adj.month > fy_end_month else adj.year
+            if year < CUTOFF_YEAR:
+                continue
+            key = (year, q)
+            filed = r.get("filed", "")
+            if key not in best or filed > best[key][0]:
+                best[key] = (filed, r["val"])
+        for key, (_, val) in sorted(best.items()):
+            # 같은 태그에서 직전 분기와 값이 정확히 같으면 SEC 원본 오류로 본다 (예: AEP 2022Q3
+            # NetIncomeLoss가 2분기 값 520.8을 반복) → 이 태그의 값은 버리고 다음 태그로 채운다.
+            prev = best.get((key[0], key[1] - 1))
+            if prev is not None and prev[1] == val and val != 0:
+                continue
+            per_tag.setdefault(tag, {})[key] = val
+    out: dict[tuple, float] = {}
+    for key in {k for d in per_tag.values() for k in d}:
+        v = _pick(per_tag, tags, key, era_tags)
+        if v is not None:
+            out[key] = v
+    return {f"{y}Q{q}": v for (y, q), v in out.items()}
 
 
 def normalize_shares(s: pd.Series) -> pd.Series:
@@ -282,16 +406,17 @@ def normalize_shares(s: pd.Series) -> pd.Series:
     return s.apply(fix)
 
 
-def collect_ticker(facts: dict, fy_end_month: int = 12) -> pd.DataFrame:
+def collect_ticker(facts: dict, fy_end_month: int = 12, rev_era_tags: dict | None = None) -> pd.DataFrame:
     quarterly_frames = []
 
     for label, tags, unit in TARGETS:
         prefer_ytd            = label not in SNAPSHOT_COLS
         prefer_earliest_filed = (label == 'shares_diluted')
+        era = rev_era_tags if label == "revenue" else None
         df_p = extract_periods(facts, tags, label, unit=unit,
                                prefer_ytd=prefer_ytd,
                                prefer_earliest_filed=prefer_earliest_filed,
-                               fy_end_month=fy_end_month)
+                               fy_end_month=fy_end_month, era_tags=era)
         if df_p.empty:
             continue
         if label in SNAPSHOT_COLS:
@@ -303,6 +428,16 @@ def collect_ticker(facts: dict, fy_end_month: int = 12) -> pd.DataFrame:
             quarterly_frames.append(s)
         else:
             s = ytd_to_single_quarter(df_p, label)
+            if label in DIRECT_QUARTER_LABELS:
+                direct = direct_quarters(facts, tags, unit, fy_end_month, era_tags=era)
+                s = s.astype(float)
+                for term, val in direct.items():
+                    s[term] = val            # Q1~Q3: 직접 보고된 3개월 값 우선
+                for y in sorted({int(t[:4]) for t in s.index}):
+                    fy_val = df_p[label].get((y, 4))
+                    qs = [s.get(f"{y}Q{q}") for q in (1, 2, 3)]
+                    if pd.notna(fy_val) and all(pd.notna(v) for v in qs):
+                        s[f"{y}Q4"] = fy_val - sum(qs)   # 4분기 = 연간 − (Q1+Q2+Q3): 합계가 연간과 일치
             quarterly_frames.append(s)
 
     if not quarterly_frames:
@@ -383,8 +518,7 @@ def main():
         tickers = tickers[:args.limit]
     print(f'유니버스: {len(tickers)}개 종목\n')
 
-    r = requests.get('https://www.sec.gov/files/company_tickers.json',
-                     headers=HEADERS, timeout=30)
+    r = sec_get('https://www.sec.gov/files/company_tickers.json', HEADERS)
     cik_map = {v['ticker'].upper(): str(v['cik_str']).zfill(10)
                for v in r.json().values()}
     print(f'EDGAR CIK 맵: {len(cik_map)}개\n')
@@ -418,9 +552,15 @@ def main():
             submissions = fetch_submissions(cik)
             latest_8k = latest_8k_202(submissions)
 
+            # companyfacts 갱신이 멈춘 종목은 10-Q/10-K 원본 XBRL에서 직접 보충
+            patched = patch_missing_filings(facts, submissions, int(cik), TARGETS, HEADERS)
+            if patched:
+                print(f'[{i:3}/{len(tickers)}] {ticker:8} | companyfacts 누락 {len(patched)}건 보충: {patched}')
+                filed, form = latest_filing(facts)
+
             upsert_filing_meta(conn, ticker, filed, form, latest_8k, now=datetime.utcnow().isoformat())
 
-            df_q = collect_ticker(facts, fy_end_month=fy_end)
+            df_q = collect_ticker(facts, fy_end_month=fy_end, rev_era_tags=REV_TAG_MAP.get(ticker.upper()))
             if df_q.empty:
                 print(f'[{i:3}/{len(tickers)}] {ticker:8} | 데이터 없음 — skip')
                 skipped += 1

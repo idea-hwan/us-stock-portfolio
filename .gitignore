@@ -14,3 +14,6 @@ reference/
 # 자동화 로그
 automation/logs/
 automation/__pycache__/
+
+# SEC 요청 연락처 등 개인 설정 (커밋 금지)
+.env

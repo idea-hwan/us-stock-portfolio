@@ -13,7 +13,8 @@ import yfinance as yf
 from pathlib import Path
 
 DATA_DIR = Path(__file__).parent.parent / 'data'
-HEADERS  = {'User-Agent': 'hwan@to.nexus (research)'}
+from config import sec_headers
+HEADERS  = sec_headers()
 
 
 # ── S&P 500 ────────────────────────────────────────────────────────
