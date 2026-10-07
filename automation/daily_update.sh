@@ -7,8 +7,9 @@
 #   5. 선행수익률 + SPY alpha 재계산
 #   6. 종목 분류(growth/value/cyclical) 재계산
 #   7. 현재(오늘 가격 기준) 밸류에이션 재계산
-#   8. 대시보드(docs/index.html) 재생성
-#   9. 변경 있으면 git commit + push (GitHub Pages 자동 갱신)
+#   8. 재무 데이터 품질 플래그(compute_data_quality.py) → 대시보드 '⚠ 데이터 점검' 배지
+#   9. 대시보드(docs/index.html) 재생성
+#  10. 변경 있으면 git commit + push (GitHub Pages 자동 갱신)
 #
 # EDGAR 재무 원본 수집(collect_financials.py)은 여기 없음 — 고정비용 5~6분이라
 # 매주 1회 automation/weekly_collect_financials.sh 로 분리. 그 결과(stocks.db)는
@@ -37,6 +38,7 @@ LOG_FILE="$LOG_DIR/$(date +%Y%m%d)_daily.log"
     "$PY" scripts/compute_returns.py
     "$PY" scripts/classify_stocks.py
     "$PY" scripts/compute_valuation_current.py
+    "$PY" scripts/compute_data_quality.py
     "$PY" scripts/build_dashboard.py
 
     if [[ -n "$(git status --porcelain)" ]]; then

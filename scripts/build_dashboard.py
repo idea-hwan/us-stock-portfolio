@@ -105,6 +105,15 @@ def load_filing_meta() -> pd.DataFrame:
     return df
 
 
+def load_data_quality() -> dict:
+    """compute_data_quality.py 가 만든 종목별 데이터 점검 플래그. 파일이 없으면 빈 dict(배지 없음)."""
+    path = ROOT / 'data' / 'analytics' / 'data_quality.json'
+    if not path.exists():
+        return {}
+    import json
+    return json.loads(path.read_text())
+
+
 def load_price_perf() -> pd.DataFrame:
     """종목별 1m / 3m / 1y 주가 수익률."""
     con = sqlite3.connect(PX_DB)
@@ -349,6 +358,7 @@ def build_stocks(
     perf: pd.DataFrame,
     val_now: pd.DataFrame,
     filing: pd.DataFrame,
+    dq: dict | None = None,
 ) -> list[dict]:
     df = snap.copy()
     df = df.merge(prices,  on='ticker', how='left')
@@ -379,6 +389,8 @@ def build_stocks(
             # 잠정(8-K Item 2.02 실적발표, 정식 10-Q/10-K 전) 배지
             'latest_8k_filed':  str(d.get('latest_8k_202_filed', '') or ''),
             'is_provisional':   _is_provisional(d.get('latest_8k_202_filed'), d.get('latest_filed')),
+            # 재무 데이터 점검 플래그 (분사·재작성으로 4분기 파생값이 튀는 경우 등) — 신호 판정 보류 근거
+            'dq':               [f['text'] for f in (dq or {}).get(str(d.get('ticker', '')), [])],
             # 현재가 / 시총
             'price':         _sf(d.get('price'), 2),
             'mktcap_m':      round(mktcap / 1e6) if mktcap else None,
@@ -565,6 +577,7 @@ td{padding:7px 8px;border-bottom:1px solid #252838;white-space:nowrap;font-size:
 .tag{padding:2px 6px;border-radius:4px;font-size:11px;margin-left:5px;flex-shrink:0}
 .tag.fresh{background:rgba(52,211,153,.18);color:var(--green);cursor:help}
 .tag.prelim{background:rgba(251,191,36,.18);color:var(--yellow);cursor:help}
+.tag.dq{background:rgba(251,146,60,.2);color:#fb923c;cursor:help}
 
 .sep{padding-left:20px}
 .ss{color:var(--green);font-weight:600}
@@ -1092,8 +1105,14 @@ function provisionalBadge(s) {
   return ` <span class="tag prelim" title="8-K 실적발표(잠정, 정식 10-Q/10-K 전) · ${s.latest_8k_filed}">잠정: ${md}</span>`;
 }
 
+function dqBadge(s) {
+  if (!s.dq || !s.dq.length) return '';
+  const tip = ('재무 데이터 점검 필요 (자동 감지 — 실제 사업 변동일 수도 있음)\n' + s.dq.join('\n')).replace(/"/g, '&quot;');
+  return ` <span class="tag dq" title="${tip}">⚠ 데이터 점검</span>`;
+}
+
 function earningsBadges(s) {
-  return provisionalBadge(s) + filedBadge(s);
+  return provisionalBadge(s) + filedBadge(s) + dqBadge(s);
 }
 
 function uvCls(v) {
@@ -1166,6 +1185,7 @@ function buildDetail(s) {
       ${r('현재가 ($)', fmt(s.price, 2))}
       ${s.val_asof ? r('밸류에이션 기준일', s.val_asof) : ''}
       ${r('시총 ($M)', fmt(s.mktcap_m, 0))}
+      ${s.dq && s.dq.length ? r('데이터 점검', '<span style="white-space:normal;line-height:1.5;color:#fb923c">⚠ ' + s.dq.join('<br>⚠ ') + '<br><span style="color:var(--muted)">자동 감지 — 이 종목의 신호는 원본 공시로 확인 전까지 보류</span></span>') : ''}
       ${r('이익 추세', s.op_trend)}
       ${r('저평가 여부', s.undervalued)}
       ${s.sig_detail.length
@@ -1342,10 +1362,11 @@ def main():
     val_now        = load_valuation_current()
     filing         = load_filing_meta()
     reports        = load_signal_reports()
+    dq             = load_data_quality()
 
-    print(f'  스냅샷 {len(snap)}행, 가격 {len(prices)}종목, 수익률 {len(perf)}종목, 현재 밸류에이션 {len(val_now)}종목, 제출일 메타 {len(filing)}종목, 주간 리포트 {len(reports)}건')
+    print(f'  스냅샷 {len(snap)}행, 가격 {len(prices)}종목, 수익률 {len(perf)}종목, 현재 밸류에이션 {len(val_now)}종목, 제출일 메타 {len(filing)}종목, 주간 리포트 {len(reports)}건, 데이터 점검 플래그 {len(dq)}종목')
 
-    stocks = build_stocks(snap, prices, shares, perf, val_now, filing)
+    stocks = build_stocks(snap, prices, shares, perf, val_now, filing, dq)
     print(f'  최종 {len(stocks)}종목 (시총 순 정렬)')
 
     html = generate_html(stocks, px_dt, reports)
