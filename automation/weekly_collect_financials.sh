@@ -27,5 +27,6 @@ LOG_FILE="$LOG_DIR/$(date +%Y%m%d)_weekly.log"
     # 직접 보충하므로 여기서 "수집 누락"이나 "SEC 원천 지연"이 남아 있으면 확인이 필요하다. 점검이 실패해도
     # 수집 결과에는 영향이 없으니 파이프라인은 멈추지 않는다.
     "$PY" scripts/check_stale_quarters.py || echo "⚠ check_stale_quarters.py 실패 (수집 결과에는 영향 없음)"
+    "$PY" scripts/check_stale_quarters.py --latest-filed || echo "⚠ check_stale_quarters.py --latest-filed 실패 (수집 결과에는 영향 없음)"
     echo "===== weekly_collect_financials 완료 $(date '+%Y-%m-%d %H:%M:%S') ====="
 } >> "$LOG_FILE" 2>&1
