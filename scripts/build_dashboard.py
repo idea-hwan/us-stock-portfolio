@@ -32,7 +32,10 @@ def load_snapshots() -> pd.DataFrame:
     """전체 종목 최신 스냅샷 (ticker당 마지막 anchor_term)."""
     snap = pd.read_csv(ANA_DIR / 'all_stocks.csv')
     snap['bucket'] = snap['bucket'].fillna('')
-    snap = snap.sort_values('anchor_term').groupby('ticker').last().reset_index()
+    # 종목별 '마지막 행'을 그대로 쓴다. groupby().last()는 열마다 마지막 non-null 값을 가져와서, 최신 앵커에서 값이 빈
+    # 지표(capex 성장률 등)를 몇 년 전 앵커의 값으로 조용히 채운다 (2026-10-08 발견: VEEV capex_1y -35.2는 2020년경 값,
+    # 33종목이 영향). 값이 비면 비어 있는 채로 둬야 신호가 빈 지표 위에서 켜지지 않는다.
+    snap = snap.sort_values('anchor_term').drop_duplicates('ticker', keep='last').reset_index(drop=True)
 
     univ = pd.read_csv(ROOT / 'data' / 'stock_universe.csv', usecols=['ticker', 'company', 'biz_model'])
     snap = snap.merge(univ, on='ticker', how='left')
