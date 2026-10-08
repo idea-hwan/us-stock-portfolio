@@ -57,6 +57,8 @@
 
 **현재 기준선 (2026-10-07 저녁, 모두 push 완료 후):** 재무 DB 31,345행, SEC 대조 분기 매출 98.4 / 영업이익 98.4 / 순이익 99.2%, 연간 합계 99.4 / 99.1 / 97.9 / 99.5 / 99.7%. 백테스트 growth +17.95%(초과 +3.83%p), value +27.87%(초과 +13.75%p), 핵심 신호 12m growth +13.9% / value +18.7%. 대시보드 400종목, 신호 매수 8(ACN·FICO·GDDY·INCY·ISRG·MKC·UHS·VEEV) · 매도 7(CARR·CHRW·CRL·DHI·LEN·MO·TRGP), 데이터 점검 배지 38종목. 스케줄러는 켜져 있다(`caffeinate -i .venv/bin/python automation/scheduler_data_collection.py`, 10/7 14:49 시작).
 
+**✅ 10/8 처리 완료**: 스케줄러 첫 자동 실행 정상(09:00:11~09:03:40, `auto: dashboard update` push 확인, SPY·점검 플래그 정상). **WBD·PSKY 합병**(Skydance가 WBD 인수 종결 10/6): WBD는 Form 25로 상장폐지 → 대시보드에서 즉시 제외(`build_dashboard.KNOWN_DELISTED`, 이력은 DB 유지), PSKY는 Skydance Corporation으로 사명 변경·티커 SKYD → 시스템 티커는 PSKY 유지, 가격만 야후 `SKYD`로 받아 저장(`collect_prices.YF_SYMBOL`), CIK 2041610 고정(`collect_financials.CIK_OVERRIDES`). 합병 종결 후 첫 분기 재무가 나오면 PSKY TTM에 큰 점프·데이터 점검 플래그가 생길 수 있다(현재 신호 없음).
+
 **0. 내일 아침 (사용자, 5분) — 스케줄러 첫 자동 실행 확인 (목 10/8 09:00 KST)**
 - `automation/logs/20261008_daily.log`에서: `대상: …개 종목 (벤치마크 SPY 포함)` / `⚠⚠`(SPY 지연 경고) 없음 / `데이터 점검 플래그: …종목` 줄 / 마지막에 `auto: dashboard update`와 `git push 완료`.
 - `git log -2`에 `auto: dashboard update 2026-10-08 …` 커밋이 있으면 정상(git add/commit/push 단계는 10/6 이후 처음 실제 실행). 실패하면 `bash automation/daily_update.sh`를 수동 실행해 어느 단계인지 본다.
