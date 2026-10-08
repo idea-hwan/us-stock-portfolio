@@ -67,6 +67,8 @@
 
 **✅ 10/8 신호 종목 원본 자동 대조 도구** `scripts/verify_signal_tickers.py`(읽기 전용, 약 1분): 신호 종목마다 DB 최근 분기 값을 최신 10-Q/10-K 인스턴스와 대조 + 빈 분기·음수 capex·분기 공백 점검. 현재 신호 12종목 전부 ✓(8~9항목 일치), VEEV는 capex 빈 분기로 ⚠ 재현, 값을 일부러 바꾼 시험도 불일치로 감지. 주간 리포트 프롬프트 1단계에 필수 단계로 추가.
 
+**✅ 10/8 순액 capex 종목 탐색 완료 (3번)**: 진단에서 나온 음수 capex 21종목을 원본 공시 값(10-Q 누계·10-K 연간 체인)으로 확인 → 같은 시점 원본 값이 줄어드는 진짜 순액 공시는 **LEN·INTU** 둘뿐(`NET_CAPEX_TICKERS`). 나머지는 사업 분리·재작성(DD·BAX·CCI·DLTR·HAS·AEP·DAL)이거나 금융·부동산(HIG·RF·ALL·IVZ·VTR 등, 신호 대상 아님). INTU 반영 후 신호 변화 없음(capex_1y +108%). 앞으로 `verify_signal_tickers.py`가 "capex 음수"를 경고하면 같은 방법으로 확인해 목록에 추가.
+
 **0. 내일 아침 (사용자, 5분) — 스케줄러 첫 자동 실행 확인 (목 10/8 09:00 KST)**
 - `automation/logs/20261008_daily.log`에서: `대상: …개 종목 (벤치마크 SPY 포함)` / `⚠⚠`(SPY 지연 경고) 없음 / `데이터 점검 플래그: …종목` 줄 / 마지막에 `auto: dashboard update`와 `git push 완료`.
 - `git log -2`에 `auto: dashboard update 2026-10-08 …` 커밋이 있으면 정상(git add/commit/push 단계는 10/6 이후 처음 실제 실행). 실패하면 `bash automation/daily_update.sh`를 수동 실행해 어느 단계인지 본다.

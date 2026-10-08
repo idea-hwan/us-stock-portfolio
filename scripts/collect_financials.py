@@ -472,7 +472,7 @@ def normalize_shares(s: pd.Series) -> pd.Series:
 # 현금흐름표에 "Net additions of operating properties and equipment"(순액)로 공시해 분기 capex가 음수일 수 있는 종목.
 # LEN: 2026Q3 9개월 누계 4,083만 < 6개월 누계 4,885만 → 3분기 −800만 달러 (10-Q 원본 확인, 2026-10-08).
 # 전 종목에 음수를 허용하면 4분기 파생값(AEP −5,612·CCI −824 등) 가짜 음수가 들어오므로 원본을 확인한 종목만 추가한다.
-NET_CAPEX_TICKERS = {'LEN'}
+NET_CAPEX_TICKERS = {'LEN', 'INTU'}   # INTU: 4분기 −10·−17·−15 (10-Q 9개월 누계 > 10-K 연간, 모두 재작성 없는 원본 값 — 2026-10-08 확인)
 
 
 def collect_ticker(facts: dict, fy_end_month: int = 12, rev_era_tags: dict | None = None,
