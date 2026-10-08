@@ -472,6 +472,11 @@ def normalize_shares(s: pd.Series) -> pd.Series:
     return s.apply(fix)
 
 
+# 손익계산서에 영업이익 줄이 없고 세전이익을 다른 이름의 표준 태그로 공시하는 종목 → 세전이익 태그를 영업이익 자리에 쓴다.
+# PSX: "Income before income taxes" 줄이 us-gaap_IncomeLossIncludingPortionAttributableToNoncontrollingInterest (R2 페이지 확인, 2026-10-08).
+# 영업이익 태그가 전혀 없는 종목에 기존 세전이익 대체(위 operating_income 목록)를 쓰는 것과 같은 근사다.
+OPINC_TAG_OVERRIDE = {'PSX': ['IncomeLossIncludingPortionAttributableToNoncontrollingInterest']}
+
 # 현금흐름표에 "Net additions of operating properties and equipment"(순액)로 공시해 분기 capex가 음수일 수 있는 종목.
 # LEN: 2026Q3 9개월 누계 4,083만 < 6개월 누계 4,885만 → 3분기 −800만 달러 (10-Q 원본 확인, 2026-10-08).
 # 전 종목에 음수를 허용하면 4분기 파생값(AEP −5,612·CCI −824 등) 가짜 음수가 들어오므로 원본을 확인한 종목만 추가한다.
@@ -479,12 +484,14 @@ NET_CAPEX_TICKERS = {'LEN', 'INTU'}   # INTU: 4분기 −10·−17·−15 (10-Q 
 
 
 def collect_ticker(facts: dict, fy_end_month: int = 12, rev_era_tags: dict | None = None,
-                   keep_negative_capex: bool = False) -> pd.DataFrame:
+                   keep_negative_capex: bool = False, opinc_tags: list | None = None) -> pd.DataFrame:
     quarterly_frames = []
 
     for label, tags, unit in TARGETS:
         if label == 'capex' and 'EXT_CAPEX' in facts.get('facts', {}).get('us-gaap', {}):
             tags = ['EXT_CAPEX'] + [t for t in tags if t != 'EXT_CAPEX']   # 회사 고유 태그 종목은 현금흐름표 원 줄이 우선
+        if label == 'operating_income' and opinc_tags:
+            tags = list(opinc_tags) + [t for t in tags if t not in opinc_tags]
         prefer_ytd            = label not in SNAPSHOT_COLS
         prefer_earliest_filed = (label == 'shares_diluted')
         era = rev_era_tags if label == "revenue" else None
@@ -661,7 +668,8 @@ def main():
             upsert_filing_meta(conn, ticker, filed, form, latest_8k, now=datetime.utcnow().isoformat())
 
             df_q = collect_ticker(facts, fy_end_month=fy_end, rev_era_tags=REV_TAG_MAP.get(ticker.upper()),
-                               keep_negative_capex=ticker.upper() in NET_CAPEX_TICKERS)
+                               keep_negative_capex=ticker.upper() in NET_CAPEX_TICKERS,
+                               opinc_tags=OPINC_TAG_OVERRIDE.get(ticker.upper()))
             if df_q.empty:
                 print(f'[{i:3}/{len(tickers)}] {ticker:8} | 데이터 없음 — skip')
                 skipped += 1
