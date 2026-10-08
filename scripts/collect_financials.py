@@ -44,7 +44,14 @@ TARGETS = [
                           "PaymentsToAcquireProductiveAssets",
                           "PaymentsToAcquireOtherPropertyPlantAndEquipment",      # ADP 등 일부
                           "PaymentsToAcquireOilAndGasPropertyAndEquipment",       # E&P (APA, FANG 등)
-                          "PaymentsToAcquireOilAndGasEquipment"],                  "USD"),
+                          "PaymentsToAcquireOilAndGasEquipment",
+                          # 2026-10-08 추가 — 위 태그가 없는 종목의 설비투자 (목록 끝에 둬서 기존 선택은 바뀌지 않고 비어 있던 곳만 채워짐)
+                          "PaymentsForCapitalImprovements",                       # GLW·IT·SNA
+                          "PaymentsToAcquireOtherProductiveAssets",               # VZ·ROP·BAX
+                          "PaymentsToExploreAndDevelopOilAndGasProperties",       # APA·FANG (E&P 개발 투자)
+                          "PaymentsForConstructionInProcess",                     # ED (유틸리티 설비투자)
+                          # 설비투자에서 매각 수입을 뺀 순액 태그 — WAT 2025Q3 10-Q처럼 총액 태그 대신 이걸 쓴 분기를 채운다
+                          "PaymentsForProceedsFromProductiveAssets"],              "USD"),
     ("total_assets",     ["Assets"],                                                               "USD"),
     ("total_equity",     ["StockholdersEquity",
                           "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"], "USD"),
