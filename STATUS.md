@@ -408,6 +408,7 @@ CAPEX 분기값 검증을 하려다 값 정확도보다 **결측**이 더 큰 �
   - **VEEV의 매수 신호(최종 후보, 7/15~10/6 12주 연속)가 이 버그 때문이었다.** VEEV는 현금흐름표에 설비투자 줄이 아예 없어(투자활동에 단기투자 매입·만기뿐, 3개 공시 확인) `capex_1y`를 계산할 수 없는데, 대시보드는 2020년경의 capex_1y −35.2를 끌어와 "capex↓" 조건을 켰다. 수정 후 VEEV 신호는 사라진다(매수 7 → 6, 매도 7 변화 없음).
   - 다른 신호 종목(ISRG·FICO·GDDY·MKC·UHS·ACN)은 수정 후에도 신호가 유지된다. 과거 리포트 28종목 중 capex 전부 NULL이었던 종목은 COP(7/28·8/4 "신중" 그룹, 최종 판정에는 안 쓰임)뿐, 일부 분기만 NULL: INTU·DD.
   - **백테스트는 영향 없음**: 백테스트는 종목별 앵커별 행을 그대로 쓰고 NaN이면 이벤트를 만들지 않아 이 결함이 없다. 라이브 대시보드와 주간 리포트에만 있었다.
+  - **사각지대 표시(`compute_data_quality.py`, `capex_missing`)**: 대시보드의 최신 앵커 `capex_1y`가 비어 있는 분석 대상 종목에 "⚠ 데이터 점검" 배지로 사유를 표시한다(14종목: ABNB·APP·CI·CMS·COP·DD·DTE·FDXF·NEE·PSX·TKO·TPL·URI·VEEV). 이 종목들은 CAPEX 조건이 필요한 매수·매도 신호가 날 수 없다. 최신 분기 하나만 비는 종목(LEN·DAL·DOW·FCX·KR·RL)은 성장률 계산이 창 안의 빈 분기 1개를 건너뛰므로(`q_empty`) 해당하지 않는다. extension 태그 지원(PSX·DTE·TKO·COP·D·NEE의 capex, APA 매출)은 시대마다 태그 이름이 바뀌고(COP: `CapitalExpendituresAndInvestments` → `PaymentToAcquireProductiveAssetsAndInvestments`) 합산 규칙이 필요한(DTE 유틸리티+비유틸리티, NEE FPL·독립발전) 데다 대상이 6종목(1.5%)이라 비용 대비 효과가 낮아 보류하고 표시로 대신했다.
   - 교훈: pandas `groupby().last()`/`first()`는 NaN을 건너뛴다. "최신 행"이 필요할 땐 `drop_duplicates(keep='last')`나 `tail(1)`. (`load_shares`의 `.last()`는 주식 수의 마지막 유효값이 의도라 그대로.)
 
 ### 옛 CIK 이력 연결(CIK_PREDECESSORS)과 매출 태그 매년 샘플링 실험 (2026-10-07)
