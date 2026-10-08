@@ -62,6 +62,9 @@
 **⚠ 10/8 중대 발견 (리포트 10/13에 반영 필수)**: 대시보드 `groupby().last()` 버그로 **VEEV의 매수 신호(최종 후보 12주)는 무효**였다. VEEV는 현금흐름표에 설비투자 줄이 없어 capex_1y를 계산할 수 없는데 2020년경 값(−35.2)이 섞여 들어갔다(STATUS "CAPEX 결측 조사…" 참조). 수정·재생성 완료(매수 7 → 6, VEEV 소멸). 10/13 리포트에서 지난 회차들의 VEEV 최종 후보 판정을 **정정**해야 한다(어디서 틀렸는지·데이터 결함 때문이었다는 점을 명시). 과거 리포트의 다른 영향: COP(7/28·8/4 "신중")·INTU·DD는 capex가 일부/전부 비어 있었다.
 - 다음 데이터 작업(우선순위 상향): **extension 태그 지원**(PSX·DTE·TKO·COP·D·NEE의 capex, APA 매출) — 10-Q 인스턴스를 파싱해 회사 고유 태그를 읽는다. 이 종목들은 지금 capex 조건을 평가할 수 없어 신호가 날 수 없다.
 
+**✅ 10/8 오후 추가 처리**: ① 10/8 정정 리포트(`docs/signal_reports/2026-10-08.md`) 배포 — VEEV 정정, 매수 6·매도 6. ② **LEN 매도 신호 해제(데이터 오류)**: LEN은 설비투자를 순액("Net additions of operating properties and equipment")으로 공시해 2026Q3가 −800만 달러(9개월 4,083만 < 6개월 4,885만, 10-Q 확인)인데 `collect_ticker`의 음수 가드가 지워 빈 값 → 빈 분기를 건너뛴 capex_1y가 +14.8로 나왔다. 바로잡으면 −13.0 → 신호 소멸. `NET_CAPEX_TICKERS={'LEN'}`(collect_financials.py)로 이 종목만 음수 허용. 전 종목 허용은 금지 — 진단(2023년 이후 capex 음수 34건·21종목)에서 대부분이 4분기 파생 가짜 음수(AEP −5,612·CCI −824·DAL −786)였다. 다른 순액 공시 종목은 원본 확인 후 이 목록에 추가. ③ 현재 신호: 매수 ACN·FICO·GDDY·ISRG·MKC·UHS / 매도 CARR·CHRW·CRL·DHI·MO·TRGP.
+- 10/13 리포트에 남은 확인: **CARR 2025Q4 영업이익 급락 원인**(2/5 실적 8-K는 본문에 숫자 없음 — 첨부 보도자료 Ex-99를 직접 읽을 것; 10-K에는 영업권 손상 없음).
+
 **0. 내일 아침 (사용자, 5분) — 스케줄러 첫 자동 실행 확인 (목 10/8 09:00 KST)**
 - `automation/logs/20261008_daily.log`에서: `대상: …개 종목 (벤치마크 SPY 포함)` / `⚠⚠`(SPY 지연 경고) 없음 / `데이터 점검 플래그: …종목` 줄 / 마지막에 `auto: dashboard update`와 `git push 완료`.
 - `git log -2`에 `auto: dashboard update 2026-10-08 …` 커밋이 있으면 정상(git add/commit/push 단계는 10/6 이후 처음 실제 실행). 실패하면 `bash automation/daily_update.sh`를 수동 실행해 어느 단계인지 본다.
