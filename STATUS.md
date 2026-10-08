@@ -400,6 +400,16 @@ python scripts/classify_stocks.py         # 종목 분류 → analytics/*.csv
 - 남은 공백 5종목은 합병·분사로 새로 생긴 법인이라 이력이 없는 정상 공백(PSKY·Q·SNDK·FDXF)과 분석 제외 섹터(BLK). 데이터 점검 플래그 51 → 38종목.
 - 최종 백테스트(2013-12~2026-10, SPY 보정 후): growth CAGR +17.95%(초과 +3.83%p), value +27.87%(초과 +13.75%p). 핵심 신호 12m: growth +13.9%(n=287), value +18.7%(n=237). 포트폴리오 CAGR은 ±2~3%p 노이즈가 있어 범위(growth +17~19%, value +23~28%)로 볼 것.
 
+### CAPEX 결측 조사에서 나온 두 가지: 설비투자 태그 확대, 대시보드 `groupby().last()` 버그 (2026-10-08)
+CAPEX 분기값 검증을 하려다 값 정확도보다 **결측**이 더 큰 문제임을 발견했다. `capex` 결측이 전체 행의 12.8%였고, 분석 대상 중 최근 8분기 capex가 전부 비어 있는 종목이 21개였다. CAPEX 1년 감소는 매수·매도 신호의 필수 조건이라 이 종목들은 신호가 날 수 없는 사각지대였다.
+- **표준 태그 확대**(`collect_financials.TARGETS` capex 목록 끝에 추가 — 기존 선택은 바뀌지 않고 빈 곳만 채움): `PaymentsForCapitalImprovements`(GLW·IT·SNA), `PaymentsToAcquireOtherProductiveAssets`(VZ·ROP·BAX), `PaymentsToExploreAndDevelopOilAndGasProperties`(APA·FANG), `PaymentsForConstructionInProcess`(ED), `PaymentsForProceedsFromProductiveAssets`(설비투자에서 매각 수입을 뺀 순액 — WAT 2025Q3 10-Q, VEEV). 효과: capex 1,225행(46종목) 채움, 사각지대 21 → 11종목, 대시보드 capex_1y 빈 종목 10 → 5(DTE·FDXF·NEE·PSX·TKO). 매출·영업이익·순이익·CFO 변화 0, 백테스트 변화 미미(growth +18.15%, value +27.92%). AEP·ETR의 capex 0.0 구멍 18행도 실제 값으로 채워짐.
+- **남은 사각지대 = 회사 고유(extension) 태그**: PSX(`psx:CapitalExpendituresAndInvestments`), DTE(`dte:PlantAndEquipmentExpendituresUtility`), TKO, COP(`cop:PaymentToAcquireProductiveAssetsAndInvestments`), D, NEE 등. companyfacts에는 extension이 없어 10-Q 인스턴스를 직접 파싱해야 한다(APA 매출 NULL과 같은 구조).
+- **대시보드 버그(중대)**: `build_dashboard.load_snapshots`가 `groupby('ticker').last()`로 종목별 스냅샷을 만들었다. pandas의 `GroupBy.last()`는 마지막 **행**이 아니라 **열마다 마지막 non-null 값**을 가져와, 최신 앵커에서 비어 있는 지표를 몇 년 전 앵커의 값으로 조용히 채웠다. 402종목 중 33종목이 핵심 열(pop_20d 21종목, op_1y·ni_1y 13종목, capex_1y 9종목, rev 1종목) 중 하나 이상이 과거 값이었다. 수정: `drop_duplicates('ticker', keep='last')`(마지막 행 그대로).
+  - **VEEV의 매수 신호(최종 후보, 7/15~10/6 12주 연속)가 이 버그 때문이었다.** VEEV는 현금흐름표에 설비투자 줄이 아예 없어(투자활동에 단기투자 매입·만기뿐, 3개 공시 확인) `capex_1y`를 계산할 수 없는데, 대시보드는 2020년경의 capex_1y −35.2를 끌어와 "capex↓" 조건을 켰다. 수정 후 VEEV 신호는 사라진다(매수 7 → 6, 매도 7 변화 없음).
+  - 다른 신호 종목(ISRG·FICO·GDDY·MKC·UHS·ACN)은 수정 후에도 신호가 유지된다. 과거 리포트 28종목 중 capex 전부 NULL이었던 종목은 COP(7/28·8/4 "신중" 그룹, 최종 판정에는 안 쓰임)뿐, 일부 분기만 NULL: INTU·DD.
+  - **백테스트는 영향 없음**: 백테스트는 종목별 앵커별 행을 그대로 쓰고 NaN이면 이벤트를 만들지 않아 이 결함이 없다. 라이브 대시보드와 주간 리포트에만 있었다.
+  - 교훈: pandas `groupby().last()`/`first()`는 NaN을 건너뛴다. "최신 행"이 필요할 땐 `drop_duplicates(keep='last')`나 `tail(1)`. (`load_shares`의 `.last()`는 주식 수의 마지막 유효값이 의도라 그대로.)
+
 ### 옛 CIK 이력 연결(CIK_PREDECESSORS)과 매출 태그 매년 샘플링 실험 (2026-10-07)
 **CIK 변경 종목 점검**: 가격 이력은 2006년부터인데 재무 이력이 40분기 미만인 15종목을 찾았다(XOM의 지주회사 재편과 같은 유형). 사업이 이어지는 재편 9종목의 옛 CIK를 `collect_financials.CIK_PREDECESSORS`에 등록해 이력을 합친다 — XOM(0000034088), APA(Apache 0000006769), TPL(Texas Pacific Land Trust 0000097517), BG(Bunge Ltd 0001144519), DIS(옛 Walt Disney 0001001039), CI(옛 Cigna 0000701221), LIN(Praxair 0000884905), EVRG(Westar 0000054507), STE(옛 STERIS plc 0001624899). 합치지 않은 종목: PSKY·TKO·SW(별개 사업 합병·신규 법인), CRH(IFRS 시절 이력).
 - 효과: 분기 수 APA 28→66, BG 17→66, CI 37→66, DIS 35→67, EVRG 39→66, LIN 38→66, TPL 29→65, STE 36→49(XOM 66 유지). 백테스트·감사 수치는 변하지 않음(PIT 이벤트에 영향 없음).
