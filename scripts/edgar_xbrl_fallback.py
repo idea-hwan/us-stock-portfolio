@@ -53,8 +53,9 @@ def _local(tag: str) -> tuple[str, str]:
     return ns, name
 
 
-def parse_instance(xml_text: str, wanted: dict) -> dict:
-    """wanted: {태그: 단위('USD'|'shares')}. 반환: {'fp','end','records':[(tag,unit,start,end,val)]}"""
+def parse_instance(xml_text: str, wanted: dict, any_ns: bool = False) -> dict:
+    """wanted: {태그: 단위('USD'|'shares')}. 반환: {'fp','end','records':[(tag,unit,start,end,val)]}
+    any_ns=True면 us-gaap이 아닌 회사 고유(extension) 네임스페이스의 같은 이름 요소도 읽는다."""
     root = ET.fromstring(xml_text)
     contexts, units, dei = {}, {}, {}
     for el in root:
@@ -82,7 +83,7 @@ def parse_instance(xml_text: str, wanted: dict) -> dict:
     recs = []
     for el in root:
         ns, name = _local(el.tag)
-        if not ns.startswith('http://fasb.org/us-gaap/') or name not in wanted:
+        if name not in wanted or not (any_ns or ns.startswith('http://fasb.org/us-gaap/')):
             continue
         cref = el.get('contextRef')
         has_dim, p = contexts.get(cref, (True, {}))

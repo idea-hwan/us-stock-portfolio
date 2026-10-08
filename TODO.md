@@ -69,6 +69,8 @@
 
 **✅ 10/8 순액 capex 종목 탐색 완료 (3번)**: 진단에서 나온 음수 capex 21종목을 원본 공시 값(10-Q 누계·10-K 연간 체인)으로 확인 → 같은 시점 원본 값이 줄어드는 진짜 순액 공시는 **LEN·INTU** 둘뿐(`NET_CAPEX_TICKERS`). 나머지는 사업 분리·재작성(DD·BAX·CCI·DLTR·HAS·AEP·DAL)이거나 금융·부동산(HIG·RF·ALL·IVZ·VTR 등, 신호 대상 아님). INTU 반영 후 신호 변화 없음(capex_1y +108%). 앞으로 `verify_signal_tickers.py`가 "capex 음수"를 경고하면 같은 방법으로 확인해 목록에 추가.
 
+**✅ 10/8 extension 태그 capex 지원 (2번)**: `scripts/edgar_ext_tags.py` 신규 — PSX·COP·TKO·D·DTE·NEE의 설비투자를 10-Q/10-K 인스턴스의 회사 고유 태그에서 읽어(DTE는 유틸리티+비유틸리티, NEE는 네 줄 합계 태그·2020~21 대체 대안, 절댓값 합산) 합성 태그 `EXT_CAPEX`로 facts에 넣는다. 접수번호 단위로 `data/ext_facts/<티커>.json`에 캐시(커밋 대상, 새 공시만 추가 조회, 태그 정의가 바뀌면 자동 재수집). 이 종목은 `EXT_CAPEX`가 capex 태그 맨 앞(현금흐름표 원 줄 우선; COP는 표준 순액 태그가 음수 가짜 값을 만들던 것도 해소). 6월 값 대조: PSX 2026Q2 726·누계 1,308, NEE 2026 6개월 19,389 등 원본 현금흐름표와 일치. `capex_missing` 14 → 9종목(ABNB·APP·CI·CMS·DD·FDXF·TPL·URI·VEEV). 신호 변화 없음(6종목 모두 신호 조건 미충족). 한계·남은 것: ① **PSX는 영업이익이 비어 있다**(표준 영업이익·세전이익 태그 없음 → P/OP 불가, 매수·매도 신호 불가) — 같은 방식으로 `EXT_OPINC` 필요, ② NEE 2020년 4분기·COP 2013~2020년 일부는 태그 없음(신호 창 밖), ③ APA 매출은 미지원, ④ `verify_signal_tickers.py`는 이 6종목 capex를 "원본에 표준 태그 없음"으로만 표시(대조 불가), ⑤ **백테스트 재실행 필요**(과거 capex가 6종목에서 채워져 값이 조금 달라질 수 있음).
+
 **0. 내일 아침 (사용자, 5분) — 스케줄러 첫 자동 실행 확인 (목 10/8 09:00 KST)**
 - `automation/logs/20261008_daily.log`에서: `대상: …개 종목 (벤치마크 SPY 포함)` / `⚠⚠`(SPY 지연 경고) 없음 / `데이터 점검 플래그: …종목` 줄 / 마지막에 `auto: dashboard update`와 `git push 완료`.
 - `git log -2`에 `auto: dashboard update 2026-10-08 …` 커밋이 있으면 정상(git add/commit/push 단계는 10/6 이후 처음 실제 실행). 실패하면 `bash automation/daily_update.sh`를 수동 실행해 어느 단계인지 본다.

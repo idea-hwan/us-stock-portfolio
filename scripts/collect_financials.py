@@ -15,6 +15,7 @@ DATA_DIR = Path(__file__).parent.parent / 'data'
 DB_PATH  = DATA_DIR / 'stocks.db'
 from config import sec_headers, sec_get
 from edgar_xbrl_fallback import patch_missing_filings
+import edgar_ext_tags
 HEADERS  = sec_headers()
 CUTOFF_YEAR = 2010
 
@@ -51,7 +52,9 @@ TARGETS = [
                           "PaymentsToExploreAndDevelopOilAndGasProperties",       # APA·FANG (E&P 개발 투자)
                           "PaymentsForConstructionInProcess",                     # ED (유틸리티 설비투자)
                           # 설비투자에서 매각 수입을 뺀 순액 태그 — WAT 2025Q3 10-Q처럼 총액 태그 대신 이걸 쓴 분기를 채운다
-                          "PaymentsForProceedsFromProductiveAssets"],              "USD"),
+                          "PaymentsForProceedsFromProductiveAssets",
+                          # 회사 고유 태그 종목(PSX·COP·TKO·D·DTE·NEE): edgar_ext_tags가 인스턴스에서 읽어 넣는 합성 태그 — 맨 끝이라 표준 태그가 있으면 밀린다
+                          "EXT_CAPEX"],                                            "USD"),
     ("total_assets",     ["Assets"],                                                               "USD"),
     ("total_equity",     ["StockholdersEquity",
                           "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"], "USD"),
@@ -480,6 +483,8 @@ def collect_ticker(facts: dict, fy_end_month: int = 12, rev_era_tags: dict | Non
     quarterly_frames = []
 
     for label, tags, unit in TARGETS:
+        if label == 'capex' and 'EXT_CAPEX' in facts.get('facts', {}).get('us-gaap', {}):
+            tags = ['EXT_CAPEX'] + [t for t in tags if t != 'EXT_CAPEX']   # 회사 고유 태그 종목은 현금흐름표 원 줄이 우선
         prefer_ytd            = label not in SNAPSHOT_COLS
         prefer_earliest_filed = (label == 'shares_diluted')
         era = rev_era_tags if label == "revenue" else None
@@ -648,6 +653,10 @@ def main():
             if patched:
                 print(f'[{i:3}/{len(tickers)}] {ticker:8} | companyfacts 누락 {len(patched)}건 보충: {patched}')
                 filed, form = latest_filing(facts)
+
+            if ticker.upper() in edgar_ext_tags.EXT_CAPEX:
+                n = edgar_ext_tags.inject(facts, ticker, cik, HEADERS)
+                print(f'[{i:3}/{len(tickers)}] {ticker:8} | 회사 고유 태그 capex {n}행 보충')
 
             upsert_filing_meta(conn, ticker, filed, form, latest_8k, now=datetime.utcnow().isoformat())
 
