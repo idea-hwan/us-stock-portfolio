@@ -469,7 +469,14 @@ def normalize_shares(s: pd.Series) -> pd.Series:
     return s.apply(fix)
 
 
-def collect_ticker(facts: dict, fy_end_month: int = 12, rev_era_tags: dict | None = None) -> pd.DataFrame:
+# 현금흐름표에 "Net additions of operating properties and equipment"(순액)로 공시해 분기 capex가 음수일 수 있는 종목.
+# LEN: 2026Q3 9개월 누계 4,083만 < 6개월 누계 4,885만 → 3분기 −800만 달러 (10-Q 원본 확인, 2026-10-08).
+# 전 종목에 음수를 허용하면 4분기 파생값(AEP −5,612·CCI −824 등) 가짜 음수가 들어오므로 원본을 확인한 종목만 추가한다.
+NET_CAPEX_TICKERS = {'LEN'}
+
+
+def collect_ticker(facts: dict, fy_end_month: int = 12, rev_era_tags: dict | None = None,
+                   keep_negative_capex: bool = False) -> pd.DataFrame:
     quarterly_frames = []
 
     for label, tags, unit in TARGETS:
@@ -510,8 +517,9 @@ def collect_ticker(facts: dict, fy_end_month: int = 12, rev_era_tags: dict | Non
     df_q.index.name = "term"
 
     # revenue·capex 는 항상 양수여야 함 — 음수는 YTD 뺄셈 artifact
+    # (예외: 설비투자를 처분 수입을 뺀 순액으로 공시하는 종목은 음수 분기가 실제 값 — NET_CAPEX_TICKERS)
     for col in ("revenue", "capex"):
-        if col in df_q.columns:
+        if col in df_q.columns and not (col == "capex" and keep_negative_capex):
             df_q.loc[df_q[col] < 0, col] = None
 
     return df_q.dropna(how='all')
@@ -643,7 +651,8 @@ def main():
 
             upsert_filing_meta(conn, ticker, filed, form, latest_8k, now=datetime.utcnow().isoformat())
 
-            df_q = collect_ticker(facts, fy_end_month=fy_end, rev_era_tags=REV_TAG_MAP.get(ticker.upper()))
+            df_q = collect_ticker(facts, fy_end_month=fy_end, rev_era_tags=REV_TAG_MAP.get(ticker.upper()),
+                               keep_negative_capex=ticker.upper() in NET_CAPEX_TICKERS)
             if df_q.empty:
                 print(f'[{i:3}/{len(tickers)}] {ticker:8} | 데이터 없음 — skip')
                 skipped += 1
