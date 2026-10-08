@@ -64,7 +64,7 @@
 - `git log -2`에 `auto: dashboard update 2026-10-08 …` 커밋이 있으면 정상(git add/commit/push 단계는 10/6 이후 처음 실제 실행). 실패하면 `bash automation/daily_update.sh`를 수동 실행해 어느 단계인지 본다.
 
 **1. 일요일 10/11 09:00 KST — 재무 자동수집 첫 실행 확인**
-- `automation/logs/20261011_weekly.log`: `성공 500 / 스킵 3 / 실패 0`(스킵은 EA·AVB·EQR), `⚠ 정리 건너뜀` 없음(있으면 CIK 변경·수집 불완전 — `collect_financials.CIK_PREDECESSORS` 점검), 끝의 `check_stale_quarters` 결과가 SEC 지연·수집 누락·미제출 모두 0종목.
+- `automation/logs/20261011_weekly.log`: `성공 500 / 스킵 3 / 실패 0`(스킵은 EA·AVB·EQR), `⚠ 정리 건너뜀` 없음(있으면 CIK 변경·수집 불완전 — `collect_financials.CIK_PREDECESSORS` 점검), 끝의 `check_stale_quarters` 결과가 SEC 지연·수집 누락·미제출 모두 0종목. 수집 후 `python scripts/check_stale_quarters.py --latest-filed`도 한 번 돌려 "뒤처짐 0"을 확인하면 비12월 결산까지 본 셈이다.
 - 월요일 10/12는 스케줄러가 쉬는 날. 화요일 10/13 09:00에 일일 계산이 일요일 수집분을 반영한다.
 
 **2. 화 10/13 — 주간 신호 리포트 (프롬프트: `automation/prompts/weekly_signal_report_prompt.md`)**
@@ -73,7 +73,7 @@
 - 실적 일정 도래 시 확인: ISRG 10/20 · INCY 10/26 전후(IPR&D 12.7억 달러 반영 후 신호 소멸 여부) · UHS 10/26 · GDDY·DHI 10/29(GDDY 소송 마감 10/20·10/26) · FICO 11/4.
 
 **3. 데이터 품질 (남은 것, 효과 큰 순서)**
-- a. **12월 결산이 아닌 131종목 점검** (약 1시간, 추천 1순위): `check_stale_quarters.py`가 12월 결산만 본다. SEC 지연과 연간 합계 대조를 비12월 결산(분기 말일이 종목마다 다름)으로 확장. 52/53주 라벨 수정은 이미 반영됨.
+- a. ✅ **12월 결산이 아닌 131종목 점검 완료 (10/8)**: `check_stale_quarters.py --latest-filed`(신규, 전 종목 대상)로 SEC 최신 10-Q/10-K 기간을 우리 분기 라벨로 환산해 DB 최신 분기와 직접 비교 → **500종목 일치, 뒤처짐·앞섬 0**(어제 제출된 COST·CTAS·STZ는 수집해 해결, 건너뜀은 EA·AVB·EQR). 손익계산서 맨 윗줄 표본 대조 72건 중 69건 일치(95.8%, 불일치 3건은 모두 2015Q1 소급 재작성), 감사 종목당 불일치·하위 태그 의심은 12월 결산보다 적음(0.67 대 1.21, 0.04 대 0.49). 코스트코의 16주 4분기·52/53주 연말 모두 정상. 주간 수집 후에도 이 점검을 쓰면 비12월 결산까지 한 번에 본다.
 - b. **매출 하위 태그 의심 종목 수동 확인**: HAS 14·WMB 13·DVN 7·VST 7·EQT 5·PEG 5·COP 5·OKE 3·HSIC·FTV 각 3 (RSG 41·PM 16은 DB가 맞음). 종목별로 10-Q 손익계산서 맨 윗줄을 직접 보고 틀린 종목만 `REV_TAG_OVERRIDE`(신규, `collect_financials.py`)로 지정. 자동 규칙을 더 다듬는 건 실험으로 이득이 없다고 확인됨(STATUS "매출 태그 매년 샘플링 실험").
 - c. **분기 CFO·CAPEX 독립 검증**: 연간 합계로만 확인(frames에 누적 값이 없음). 10-Q 현금흐름표 표본 대조.
 - d. 순이익 0인 분기 WST 2017Q4 확인, 매출 NULL 소수(WDC·DLTR·DD 2024Q4).
