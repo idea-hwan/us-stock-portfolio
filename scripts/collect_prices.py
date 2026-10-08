@@ -19,6 +19,13 @@ UNIV      = ROOT / 'data' / 'stock_universe.csv'
 
 START_DATE = '2006-01-01'
 BENCHMARK  = 'SPY'
+
+# 우리 시스템의 티커 → 야후 심볼. 합병·사명 변경으로 거래 티커가 바뀐 종목은 시스템의 티커를 유지하고(universe·재무 이력 연속성)
+# 가격만 새 심볼로 받아 원래 티커로 저장한다.
+#   PSKY → SKYD: 2026-10 Skydance의 WBD 인수 종결 후 Paramount Skydance가 Skydance Corporation(SKYD)로 사명·티커 변경.
+#   야후의 SKYD 가격 이력은 기존 PSKY 이력과 일치(겹치는 297일, 최근 값 동일).
+YF_SYMBOL  = {'PSKY': 'SKYD'}
+YF_REVERSE = {v: k for k, v in YF_SYMBOL.items()}
 BATCH_SIZE = 100
 
 
@@ -42,9 +49,11 @@ def last_dates(conn: sqlite3.Connection) -> dict[str, str]:
 
 
 def fetch_batch(tickers: list[str], start: str, end: str) -> pd.DataFrame:
-    """배치 다운로드 → (ticker, date, adj_close) DataFrame."""
+    """배치 다운로드 → (ticker, date, adj_close) DataFrame. 야후 심볼이 다른 종목(YF_SYMBOL)은 요청만 새 심볼로 하고
+    결과는 우리 티커로 돌려놓는다."""
+    req = [YF_SYMBOL.get(t, t) for t in tickers]
     raw = yf.download(
-        tickers,
+        req,
         start=start,
         end=end,
         auto_adjust=True,
@@ -55,7 +64,7 @@ def fetch_batch(tickers: list[str], start: str, end: str) -> pd.DataFrame:
         return pd.DataFrame(columns=['ticker', 'date', 'adj_close'])
 
     # auto_adjust=True → Close 컬럼이 수정주가
-    close = raw['Close'] if isinstance(raw.columns, pd.MultiIndex) else raw[['Close']].rename(columns={'Close': tickers[0]})
+    close = raw['Close'] if isinstance(raw.columns, pd.MultiIndex) else raw[['Close']].rename(columns={'Close': req[0]})
 
     # 배치 내 NaN: 전일가로 채움 (상장 전은 NaN 유지됨)
     close = close.ffill()
@@ -63,6 +72,7 @@ def fetch_batch(tickers: list[str], start: str, end: str) -> pd.DataFrame:
     close.index = pd.to_datetime(close.index).strftime('%Y-%m-%d')
     long = close.stack().reset_index()
     long.columns = ['date', 'ticker', 'adj_close']
+    long['ticker'] = long['ticker'].replace(YF_REVERSE)
     return long.dropna(subset=['adj_close'])[['ticker', 'date', 'adj_close']]
 
 

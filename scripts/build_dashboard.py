@@ -55,6 +55,12 @@ def load_current_prices() -> tuple[pd.DataFrame, str]:
 
 STALE_PRICE_DAYS = 30
 
+# 합병·상장폐지가 확정된 종목 — 가격이 30일 정지될 때까지 기다리지 않고 대시보드에서 즉시 제외한다(재무·가격 이력은 DB에
+# 그대로 둔다: 백테스트의 생존편향 방지). {티커: 사유}
+KNOWN_DELISTED = {
+    'WBD': '2026-10-06 Skydance에 인수·합병 종결, Form 25 제출',
+}
+
 
 def load_stale_tickers() -> set[str]:
     """가격이 기준일보다 STALE_PRICE_DAYS일 넘게 갱신되지 않은 종목(상장폐지·비공개 전환 의심: EA, SATS 등).
@@ -66,7 +72,7 @@ def load_stale_tickers() -> set[str]:
         (latest, f'-{STALE_PRICE_DAYS} day'),
     ).fetchall()
     con.close()
-    return {r[0] for r in rows if r[0] != 'SPY'}
+    return {r[0] for r in rows if r[0] != 'SPY'} | set(KNOWN_DELISTED)
 
 
 def load_shares() -> pd.DataFrame:

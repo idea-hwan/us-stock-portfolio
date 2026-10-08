@@ -602,6 +602,7 @@ def main():
     CIK_OVERRIDES = {
         'SATS': '0001415404',
         'AEP':  '0000004904',
+        'PSKY': '0002041610',   # 2026-10 SKYD로 티커 변경 — SEC 종목 목록이 SKYD로 바뀌어도 이 CIK로 조회
     }
 
     conn = sqlite3.connect(DB_PATH)
