@@ -11,9 +11,10 @@
 #   9. 대시보드(docs/index.html) 재생성
 #  10. 변경 있으면 git commit + push (GitHub Pages 자동 갱신)
 #
-# EDGAR 재무 원본 수집(collect_financials.py)은 여기 없음 — 고정비용 5~6분이라
-# 매주 1회 automation/weekly_collect_financials.sh 로 분리. 그 결과(stocks.db)는
-# 다음 날 이 스크립트의 2~8단계에서 자동으로 반영됨.
+# EDGAR 재무 원본 수집(collect_financials.py)은 여기 없음 — 매주 토요일 KST 11:00
+# automation/weekly_collect_financials.sh 로 분리. 그 결과(stocks.db)는 일요일
+# KST 14:00 주간 리포트가 지표를 다시 계산할 때, 그리고 다음 화요일 이 스크립트의
+# 2~8단계에서 반영된다.
 #
 # 순수 계산 단계(2~8)는 401종목 기준 약 3분 — 매일 돌려도 부담 없음.
 # 새 버킷 편입/제외 등 판단이 필요한 변경은 자동으로 하지 않는다 —

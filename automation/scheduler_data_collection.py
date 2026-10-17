@@ -15,19 +15,20 @@
     목          →  수요일 저녁 (개장)         →  수요일 종가
     금          →  목요일 저녁 (개장)         →  목요일 종가
     토          →  금요일 저녁 (개장)         →  금요일 종가
-    일          →  토요일 저녁 (휴장)         →  없음 → 재무 수집 슬롯으로 사용
+    일          →  토요일 저녁 (휴장)         →  없음 → 가격 잡 없음
 
-    - 화~토 00:00 UTC → daily_update.sh
+    - 화~토 00:00 UTC (KST 09:00) → daily_update.sh
         (가격 수집 → TTM → 성장률 → 밸류에이션 → 수익률 → 종목분류
          → 현재 밸류에이션 재계산 → 대시보드 재생성)
-    - 일요일  00:00 UTC → weekly_collect_financials.sh
-        (EDGAR 분기 실적 원본 수집만 — 고정비용 ~5~6분이라 매일 안 돌림.
-         여기서 갱신된 재무는 다음 daily_update.sh 실행 때 자동 반영됨)
+    - 토요일 02:00 UTC (KST 11:00) → weekly_collect_financials.sh
+        (EDGAR 분기 실적·8-K 잠정 배지. 한국 잠정실적 KST 12:00보다 앞.
+         고정비용 ~10분. 지표 반영은 일요일 리포트와 다음 화요일 daily)
+    - 일요일 05:00 UTC (KST 14:00) → weekly_signal_report.sh
+        (주간 매수·매도 신호 리포트. 한국 일요일 16:00 가격·18:00 리포트보다 앞)
     - 월요일: 아무 것도 실행하지 않음 (새 종가 없음)
 
-상세 로그는 automation/logs/YYYYMMDD_daily.log, YYYYMMDD_weekly.log 에
-쌓인다. 이 스크립트는 "언제 뭘 실행했는지"만 automation/logs/scheduler.log
-에 기록한다.
+상세 로그는 automation/logs/YYYYMMDD_{daily,weekly,signal}.log 에 쌓인다.
+이 스크립트는 "언제 뭘 실행했는지"만 automation/logs/scheduler.log 에 기록한다.
 
 Ctrl+C로 종료.
 """
@@ -38,10 +39,11 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT          = Path(__file__).parent.parent
-DAILY_SCRIPT  = ROOT / 'automation' / 'daily_update.sh'
-WEEKLY_SCRIPT = ROOT / 'automation' / 'weekly_collect_financials.sh'
-LOG_FILE      = ROOT / 'automation' / 'logs' / 'scheduler.log'
+ROOT            = Path(__file__).parent.parent
+DAILY_SCRIPT    = ROOT / 'automation' / 'daily_update.sh'
+COLLECT_SCRIPT  = ROOT / 'automation' / 'weekly_collect_financials.sh'
+REPORT_SCRIPT   = ROOT / 'automation' / 'weekly_signal_report.sh'
+LOG_FILE        = ROOT / 'automation' / 'logs' / 'scheduler.log'
 
 CHECK_INTERVAL_SEC = 20
 
@@ -64,8 +66,10 @@ def run(script: Path, name: str):
 
 
 def main():
-    log('스케줄러 시작 — 화~토 00:00 UTC 가격+계산, 일요일 00:00 UTC 재무수집, 월요일 스킵. Ctrl+C로 종료.')
-    last_run_date = None  # 같은 날 중복 실행 방지
+    log('스케줄러 시작 — 화~토 KST 09:00 가격+계산, 토요일 KST 11:00 재무수집, 일요일 KST 14:00 주간 리포트, 월요일 스킵. Ctrl+C로 종료.')
+    last_daily = None
+    last_collect = None
+    last_report = None
 
     try:
         while True:
@@ -73,13 +77,21 @@ def main():
             today   = now.date()
             weekday = now.weekday()  # 월=0 화=1 수=2 목=3 금=4 토=5 일=6
 
-            if now.hour == 0 and now.minute == 0 and last_run_date != today:
-                if weekday == 6:            # 일요일
-                    run(WEEKLY_SCRIPT, 'weekly_collect_financials')
-                elif 1 <= weekday <= 5:     # 화~토 (전날 미국 증시가 열렸던 날)
+            # 화~토 KST 09:00. 월요일·일요일 00:00 UTC는 가격 잡 없음.
+            if now.hour == 0 and now.minute == 0 and last_daily != today:
+                last_daily = today
+                if 1 <= weekday <= 5:
                     run(DAILY_SCRIPT, 'daily_update')
-                # weekday == 0 (월요일): 스킵 — 미국 증시가 휴장이었던 일요일 저녁 기준이라 새 종가 없음
-                last_run_date = today
+
+            # 토요일 KST 11:00 = 토요일 02:00 UTC
+            if weekday == 5 and now.hour == 2 and now.minute == 0 and last_collect != today:
+                last_collect = today
+                run(COLLECT_SCRIPT, 'weekly_collect_financials')
+
+            # 일요일 KST 14:00 = 일요일 05:00 UTC
+            if weekday == 6 and now.hour == 5 and now.minute == 0 and last_report != today:
+                last_report = today
+                run(REPORT_SCRIPT, 'weekly_signal_report')
 
             time.sleep(CHECK_INTERVAL_SEC)
     except KeyboardInterrupt:

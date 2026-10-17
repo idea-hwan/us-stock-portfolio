@@ -1,5 +1,6 @@
 #!/bin/bash
-# 매주 1회 EDGAR 분기 실적 원본 수집 (로컬 전용, git push 없음)
+# 매주 토요일 KST 11:00 EDGAR 분기 실적 원본 수집 (로컬 전용, git push 없음)
+# 한국 잠정실적(토요일 12:00)보다 앞에 둔다.
 #
 # collect_financials.py는 "새 공시가 있는 종목만 골라서" 받는 게 아니라
 # 매번 유니버스 전체(약 503종목)의 재무 이력을 통째로 재요청한다 — 그래서
@@ -7,8 +8,8 @@
 # 이 고정비용을 매일 감수할 필요가 없어서 주 1회로 분리했다.
 #
 # 여기서 갱신한 stocks.db는 그 자체로는 지표에 반영되지 않는다 —
-# 다음 daily_update.sh 실행(가격 다음 매일 도는 지표 계산 체인)에서
-# compute_ttm.py 이하가 자동으로 최신 재무를 읽어 반영한다.
+# 일요일 14:00 weekly_signal_report.sh 가 지표를 다시 계산하고,
+# 다음 화요일 daily_update.sh 의 compute_ttm.py 이하도 같은 재무를 읽는다.
 
 set -euo pipefail
 

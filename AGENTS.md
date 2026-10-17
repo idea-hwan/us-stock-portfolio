@@ -34,8 +34,9 @@ collect_prices → compute_ttm → compute_growth → compute_valuation → comp
 ```
 
 - `automation/daily_update.sh`: 위 체인 + 변경 있으면 `git add -A` → commit → push (자동).
-- `automation/weekly_collect_financials.sh`: `collect_financials.py` + 지연 점검. push 없음.
-- `automation/scheduler_data_collection.py`: 화~토 KST 09:00 daily, 일요일 weekly, 월요일 스킵.
+- `automation/weekly_collect_financials.sh`: 토요일 KST 11:00. `collect_financials.py` + 지연 점검. push 없음.
+- `automation/weekly_signal_report.sh`: 일요일 KST 14:00. 주간 신호 리포트 작성 후 `docs/signal_reports/<날짜>.md`와 `docs/index.html`만 commit+push.
+- `automation/scheduler_data_collection.py`: 화~토 KST 09:00 daily, 토요일 11:00 재무 수집, 일요일 14:00 주간 리포트, 월요일 스킵.
   실행: `caffeinate -i .venv/bin/python automation/scheduler_data_collection.py` (터미널 상시 실행).
 - **스케줄러는 한 PC에서만 돌린다.** 두 곳에서 돌리면 자동 push끼리 충돌한다.
 
@@ -43,7 +44,7 @@ collect_prices → compute_ttm → compute_growth → compute_valuation → comp
 
 1. **커밋은 작업 단위로 바로.** daily_update가 `git add -A`로 쓸어가므로, 미완성 변경을 두면 "auto: dashboard update"에 섞여 push된다. 작업 마무리 때 커밋 여부를 사용자에게 먼저 묻는다.
 2. **push·force-push 등 원격에 영향 주는 동작은 설명 후 확인받는다.** 저장소는 Public이다.
-3. **LLM 판단이 들어간 작업은 무인 자동화하지 않는다.** 주간 신호 리포트는 사용자가 요청할 때 수동 진행, 검토 후 커밋.
+3. **주간 신호 리포트는 일요일 KST 14:00에 스케줄러가 무인 실행한다.** 절차는 `automation/prompts/weekly_signal_report_prompt.md`. 사람이 "주간 리포트 써줘"라고 해도 같은 절차로 검토 없이 커밋·푸시까지 한다.
 4. **자동화는 launchd/cron보다 `caffeinate -i` + 파이썬 스크립트**를 기본으로 제안한다.
 5. **외부 요청에 회사 메일 금지.** SEC는 `.env`의 `SEC_USER_AGENT`만. 이메일을 지어내지 않는다.
 6. **숫자 포맷:** `65.2B`, `1.5M` 같은 약어 금지. 콤마 포맷 또는 헤더에 단위 표기.
@@ -62,7 +63,7 @@ collect_prices → compute_ttm → compute_growth → compute_valuation → comp
 
 ## 주간 매수·매도 신호 리포트
 
-- 절차서: `automation/prompts/weekly_signal_report_prompt.md` (이 문서대로 진행)
+- 절차서: `automation/prompts/weekly_signal_report_prompt.md` (일요일 KST 14:00 스케줄러, 또는 사용자가 요청할 때)
 - 결과: `docs/signal_reports/YYYY-MM-DD.md`, 이후 `build_dashboard.py`로 대시보드 반영
 - 핵심: 1차 출처(SEC 공시·IR) 우선, 가격은 `data/prices.db`에서만, 기사 게재일 확인, 직전 4주 리포트와 교차검증.
 - 절차서의 "서브에이전트"는 종목별 병렬 조사를 뜻한다. 병렬 실행이 안 되면 종목별로 순서대로 조사해도 된다. 같은 업종 종목끼리는 반드시 나란히 놓고 판정 일관성을 확인한다.
