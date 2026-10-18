@@ -211,10 +211,11 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
 .report-body em{color:var(--muted);font-style:italic}
 .report-body a{color:var(--blue);text-decoration:underline}
 .report-body hr{border:none;border-top:1px solid var(--bord);margin:20px 0}
-.report-body table{border-collapse:collapse;width:100%;margin:8px 0 16px;font-size:12px}
+.report-body table{border-collapse:collapse;width:100%;min-width:0;margin:8px 0 16px;font-size:12px}
 .report-body th{background:var(--surf);color:var(--muted);font-weight:500;padding:6px 10px;
-  border-bottom:1px solid var(--bord);text-align:left}
-.report-body td{padding:6px 10px;border-bottom:1px solid var(--bord);vertical-align:top;line-height:1.6}
+  border-bottom:1px solid var(--bord);text-align:left;white-space:normal}
+.report-body td{padding:6px 10px;border-bottom:1px solid var(--bord);vertical-align:top;
+  line-height:1.6;white-space:normal;overflow-wrap:anywhere}
 .report-body ul,.report-body ol{margin:0 0 12px 20px}
 </style>
 </head>
