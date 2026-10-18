@@ -7,7 +7,7 @@
 <style>
 :root {
   --bg:#0f1117; --surf:#1a1d27; --surf2:#1e2130;
-  --bord:#2a2d3a; --text:#e2e4ec; --muted:#6b7280;
+  --bord:#3e465c; --text:#e2e4ec; --muted:#9ca3af;
   --green:#34d399; --red:#f87171; --yellow:#fbbf24;
   --blue:#60a5fa; --purple:#a78bfa;
 }
@@ -43,7 +43,7 @@ th:hover{color:var(--text)}
 th.asc::after{content:' ↑'}
 th.desc::after{content:' ↓'}
 th.num-h{text-align:right}
-td{padding:7px 8px;border-bottom:1px solid #252838;white-space:nowrap;font-size:11px}
+td{padding:7px 8px;border-bottom:1px solid var(--bord);white-space:nowrap;font-size:11px}
 .sr:hover td{background:var(--surf);cursor:pointer}
 .sr.open td{background:var(--surf)}
 .sr.alt td{background:rgba(255,255,255,0.018)}
@@ -102,7 +102,7 @@ td{padding:7px 8px;border-bottom:1px solid #252838;white-space:nowrap;font-size:
 .ltbl{border-collapse:collapse;width:100%;font-size:12px;margin-bottom:0}
 .ltbl th{background:var(--surf);color:var(--muted);font-weight:500;
          padding:7px 10px;border-bottom:1px solid var(--bord);text-align:left;white-space:nowrap}
-.ltbl td{padding:7px 10px;border-bottom:1px solid #1e2130;vertical-align:top;line-height:1.6}
+.ltbl td{padding:7px 10px;border-bottom:1px solid var(--bord);vertical-align:top;line-height:1.6}
 .ltbl td:first-child{white-space:nowrap}
 .lnote{color:var(--muted);font-size:12px;margin-top:8px;line-height:1.7;
        border-left:2px solid var(--bord);padding-left:10px}
@@ -150,11 +150,11 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
 .lbadge.up1{background:rgba(52,211,153,.1);color:#86efac}
 .lbadge.dn2{background:rgba(248,113,113,.15);color:var(--red)}
 .lbadge.dn1{background:rgba(248,113,113,.1);color:#fca5a5}
-.lbadge.flat{background:rgba(107,114,128,.15);color:var(--muted)}
+.lbadge.flat{background:rgba(156,163,175,.15);color:var(--muted)}
 .lbadge.cheap{background:rgba(52,211,153,.15);color:var(--green)}
 .lbadge.rich{background:rgba(248,113,113,.15);color:var(--red)}
 .lbadge.mix{background:rgba(251,191,36,.15);color:var(--yellow)}
-.lbadge.neu{background:rgba(107,114,128,.15);color:var(--muted)}
+.lbadge.neu{background:rgba(156,163,175,.15);color:var(--muted)}
 
 /* 조건문 — 쉬운 말 + 원래 조건식 */
 .cond-plain{color:var(--text);font-size:12.5px;line-height:1.6}
@@ -214,7 +214,7 @@ abbr.term{border-bottom:1px dotted var(--muted);text-decoration:none;cursor:help
 .report-body table{border-collapse:collapse;width:100%;margin:8px 0 16px;font-size:12px}
 .report-body th{background:var(--surf);color:var(--muted);font-weight:500;padding:6px 10px;
   border-bottom:1px solid var(--bord);text-align:left}
-.report-body td{padding:6px 10px;border-bottom:1px solid #1e2130;vertical-align:top;line-height:1.6}
+.report-body td{padding:6px 10px;border-bottom:1px solid var(--bord);vertical-align:top;line-height:1.6}
 .report-body ul,.report-body ol{margin:0 0 12px 20px}
 </style>
 </head>
